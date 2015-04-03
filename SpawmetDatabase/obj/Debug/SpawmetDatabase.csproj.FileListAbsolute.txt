@@ -1,1 +1,11 @@
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\SpawmetDatabase.exe.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\EntityFramework.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\EntityFramework.SqlServer.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\MySql.Data.Entity.EF6.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\EntityFramework.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\EntityFramework.SqlServer.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.csprojResolveAssemblyReference.cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.pdb
