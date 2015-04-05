@@ -28,36 +28,41 @@ namespace SpawmetDatabaseWPF
 
             using (var context = new SpawmetDBContext())
             {
-                MainTextBlock.Text = "";
-
-                foreach (var order in context.Orders.ToList())
-                {
-                    var clientName = order.Client != null ? order.Client.Name : "";
-                    var machineName = order.Machine != null ? order.Machine.Name : "";
-
-                    MainTextBlock.Text +=
-                        "Id zamówienia: " + order.Id +
-                        "\nNazwa klienta: " + clientName +
-                        "\nData złożenia: " + order.StartDate +
-                        "\nData wysyłki: " + order.SendDate +
-                        "\nUwagi: " + order.Remarks +
-                        "\nNazwa maszyny: " + machineName +
-                        "\nPodstawowe części: " + "\n";
-                    if (order.Machine != null)
-                    {
-                        foreach (var part in order.Machine.StandardPartSet)
-                        {
-                            MainTextBlock.Text += "- " + part.Name + "\n";
-                        }
-                    }
-                    MainTextBlock.Text += "Dodatkowe części: " + "\n";
-                    foreach (var part in order.AdditionalPartSet)
-                    {
-                        MainTextBlock.Text += "- " + part.Name + "\n";
-                    }
-                    MainTextBlock.Text += "\n";
-                }
+                MainDataGrid.ItemsSource = context.Orders.ToList();
             }
+
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    MainTextBlock.Text = "";
+
+            //    foreach (var order in context.Orders.ToList())
+            //    {
+            //        var clientName = order.Client != null ? order.Client.Name : "";
+            //        var machineName = order.Machine != null ? order.Machine.Name : "";
+
+            //        MainTextBlock.Text +=
+            //            "Id zamówienia: " + order.Id +
+            //            "\nNazwa klienta: " + clientName +
+            //            "\nData złożenia: " + order.StartDate +
+            //            "\nData wysyłki: " + order.SendDate +
+            //            "\nUwagi: " + order.Remarks +
+            //            "\nNazwa maszyny: " + machineName +
+            //            "\nPodstawowe części: " + "\n";
+            //        if (order.Machine != null)
+            //        {
+            //            foreach (var part in order.Machine.StandardPartSet)
+            //            {
+            //                MainTextBlock.Text += "- " + part.Name + "\n";
+            //            }
+            //        }
+            //        MainTextBlock.Text += "Dodatkowe części: " + "\n";
+            //        foreach (var part in order.AdditionalPartSet)
+            //        {
+            //            MainTextBlock.Text += "- " + part.Name + "\n";
+            //        }
+            //        MainTextBlock.Text += "\n";
+            //    }
+            //}
 
         }
 

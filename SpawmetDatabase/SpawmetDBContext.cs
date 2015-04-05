@@ -1,9 +1,11 @@
 ﻿using System.Data.Common;
 using System.Data.Entity;
+using MySql.Data.Entity;
 using SpawmetDatabase.Model;
 
 namespace SpawmetDatabase
 {
+    [DbConfigurationType(typeof(MySqlEFConfiguration))]
     public class SpawmetDBContext : DbContext
     {
         public SpawmetDBContext()
@@ -21,6 +23,7 @@ namespace SpawmetDatabase
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<User>().MapToStoredProcedures();
             modelBuilder.Entity<Part>().MapToStoredProcedures();
             modelBuilder.Entity<Delivery>().MapToStoredProcedures();
             modelBuilder.Entity<Client>().MapToStoredProcedures();
@@ -28,6 +31,7 @@ namespace SpawmetDatabase
             modelBuilder.Entity<Order>().MapToStoredProcedures();
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Part> Parts { get; set; }
         public DbSet<Delivery> Deliveries { get; set; }
         public DbSet<Client> Clients { get; set; }
