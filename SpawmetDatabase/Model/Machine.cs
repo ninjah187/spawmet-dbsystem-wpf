@@ -2,7 +2,7 @@
 
 namespace SpawmetDatabase.Model
 {
-    public class Machine
+    public class Machine : IModelElement
     {
         public Machine()
         {

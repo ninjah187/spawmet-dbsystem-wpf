@@ -2,7 +2,7 @@
 
 namespace SpawmetDatabase.Model
 {
-    public class Delivery
+    public class Delivery : IModelElement
     {
         public Delivery()
         {

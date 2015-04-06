@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SpawmetDatabase.Model;
+using System.Security.Cryptography;
 
 namespace SpawmetDatabase
 {

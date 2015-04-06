@@ -2,7 +2,7 @@
 
 namespace SpawmetDatabase.Model
 {
-    public class Client
+    public class Client : IModelElement
     {
         public Client()
         {

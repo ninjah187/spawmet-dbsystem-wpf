@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\IModelElement.cs" />
     <Compile Include="Model\Delivery.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Machine.cs" />

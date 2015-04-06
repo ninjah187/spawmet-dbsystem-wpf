@@ -2,7 +2,7 @@
 
 namespace SpawmetDatabase.Model
 {
-    public class Order
+    public class Order : IModelElement
     {
         public Order()
         {

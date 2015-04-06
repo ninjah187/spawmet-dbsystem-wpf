@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,49 +23,47 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ObservableCollection<Part> DataGridItemsSource { get; set; }
+
+        //trzymać jeden context przez cały czas trwania programu, czy tworzyć do każdorazowego działania?
+
         public MainWindow()
         {
             InitializeComponent();
 
-            using (var context = new SpawmetDBContext())
-            {
-                MainDataGrid.ItemsSource = context.Orders.ToList();
-            }
+            DataGridItemsSource = new ObservableCollection<Part>();
 
-            //using (var context = new SpawmetDBContext())
-            //{
-            //    MainTextBlock.Text = "";
-
-            //    foreach (var order in context.Orders.ToList())
-            //    {
-            //        var clientName = order.Client != null ? order.Client.Name : "";
-            //        var machineName = order.Machine != null ? order.Machine.Name : "";
-
-            //        MainTextBlock.Text +=
-            //            "Id zamówienia: " + order.Id +
-            //            "\nNazwa klienta: " + clientName +
-            //            "\nData złożenia: " + order.StartDate +
-            //            "\nData wysyłki: " + order.SendDate +
-            //            "\nUwagi: " + order.Remarks +
-            //            "\nNazwa maszyny: " + machineName +
-            //            "\nPodstawowe części: " + "\n";
-            //        if (order.Machine != null)
-            //        {
-            //            foreach (var part in order.Machine.StandardPartSet)
-            //            {
-            //                MainTextBlock.Text += "- " + part.Name + "\n";
-            //            }
-            //        }
-            //        MainTextBlock.Text += "Dodatkowe części: " + "\n";
-            //        foreach (var part in order.AdditionalPartSet)
-            //        {
-            //            MainTextBlock.Text += "- " + part.Name + "\n";
-            //        }
-            //        MainTextBlock.Text += "\n";
-            //    }
-            //}
+            this.DataContext = this;
 
         }
 
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem) sender;
+            
+            switch (menuItem.Header.ToString())
+            {
+                case "Części":
+                {
+                    using (var context = new SpawmetDBContext())
+                    {
+                        foreach (var part in context.Parts)
+                        {
+                            DataGridItemsSource.Add(part);
+                        }
+
+                        //var parts = context.Parts.Cast<IModelElement>().ToList();
+                        //DataGridItemsSource = new ObservableCollection<IModelElement>(parts);
+                    }
+                }
+                break;
+            }
+        }
+
+        private void AddButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var addWindow = new AddPartWindow(this);
+            addWindow.Show();
+        }
     }
 }

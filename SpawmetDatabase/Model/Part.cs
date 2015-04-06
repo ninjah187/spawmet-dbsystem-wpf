@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SpawmetDatabase.Model
 {
-    public class Part
+    public class Part : IModelElement
     {
         public Part()
         {
