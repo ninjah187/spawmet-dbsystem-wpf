@@ -1,0 +1,42 @@
+﻿<Window x:Class="SpawmetDBWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:SystemColors="clr-namespace:System;assembly=mscorlib"
+        xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="MainWindow" Height="350" Width="525">
+    <DockPanel>
+        
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Opcje">
+                    <MenuItem Header="Odśwież"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <DockPanel></DockPanel>
+        </DockPanel>
+        
+        <DataGrid x:Name="MainDataGrid" Margin="0,0,10,0" DockPanel.Dock="Left"
+                  MaxWidth="480" MinWidth="480" AutoGenerateColumns="False">
+            
+            <DataGrid.Resources>
+                <ObjectDataProvider x:Key="OriginEnumProvider"
+                                    MethodName="GetValues"
+                                    ObjectType="{x:Type sys:Enum}">
+                    <ObjectDataProvider.MethodParameters>
+                        <x:Type TypeName="custns:Origin"></x:Type>
+                    </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider>
+            </DataGrid.Resources>
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Width="SizeToCells" />
+                <DataGridTextColumn Header="Nazwa" Width="SizeToCells" />
+                <DataGridTextColumn Header="Ilość" Width="SizeToCells"></DataGridTextColumn>
+                <DataGridComboBoxColumn Header="Pochodzenie" ItemsSource="{Binding Source={StaticResource OriginEnumProvider}}" />
+            </DataGrid.Columns>
+            
+        </DataGrid>
+        
+    </DockPanel>
+</Window>

@@ -23,13 +23,15 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartWindow : Window
     {
-        private Window _parentWindow;
+        private MainWindow _parentWindow;
+        private SpawmetDBContext _dbContext;
 
-        public AddPartWindow(Window parentWindow)
+        public AddPartWindow(MainWindow parentWindow, SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
             _parentWindow = parentWindow;
+            _dbContext = dbContext;
 
             this.Loaded += (sender, e) =>
             {
@@ -46,18 +48,28 @@ namespace SpawmetDatabaseWPF
             var name = NameTextBox.Text;
             var amount = int.Parse(AmountTextBox.Text);
 
-            using (var context = new SpawmetDBContext())
+            var part = new Part()
             {
-                Part p;
-                context.Parts.Add(p = new Part()
-                {
-                    Name = name,
-                    Amount = amount,
-                    Origin = null,
-                });
-                ((MainWindow) _parentWindow).DataGridItemsSource.Add(p);
-                context.SaveChanges();
-            }
+                Name = name,
+                Amount = amount,
+                Origin = Origin.Production,
+            };
+            _dbContext.Parts.Add(part);
+            _dbContext.SaveChanges();
+            //_parentWindow.DataGridItemsSource.Add(part);
+            
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    Part p;
+            //    context.Parts.Add(p = new Part()
+            //    {
+            //        Name = name,
+            //        Amount = amount,
+            //        Origin = null,
+            //    });
+            //    ((MainWindow)_parentWindow).DataGridItemsSource.Add(p);
+            //    context.SaveChanges();
+            //}
 
             this.Close();
         }

@@ -66,14 +66,13 @@
     <Compile Include="Security.cs" />
     <Compile Include="SpawmetDBContext.cs" />
     <Compile Include="SpawmetDBInitializer.cs" />
+    <Compile Include="ViewModel\PartViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

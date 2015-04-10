@@ -3,7 +3,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabaseWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabaseWPF.pdb
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\EntityFramework.dll
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\EntityFramework.SqlServer.dll
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\MySql.Data.Entity.EF6.dll
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabase.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabase.pdb
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\EntityFramework.xml
@@ -20,3 +19,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.pdb
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\MySql.Data.Entity.EF6.dll

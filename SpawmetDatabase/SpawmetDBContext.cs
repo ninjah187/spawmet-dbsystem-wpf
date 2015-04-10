@@ -24,11 +24,11 @@ namespace SpawmetDatabase
         {
             base.OnModelCreating(modelBuilder);
             //modelBuilder.Entity<User>().MapToStoredProcedures();
-            modelBuilder.Entity<Part>().MapToStoredProcedures();
-            modelBuilder.Entity<Delivery>().MapToStoredProcedures();
-            modelBuilder.Entity<Client>().MapToStoredProcedures();
-            modelBuilder.Entity<Machine>().MapToStoredProcedures();
-            modelBuilder.Entity<Order>().MapToStoredProcedures();
+            //modelBuilder.Entity<Part>().MapToStoredProcedures();
+            //modelBuilder.Entity<Delivery>().MapToStoredProcedures();
+            //modelBuilder.Entity<Client>().MapToStoredProcedures();
+            //modelBuilder.Entity<Machine>().MapToStoredProcedures();
+            //modelBuilder.Entity<Order>().MapToStoredProcedures();
         }
 
         public DbSet<User> Users { get; set; }
