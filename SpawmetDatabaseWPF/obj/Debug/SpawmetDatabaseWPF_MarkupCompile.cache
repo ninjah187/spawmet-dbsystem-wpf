@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\App.xaml
-3754924165
+8-1670596336
 
-7-610861216
+121763575357
 20-170677859
-AddPartWindow.xaml;MainWindow.xaml;RemoveWindow.xaml;
+AddMachineWindow.xaml;AddPartToMachine.xaml;AddPartWindow.xaml;MachinesWindow.xaml;MainWindow.xaml;MasterWindow.xaml;PartsWindow.xaml;RemoveWindow.xaml;
 
 False
 

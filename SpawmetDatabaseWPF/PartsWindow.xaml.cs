@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +12,6 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
@@ -23,22 +19,24 @@ using SpawmetDatabase.Model;
 namespace SpawmetDatabaseWPF
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for PartsWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class PartsWindow : Window
     {
-        //public ObservableCollection<Part> DataGridItemsSource { get; set; }
         public ObservableCollection<Part> DataGridItemsSource
         {
             get { return _dbContext.Parts.Local; }
         }
-        public DataGrid MainDataGrid { get; set; }
 
         private SpawmetDBContext _dbContext;
 
-        public MainWindow()
+        private MasterWindow _parentWindow;
+
+        public PartsWindow(MasterWindow parentWindow)
         {
             InitializeComponent();
+
+            _parentWindow = parentWindow;
 
             try
             {
@@ -46,7 +44,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (ProviderIncompatibleException e)
             {
-                MessageBox.Show("Brak połączenia z serwerem.");
+                MessageBox.Show("Brak połączenia z serwerem");
                 Application.Current.Shutdown();
             }
         }
@@ -57,29 +55,50 @@ namespace SpawmetDatabaseWPF
 
             this.DataContext = this;
 
-            MainDataGrid = PartsDataGrid;
-
             MainDataGrid.SelectionChanged += (sender, e) =>
             {
-                var part = (Part)MainDataGrid.SelectedItem;
+                Part part = null;
+                try
+                {
+                    part = (Part) MainDataGrid.SelectedItem;
+                }
+                catch (InvalidCastException exc)
+                {
+                    DetailTextBlock.Text = "";
+                    return;
+                }
                 if (part != null)
                 {
                     FillDetailedInfo(part);
                 }
             };
-            
+
             this.Loaded += (sender, e) =>
             {
                 LoadDataIntoSource();
+                _parentWindow.PartsWindowButton.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
                 _dbContext.Dispose();
+                _parentWindow.PartsWindowButton.IsEnabled = true;
             };
         }
 
         private void FillDetailedInfo(Part part)
         {
+            //string basicInfo = "";
+            //string originName = part.Origin == Origin.Production ? "Produkcja" : "Zewnątrz";
+
+            //basicInfo += "ID: " + part.Id +
+            //             "\nNazwa: " + part.Name +
+            //             "\nIlość: " + part.Amount +
+            //             "\nPochodzenie: " + originName;
+            
+            //BasicInfoTextBlock.Text = basicInfo;
+            //MachinesListBox.ItemsSource = part.Machines;
+            //DeliveriesListBox.ItemsSource = part.Deliveries;
+
             string info = "";
 
             string originName = part.Origin == Origin.Production ? "Produkcja" : "Zewnątrz";
@@ -97,7 +116,17 @@ namespace SpawmetDatabaseWPF
             info += "Dostawy:\n";
             foreach (var delivery in part.Deliveries)
             {
-                string txt = delivery.Name + ", " + delivery.Date;
+                string txt = delivery.Name + ", " + delivery.Date.ToShortDateString();
+                info += "- " + txt + "\n";
+            }
+            info += "Zamówienia:\n";
+            foreach (var order in part.Orders)
+            {
+                string clientName = order.Client != null ? order.Client.Name : "";
+                string machineName = order.Machine != null ? order.Machine.Name : "";
+
+                string txt = clientName + ", " + machineName + ", " +
+                             order.StartDate.ToShortDateString();
                 info += "- " + txt + "\n";
             }
 
@@ -117,55 +146,29 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void AddButton_OnClicklick(object sender, RoutedEventArgs e)
         {
-            var menuItem = (MenuItem) sender;
-            
-            switch (menuItem.Header.ToString())
-            {
-                case "Części":
-                {
-                    LoadDataIntoSource();
-                }
-                break;
-            }
+            new AddPartWindow(this, _dbContext).Show();
         }
 
-        private void AddButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            //var addWindow = new AddPartWindow(this, _dbContext);
-            //addWindow.Show();
-            throw new NotImplementedException();
-        }
-
-        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        private void DeleteButton_OnClickutton_OnClick(object sender, RoutedEventArgs e)
         {
             var items = MainDataGrid.SelectedItems;
             var toDelete = new List<Part>();
             foreach (var item in items)
             {
-                var part = (Part)item;
-                toDelete.Add(part);
+                toDelete.Add((Part)item);
             }
-            foreach (var part in toDelete)
+            foreach (var deleteItem in toDelete)
             {
-                _dbContext.Parts.Remove(part);
+                _dbContext.Parts.Remove(deleteItem);
             }
             _dbContext.SaveChanges();
         }
 
-        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+        private void SaveButton_OnClicknClick(object sender, RoutedEventArgs e)
         {
             _dbContext.SaveChanges();
-        }
-
-        private void DetailsButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var part = (Part)MainDataGrid.SelectedItem;
-            if (part != null)
-            {
-                FillDetailedInfo(part);
-            }
         }
     }
 }

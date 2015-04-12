@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,14 +17,14 @@ using SpawmetDatabase.Model;
 namespace SpawmetDatabaseWPF
 {
     /// <summary>
-    /// Interaction logic for AddPartWindow.xaml
+    /// Interaction logic for AddMachineWindow.xaml
     /// </summary>
-    public partial class AddPartWindow : Window
+    public partial class AddMachineWindow : Window
     {
-        private PartsWindow _parentWindow;
+        private MachinesWindow _parentWindow;
         private SpawmetDBContext _dbContext;
 
-        public AddPartWindow(PartsWindow parentWindow, SpawmetDBContext dbContext)
+        public AddMachineWindow(MachinesWindow parentWindow, SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
@@ -41,23 +39,23 @@ namespace SpawmetDatabaseWPF
             {
                 _parentWindow.IsEnabled = true;
             };
+
+
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text;
-            var amount = int.Parse(AmountTextBox.Text);
+            var price = Decimal.Parse(PriceTextBox.Text);
 
-            var part = new Part()
+            var machine = new Machine()
             {
                 Name = name,
-                Amount = amount,
-                Origin = Origin.Production,
+                Price = price,
             };
-            _dbContext.Parts.Add(part);
-            _dbContext.SaveChanges();
 
-            this.Close();
+            _dbContext.Machines.Add(machine);
+            _dbContext.SaveChanges();
         }
     }
 }

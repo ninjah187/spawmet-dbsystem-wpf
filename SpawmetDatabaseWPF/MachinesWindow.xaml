@@ -1,0 +1,93 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.MachinesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Maszyny" Height="480" Width="800" ResizeMode="CanMinimize">
+    <DockPanel>
+
+        <!-- NAVBAR -->
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Opcje">
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <DockPanel></DockPanel>
+        <!-- END NAVBAR -->
+
+        <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
+                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="520" MinWidth="520"
+                  AutoGenerateColumns="False">
+            <DataGrid.Resources>
+                <!--<ObjectDataProvider x:Key="originEnum"
+                                                MethodName="GetValues"
+                                                ObjectType="{x:Type sys:Enum}">
+                    <ObjectDataProvider.MethodParameters>
+                        <x:Type TypeName="custns:Origin"></x:Type>
+                    </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider>-->
+            </DataGrid.Resources>
+            
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Odśwież"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="SizeToCells" />
+            </DataGrid.Columns>
+
+            <!--<DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <ListBox x:Name="PartSetListBox" ItemsSource="{Binding StandardPartSet}" 
+                                 DisplayMemberPath="Name" MinWidth="200">
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Usuń" Click="DeletePartItem_OnClick" />
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                        <StackPanel DockPanel.Dock="Right" MaxWidth="30">
+                            <Button Margin="0, 10">+</Button>
+                            <Button x:Name="DeletePartFromMachineButton" Click="DeletePartFromMachineButton_OnClick" Margin="0,0,0,10">-</Button>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>-->
+        </DataGrid>
+
+        <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
+            <!--<Button Name="AddButton" Click="AddButton_OnClick">Dodaj</Button>
+            <Button Name="DeleteButton" Margin="0,10" Click="DeleteButton_OnClick">Usuń</Button>
+            <Button Name="SaveButton" Margin="0,10" Click="SaveButton_OnClick">Zapisz</Button>-->
+
+            <!--<ScrollViewer>-->
+                <StackPanel Margin="0">
+                    <TextBlock Text="Szczegóły:" TextWrapping="Wrap"></TextBlock>
+                    <!--<TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>-->
+
+                    <TextBlock x:Name="BasicInfoTextBlock" TextWrapping="Wrap" />
+                    <TextBlock Text="Standardowe części:"></TextBlock>
+                    <ListBox x:Name="StandardPartSetListBox" DisplayMemberPath="Name" MaxHeight="200">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="AddPartItem" Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
+                                <MenuItem x:Name="DeletePartItem" Header="Usuń" Click="DeletePartItem_OnClick" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                    <TextBlock x:Name="OrdersTextBlock"></TextBlock>
+                </StackPanel>
+            <!--</ScrollViewer>-->
+
+        </StackPanel>
+
+    </DockPanel>
+</Window>

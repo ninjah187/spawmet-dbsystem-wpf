@@ -17,52 +17,67 @@
         <DockPanel></DockPanel>
         <!-- END NAVBAR -->
         
-        <!--<DataGrid ItemsSource="{Binding DataGridItemsSource}" Margin="0,0,10,0" DockPanel.Dock="Left"
-                  MaxWidth="480" MinWidth="480"></DataGrid>-->
-        <DataGrid x:Name="MainDataGrid"  ItemsSource="{Binding DataGridItemsSource}" Margin="0,0,10,0" DockPanel.Dock="Left"
-              MaxWidth="480" MinWidth="480" AutoGenerateColumns="False">
+        <TabControl x:Name="TabMenuControl">
+            <TabItem x:Name="PartsTabItem" Header="Części">
+                <DataGrid x:Name="PartsDataGrid" ItemsSource="{Binding DataGridItemsSource}" Margin="0,0,10,0" DockPanel.Dock="Left"
+                      MaxWidth="480" MinWidth="480" AutoGenerateColumns="False">
                 
-                <DataGrid.Resources>
-                    <ObjectDataProvider x:Key="originEnum"
-                                        MethodName="GetValues"
-                                        ObjectType="{x:Type sys:Enum}">
-                        <ObjectDataProvider.MethodParameters>
-                            <x:Type TypeName="custns:Origin"></x:Type>
-                        </ObjectDataProvider.MethodParameters>
-                    </ObjectDataProvider>
-                </DataGrid.Resources>
+                        <DataGrid.Resources>
+                            <ObjectDataProvider x:Key="originEnum"
+                                                MethodName="GetValues"
+                                                ObjectType="{x:Type sys:Enum}">
+                                <ObjectDataProvider.MethodParameters>
+                                    <x:Type TypeName="custns:Origin"></x:Type>
+                                </ObjectDataProvider.MethodParameters>
+                            </ObjectDataProvider>
+                        </DataGrid.Resources>
                 
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
-                    <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
-                    <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
-                    <DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
-                                            ItemsSource="{Binding Source={StaticResource originEnum}}" />
-                </DataGrid.Columns>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
+                            <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
+                            <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
+                            <DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
+                                                    ItemsSource="{Binding Source={StaticResource originEnum}}" />
+                        </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            
+            <TabItem x:Name="ClientsTabItem" Header="Klienci">
+                <DataGrid x:Name="ClientsDataGrid" ItemsSource="{Binding DataGridItemsSource}" Margin="0,0,10,0" DockPanel.Dock="Left"
+                      MaxWidth="480" MinWidth="480" AutoGenerateColumns="False">
 
-            <!--<DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <DockPanel>
-                        <StackPanel>
-                            <TextBlock Text="Maszyny:"></TextBlock>
-                            <ListBox ItemsSource="{Binding Machines}"></ListBox>
-                        </StackPanel>
-                    </DockPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>-->
-        </DataGrid>
+                    <DataGrid.Resources>
+                        <ObjectDataProvider x:Key="originEnum"
+                                                MethodName="GetValues"
+                                                ObjectType="{x:Type sys:Enum}">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="custns:Origin"></x:Type>
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
+                        <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
+                        <DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
+                                                    ItemsSource="{Binding Source={StaticResource originEnum}}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
 
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="100">
             <Button Name="AddButton" Click="AddButton_OnClick">Dodaj</Button>
             <Button Name="DeleteButton" Margin="0,10" Click="DeleteButton_OnClick">Usuń</Button>
             <Button Name="DetailsButton" Click="DetailsButton_OnClick">Szczegóły</Button>
             <Button Name="SaveButton" Margin="0,10" Click="SaveButton_OnClick">Zapisz</Button>
-            
+
             <StackPanel Margin="0">
                 <TextBlock Text="Szczegóły:" TextWrapping="Wrap"></TextBlock>
                 <TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>
             </StackPanel>
-            
+
         </StackPanel>
     </DockPanel>
 </Window>

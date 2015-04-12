@@ -22,46 +22,46 @@ namespace SpawmetDatabase
 
             InitializeDB();
 
-            //using (var context = new SpawmetDBContext())
-            //{
-            //    foreach (var order in context.Orders.ToList())
-            //    {
-            //        Console.WriteLine("ID zamówienia: " + order.Id);
-            //        Console.WriteLine("Data złożenia: " + order.StartDate);
-            //        Console.WriteLine("Data wysyłki: " + order.SendDate);
-            //        Console.WriteLine("Status: " + order.Status);
+            using (var context = new SpawmetDBContext())
+            {
+                foreach (var order in context.Orders.ToList())
+                {
+                    Console.WriteLine("ID zamówienia: " + order.Id);
+                    Console.WriteLine("Data złożenia: " + order.StartDate);
+                    Console.WriteLine("Data wysyłki: " + order.SendDate);
+                    Console.WriteLine("Status: " + order.Status);
 
-            //        var clientName = order.Client != null ? order.Client.Name : "";
-            //        Console.WriteLine("Nazwa klienta: " + clientName);
+                    var clientName = order.Client != null ? order.Client.Name : "";
+                    Console.WriteLine("Nazwa klienta: " + clientName);
 
-            //        var machineName = order.Machine != null ? order.Machine.Name : "";
-            //        Console.WriteLine("Nazwa maszyny: " + machineName);
+                    var machineName = order.Machine != null ? order.Machine.Name : "";
+                    Console.WriteLine("Nazwa maszyny: " + machineName);
 
-            //        Console.WriteLine("Podstawowe części maszyny: ");
-            //        if (order.Machine != null)
-            //        {
-            //            foreach (var part in order.Machine.StandardPartSet)
-            //            {
-            //                Console.WriteLine("-- " + part.Name);
-            //            }
-            //        }
-            //        Console.WriteLine("Dodatkowe części: ");
-            //        foreach (var part in order.AdditionalPartSet)
-            //        {
-            //            Console.WriteLine("-- " + part.Name);
-            //        }
-            //        Console.WriteLine();
-            //    }
+                    Console.WriteLine("Podstawowe części maszyny: ");
+                    if (order.Machine != null)
+                    {
+                        foreach (var part in order.Machine.StandardPartSet)
+                        {
+                            Console.WriteLine("-- " + part.Name);
+                        }
+                    }
+                    Console.WriteLine("Dodatkowe części: ");
+                    foreach (var part in order.AdditionalPartSet)
+                    {
+                        Console.WriteLine("-- " + part.Name);
+                    }
+                    Console.WriteLine();
+                }
 
-            //    foreach (var user in context.Users.ToList())
-            //    {
-            //        Console.WriteLine("Id: " + user.Id);
-            //        Console.WriteLine("Login: " + user.Login);
-            //        Console.WriteLine("Password sha512: " + user.Password);
-            //        Console.WriteLine();
-            //    }
-            //    Console.WriteLine();
-            //}
+                foreach (var user in context.Users.ToList())
+                {
+                    Console.WriteLine("Id: " + user.Id);
+                    Console.WriteLine("Login: " + user.Login);
+                    Console.WriteLine("Password sha512: " + user.Password);
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
+            }
 
             Console.ReadKey();
         }
@@ -102,7 +102,7 @@ namespace SpawmetDatabase
                 if (context.Clients.Count() == 0)
                 {
                     var clients = new List<Client>();
-                    for (int i = 0; i < 5; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         clients.Add(new Client()
                         {
@@ -121,7 +121,7 @@ namespace SpawmetDatabase
                 if (context.Parts.Count() == 0)
                 {
                     var parts = new List<Part>();
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         parts.Add(new Part()
                         {
@@ -136,7 +136,7 @@ namespace SpawmetDatabase
                 if (context.Deliveries.Count() == 0)
                 {
                     var deliveries = new List<Delivery>();
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         var parts = context.Parts.ToList();
                         int partsCount = random.Next(parts.Count);
@@ -150,6 +150,7 @@ namespace SpawmetDatabase
                         }
                         deliveries.Add(new Delivery()
                         {
+                            Name = "dostawa " + i,
                             Date = DateTime.Now,
                             Parts = deliveryParts,
                         });
@@ -160,7 +161,7 @@ namespace SpawmetDatabase
                 if (context.Machines.Count() == 0)
                 {
                     var machines = new List<Machine>();
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         var parts = context.Parts.ToList();
                         int partsCount = random.Next(parts.Count);
@@ -186,7 +187,7 @@ namespace SpawmetDatabase
                 if (context.Orders.Count() == 0)
                 {
                     var orders = new List<Order>();
-                    for (int i = 0; i < 10; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         var parts = context.Parts.ToList();
                         var randomClient = context.Clients.Find(random.Next(context.Clients.Count()));
