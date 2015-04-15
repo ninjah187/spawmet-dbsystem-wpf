@@ -38,7 +38,7 @@
             </DataGrid.ContextMenu>
             
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="SizeToCells" />
             </DataGrid.Columns>
@@ -75,14 +75,27 @@
 
                     <TextBlock x:Name="BasicInfoTextBlock" TextWrapping="Wrap" />
                     <TextBlock Text="Standardowe części:"></TextBlock>
-                    <ListBox x:Name="StandardPartSetListBox" DisplayMemberPath="Name" MaxHeight="200">
+                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="30" MaxHeight="200" AutoGenerateColumns="False">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
+                                <MenuItem Header="Usuń" Click="DeletePartItem_OnClick"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Ilość" Binding="{Binding Part.PartAmount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <!--<ListBox x:Name="StandardPartSetListBox" DisplayMemberPath="Name" MinHeight="30" MaxHeight="200">
                         <ListBox.ContextMenu>
                             <ContextMenu>
                                 <MenuItem x:Name="AddPartItem" Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
                                 <MenuItem x:Name="DeletePartItem" Header="Usuń" Click="DeletePartItem_OnClick" />
                             </ContextMenu>
                         </ListBox.ContextMenu>
-                    </ListBox>
+                    </ListBox>-->
                     <TextBlock x:Name="OrdersTextBlock"></TextBlock>
                 </StackPanel>
             <!--</ScrollViewer>-->

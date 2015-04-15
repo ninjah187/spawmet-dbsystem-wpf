@@ -39,8 +39,6 @@ namespace SpawmetDatabaseWPF
             {
                 _parentWindow.IsEnabled = true;
             };
-
-
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -56,6 +54,8 @@ namespace SpawmetDatabaseWPF
 
             _dbContext.Machines.Add(machine);
             _dbContext.SaveChanges();
+
+            this.Close();
         }
     }
 }

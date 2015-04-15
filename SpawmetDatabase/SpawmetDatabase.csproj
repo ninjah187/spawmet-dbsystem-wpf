@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\AdditionalPartSetElement.cs" />
     <Compile Include="Model\IModelElement.cs" />
     <Compile Include="Model\Delivery.cs" />
     <Compile Include="Model\Client.cs" />
@@ -59,6 +60,8 @@
     <Compile Include="Model\OrderStatus.cs" />
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Part.cs" />
+    <Compile Include="Model\PartSetElement.cs" />
+    <Compile Include="Model\StandardPartSetElement.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserGroup.cs" />
     <Compile Include="Program.cs" />

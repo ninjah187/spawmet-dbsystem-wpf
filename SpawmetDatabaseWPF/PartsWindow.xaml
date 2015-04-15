@@ -39,11 +39,7 @@
         </DataGrid>
 
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
-            <Button Name="AddButton" Click="AddButton_OnClicklick">Dodaj</Button>
-            <Button Name="DeleteButton" Margin="0,10" Click="DeleteButton_OnClickutton_OnClick">Usuń</Button>
-            <Button Name="SaveButton" Margin="0,10" Click="SaveButton_OnClicknClick">Zapisz</Button>
-
-            <ScrollViewer>
+            <ScrollViewer MaxHeight="400">
             <StackPanel Margin="0">
                 <TextBlock Text="Szczegóły:" TextWrapping="Wrap"></TextBlock>
                 <TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>

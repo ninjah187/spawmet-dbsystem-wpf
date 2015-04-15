@@ -7,7 +7,7 @@ namespace SpawmetDatabase.Model
         public Machine()
         {
             this.Orders = new HashSet<Order>();
-            this.StandardPartSet = new HashSet<Part>();
+            this.StandardPartSet = new HashSet<StandardPartSetElement>();
         }
 
         public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace SpawmetDatabase.Model
         public decimal Price { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<Part> StandardPartSet { get; set; }
+        public virtual ICollection<StandardPartSetElement> StandardPartSet { get; set; }
     }
 }

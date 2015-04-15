@@ -40,15 +40,15 @@ namespace SpawmetDatabase
                     Console.WriteLine("Podstawowe części maszyny: ");
                     if (order.Machine != null)
                     {
-                        foreach (var part in order.Machine.StandardPartSet)
+                        foreach (var partSet in order.Machine.StandardPartSet)
                         {
-                            Console.WriteLine("-- " + part.Name);
+                            Console.WriteLine("-- " + partSet.Part.Name);
                         }
                     }
                     Console.WriteLine("Dodatkowe części: ");
-                    foreach (var part in order.AdditionalPartSet)
+                    foreach (var partSet in order.AdditionalPartSet)
                     {
-                        Console.WriteLine("-- " + part.Name);
+                        Console.WriteLine("-- " + partSet.Part.Name);
                     }
                     Console.WriteLine();
                 }
@@ -165,12 +165,17 @@ namespace SpawmetDatabase
                     {
                         var parts = context.Parts.ToList();
                         int partsCount = random.Next(parts.Count);
-                        var standardPartSet = new List<Part>();
+                        var standardPartSet = new List<StandardPartSetElement>();
                         for (int j = 0; j < partsCount; j++)
                         {
                             int index = random.Next(parts.Count);
                             var part = parts[index];
-                            standardPartSet.Add(part);
+                            var partSetElement = new StandardPartSetElement()
+                            {
+                                Part = part,
+                                Amount = random.Next(1001),
+                            };
+                            standardPartSet.Add(partSetElement);
                             parts.RemoveAt(index);
                         }
 
@@ -193,13 +198,18 @@ namespace SpawmetDatabase
                         var randomClient = context.Clients.Find(random.Next(context.Clients.Count()));
                         var randomMachine = context.Machines.Find(random.Next(context.Machines.Count()));
 
-                        var additionalPartSet = new List<Part>();
+                        var additionalPartSet = new List<AdditionalPartSetElement>();
                         int partCount = random.Next(parts.Count);
                         for (int j = 0; j < partCount; j++)
                         {
                             int index = random.Next(parts.Count);
                             var part = parts[index];
-                            additionalPartSet.Add(part);
+                            var partSetElement = new AdditionalPartSetElement()
+                            {
+                                Part = part,
+                                Amount = random.Next(1001),
+                            };
+                            additionalPartSet.Add(partSetElement);
                             parts.RemoveAt(index);
                         }
 

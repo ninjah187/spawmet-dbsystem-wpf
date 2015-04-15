@@ -6,7 +6,7 @@ namespace SpawmetDatabase.Model
     {
         public Order()
         {
-            this.AdditionalPartSet = new HashSet<Part>();
+            this.AdditionalPartSet = new HashSet<AdditionalPartSetElement>();
         }
 
         public int Id { get; set; }
@@ -17,6 +17,6 @@ namespace SpawmetDatabase.Model
 
         public virtual Client Client { get; set; }
         public virtual Machine Machine { get; set; }
-        public virtual ICollection<Part> AdditionalPartSet { get; set; }
+        public virtual ICollection<AdditionalPartSetElement> AdditionalPartSet { get; set; }
     }
 }

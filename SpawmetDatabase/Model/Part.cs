@@ -9,8 +9,8 @@ namespace SpawmetDatabase.Model
         public Part()
         {
             this.Deliveries = new HashSet<Delivery>();
-            this.Machines = new HashSet<Machine>();
-            this.Orders = new HashSet<Order>();
+            this.StandardPartSets = new HashSet<StandardPartSetElement>();
+            this.AdditionalPartSets = new HashSet<AdditionalPartSetElement>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -68,8 +68,8 @@ namespace SpawmetDatabase.Model
         }
 
         public virtual ICollection<Delivery> Deliveries { get; set; }
-        public virtual ICollection<Machine> Machines { get; set; }
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<StandardPartSetElement> StandardPartSets { get; set; }
+        public virtual ICollection<AdditionalPartSetElement> AdditionalPartSets { get; set; }
 
         private int _id;
         private string _name;

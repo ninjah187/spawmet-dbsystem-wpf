@@ -28,9 +28,11 @@ namespace SpawmetDatabaseWPF
             get { return _dbContext.Machines.Local; }
         }
 
+        public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
+
         private SpawmetDBContext _dbContext;
 
-        private MasterWindow _parentWindow; 
+        private readonly MasterWindow _parentWindow;
 
         public MachinesWindow(MasterWindow parentWindow)
         {
@@ -90,7 +92,8 @@ namespace SpawmetDatabaseWPF
             if (machine == null)
             {
                 BasicInfoTextBlock.Text = "";
-                StandardPartSetListBox.ItemsSource = null;
+                StandardPartSetDataGrid.ItemsSource = null;
+                OrdersTextBlock.Text = "";
                 return;
             }
 
@@ -101,7 +104,7 @@ namespace SpawmetDatabaseWPF
                          "\nIlość: " + machine.Price;
 
             BasicInfoTextBlock.Text = basicInfo;
-            StandardPartSetListBox.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
 
             string ordersInfo = "Zamówienia:\n";
             foreach (var order in machine.Orders)
@@ -160,14 +163,14 @@ namespace SpawmetDatabaseWPF
 
         private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var listBox = StandardPartSetListBox;
+            var dataGrid = StandardPartSetDataGrid;
             var machine = (Machine) MainDataGrid.SelectedItem;
-            var part = (Part) listBox.SelectedItem;
+            var partSetElement = (PartSetElement) dataGrid.SelectedItem;
 
-            machine.StandardPartSet.Remove(part);
+            machine.StandardPartSet.Remove(partSetElement);
             _dbContext.SaveChanges();
 
-            StandardPartSetListBox.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
         }
 
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
