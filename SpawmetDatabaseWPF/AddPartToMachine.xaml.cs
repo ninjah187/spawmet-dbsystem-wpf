@@ -61,18 +61,12 @@ namespace SpawmetDatabaseWPF
             //};
             //var parts = _dbContext.Parts.Where(wherePredicate).OrderBy(part => part.Id).ToList();
             #endregion
-            var parts = new List<Part>();
-            foreach (var partDb in _dbContext.Parts.ToList())
+            var parts = _dbContext.Parts.ToList();
+            foreach (var standardPartSetElement in _machine.StandardPartSet)
             {
-
-                //var partSetElement = _machine.StandardPartSet.First(p => p.Part.Id == partDb.Id);
-                //if (_machine.StandardPartSet.Contains(partSetElement))
-                //{
-                //    continue;
-                //}
-                //parts.Add(partDb);
+                parts.Remove(standardPartSetElement.Part);
             }
-            parts = parts.OrderBy(part => part.Id).ToList();
+            //parts = parts.OrderBy(part => part.Id).ToList();
             MainListBox.ItemsSource = parts.OrderBy(part => part.Id);
 
             this.Loaded += (sender, e) =>
@@ -88,18 +82,27 @@ namespace SpawmetDatabaseWPF
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             var part = (Part) MainListBox.SelectedItem;
-            var amount = int.Parse(AmountTextBox.Text);
+            int amount;
+            try
+            {
+                amount = int.Parse(AmountTextBox.Text);
+            }
+            catch (FormatException exc)
+            {
+                AmountTextBox.Text = "Wpisz wartość liczbową.";
+                return;
+            }
 
-            var partSetElement = new PartSetElement()
+            var partSetElement = new StandardPartSetElement()
             {
                 Part = part,
-                PartAmount = amount,
+                Amount = amount,
             };
 
             _machine.StandardPartSet.Add(partSetElement);
             _dbContext.SaveChanges();
 
-            _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet.OrderBy(p => p.Id);
+            _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet.OrderBy(element => element.Part.Id);
 
             this.Close();
         }

@@ -44,7 +44,16 @@ namespace SpawmetDatabaseWPF
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text;
-            var price = Decimal.Parse(PriceTextBox.Text);
+            Decimal price = 0;
+            try
+            {
+                price = Decimal.Parse(PriceTextBox.Text);
+            }
+            catch (FormatException exc)
+            {
+                PriceTextBox.Text = "Wpisz wartość liczbową.";
+                return;
+            }
 
             var machine = new Machine()
             {

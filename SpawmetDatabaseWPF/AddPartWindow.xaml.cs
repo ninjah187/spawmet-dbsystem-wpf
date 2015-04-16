@@ -46,7 +46,16 @@ namespace SpawmetDatabaseWPF
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text;
-            var amount = int.Parse(AmountTextBox.Text);
+            int amount = 0;
+            try
+            {
+                amount = int.Parse(AmountTextBox.Text);
+            }
+            catch (FormatException exc)
+            {
+                AmountTextBox.Text = "Wpisz wartość liczbową.";
+                return;
+            }
 
             var part = new Part()
             {

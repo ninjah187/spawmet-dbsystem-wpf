@@ -10,6 +10,8 @@
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Opcje">
+                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Części" IsEnabled="False"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -17,7 +19,7 @@
         <!-- END NAVBAR -->
         
         <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
-                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="480" MinWidth="480"
+                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <ObjectDataProvider x:Key="originEnum"
@@ -29,6 +31,13 @@
                 </ObjectDataProvider>
             </DataGrid.Resources>
 
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Click="AddPartMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Click="DeletePartMenuItem_OnClick"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
@@ -39,7 +48,7 @@
         </DataGrid>
 
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
-            <ScrollViewer MaxHeight="400">
+            <ScrollViewer MinHeight="400" MaxHeight="400">
             <StackPanel Margin="0">
                 <TextBlock Text="Szczegóły:" TextWrapping="Wrap"></TextBlock>
                 <TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>

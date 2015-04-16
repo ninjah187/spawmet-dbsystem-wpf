@@ -10,6 +10,8 @@
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Opcje">
+                    <MenuItem Header="Maszyny" IsEnabled="False"></MenuItem>
+                    <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -17,7 +19,7 @@
         <!-- END NAVBAR -->
 
         <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
-                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="520" MinWidth="520"
+                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <!--<ObjectDataProvider x:Key="originEnum"
@@ -33,7 +35,7 @@
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Odśwież"></MenuItem>
+                    <!--<MenuItem x:Name="RefreshContextMenuItem" Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>-->
                 </ContextMenu>
             </DataGrid.ContextMenu>
             
@@ -64,6 +66,7 @@
         </DataGrid>
 
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
+            <ScrollViewer MinHeight="400" MaxHeight="400">
             <!--<Button Name="AddButton" Click="AddButton_OnClick">Dodaj</Button>
             <Button Name="DeleteButton" Margin="0,10" Click="DeleteButton_OnClick">Usuń</Button>
             <Button Name="SaveButton" Margin="0,10" Click="SaveButton_OnClick">Zapisz</Button>-->
@@ -74,8 +77,9 @@
                     <!--<TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>-->
 
                     <TextBlock x:Name="BasicInfoTextBlock" TextWrapping="Wrap" />
-                    <TextBlock Text="Standardowe części:"></TextBlock>
-                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="30" MaxHeight="200" AutoGenerateColumns="False">
+                    <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:"></TextBlock>
+                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="200" MaxHeight="200" AutoGenerateColumns="False"
+                              MaxWidth="220">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
@@ -85,7 +89,7 @@
                         
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Ilość" Binding="{Binding Part.PartAmount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <!--<ListBox x:Name="StandardPartSetListBox" DisplayMemberPath="Name" MinHeight="30" MaxHeight="200">
@@ -98,6 +102,7 @@
                     </ListBox>-->
                     <TextBlock x:Name="OrdersTextBlock"></TextBlock>
                 </StackPanel>
+            </ScrollViewer>
             <!--</ScrollViewer>-->
 
         </StackPanel>

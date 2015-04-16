@@ -84,22 +84,22 @@ namespace SpawmetDatabaseWPF
 
             string originName = part.Origin == Origin.Production ? "Produkcja" : "Zewnątrz";
 
-            info += "ID: " + part.Id +
-                    "\nNazwa: " + part.Name +
-                    "\nIlość: " + part.Amount +
-                    "\nPochodzenie: " + originName +
-                    "\n";
-            info += "Maszyny:\n";
-            foreach (var machine in part.Machines)
-            {
-                info += "- " + machine.Name + "\n";
-            }
-            info += "Dostawy:\n";
-            foreach (var delivery in part.Deliveries)
-            {
-                string txt = delivery.Name + ", " + delivery.Date;
-                info += "- " + txt + "\n";
-            }
+            //info += "ID: " + part.Id +
+            //        "\nNazwa: " + part.Name +
+            //        "\nIlość: " + part.Amount +
+            //        "\nPochodzenie: " + originName +
+            //        "\n";
+            //info += "Maszyny:\n";
+            //foreach (var machine in part.Machines)
+            //{
+            //    info += "- " + machine.Name + "\n";
+            //}
+            //info += "Dostawy:\n";
+            //foreach (var delivery in part.Deliveries)
+            //{
+            //    string txt = delivery.Name + ", " + delivery.Date;
+            //    info += "- " + txt + "\n";
+            //}
 
             DetailTextBlock.Text = info;
         }

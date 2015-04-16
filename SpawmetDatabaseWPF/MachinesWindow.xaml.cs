@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data.Entity.Core;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,6 +34,19 @@ namespace SpawmetDatabaseWPF
         private SpawmetDBContext _dbContext;
 
         private readonly MasterWindow _parentWindow;
+
+        public MachinesWindow()
+            : this(null)
+        {
+            
+        }
+
+        public MachinesWindow(double x, double y)
+            : this(null)
+        {
+            this.Left = x;
+            this.Top = y;
+        }
 
         public MachinesWindow(MasterWindow parentWindow)
         {
@@ -78,12 +92,19 @@ namespace SpawmetDatabaseWPF
             this.Loaded += (sender, e) =>
             {
                 LoadDataIntoSource();
-                _parentWindow.MachinesWindowButton.IsEnabled = false;
+                if (_parentWindow != null)
+                {
+                    _parentWindow.MachinesWindowButton.IsEnabled = false;
+                }
             };
             this.Closed += (sender, e) =>
             {
+                _dbContext.SaveChanges();
                 _dbContext.Dispose();
-                _parentWindow.MachinesWindowButton.IsEnabled = true;
+                if (_parentWindow != null)
+                {
+                    _parentWindow.MachinesWindowButton.IsEnabled = true;
+                }
             };
         }
 
@@ -93,6 +114,8 @@ namespace SpawmetDatabaseWPF
             {
                 BasicInfoTextBlock.Text = "";
                 StandardPartSetDataGrid.ItemsSource = null;
+                StandardPartSetDataGrid.Visibility = Visibility.Hidden;
+                StandardPartsTextBlock.Visibility = Visibility.Hidden;
                 OrdersTextBlock.Text = "";
                 return;
             }
@@ -104,7 +127,9 @@ namespace SpawmetDatabaseWPF
                          "\nIlość: " + machine.Price;
 
             BasicInfoTextBlock.Text = basicInfo;
-            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
+            StandardPartSetDataGrid.Visibility = Visibility.Visible;
+            StandardPartsTextBlock.Visibility = Visibility.Visible;
 
             string ordersInfo = "Zamówienia:\n";
             foreach (var order in machine.Orders)
@@ -157,20 +182,40 @@ namespace SpawmetDatabaseWPF
 
         private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
         {
-            var machine = (Machine) MainDataGrid.SelectedItem;
-            new AddPartToMachine(this, _dbContext, machine).Show();
+            Machine machine = null;
+            try
+            {
+                machine = (Machine) MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                return;
+            }
+            finally
+            {
+                if (machine != null)
+                {
+                    new AddPartToMachine(this, _dbContext, machine).Show();
+                }
+            }
         }
 
         private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
         {
             var dataGrid = StandardPartSetDataGrid;
             var machine = (Machine) MainDataGrid.SelectedItem;
-            var partSetElement = (PartSetElement) dataGrid.SelectedItem;
+            var partSetElement = (StandardPartSetElement) dataGrid.SelectedItem;
 
-            machine.StandardPartSet.Remove(partSetElement);
+            if (partSetElement == null)
+            {
+                return;
+            }
+
+            //machine.StandardPartSet.Remove(partSetElement);
+            _dbContext.StandardPartSets.Remove(partSetElement);
             _dbContext.SaveChanges();
 
-            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(p => p.Id);
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
         }
 
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -184,19 +229,48 @@ namespace SpawmetDatabaseWPF
             var toDelete = new List<Machine>();
             foreach (var item in selected)
             {
-                var machine = (Machine) item;
+                Machine machine = null;
+                try
+                {
+                    machine = (Machine) item;
+                }
+                catch (InvalidCastException exc)
+                {
+                    continue;
+                }
                 toDelete.Add(machine);
             }
             foreach (var machine in toDelete)
             {
-                var relatedOrders = _dbContext.Orders.Where(o => o.Machine.Id == machine.Id);//.ToList();
+                foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
+                {
+                    _dbContext.StandardPartSets.Remove(standardPartSetElement);
+                    _dbContext.SaveChanges();
+                }
+
+                var relatedOrders = _dbContext.Orders.Where(o => o.Machine.Id == machine.Id).ToList();
                 foreach (var order in relatedOrders)
                 {
+                    foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
+                    {
+                        _dbContext.AdditionalPartSets.Remove(additionalPartSet);
+                        _dbContext.SaveChanges();
+                    }
                     _dbContext.Orders.Remove(order);
+                    _dbContext.SaveChanges();
                 }
                 _dbContext.Machines.Remove(machine);
+                _dbContext.SaveChanges();
             }
-            _dbContext.SaveChanges();
+            //_dbContext.SaveChanges();
+
+            FillDetailedInfo(null);
+        }
+
+        private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            new PartsWindow(this.Left, this.Top).Show();
+            this.Close();
         }
     }
 }

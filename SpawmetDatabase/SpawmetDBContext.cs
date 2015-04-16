@@ -37,5 +37,7 @@ namespace SpawmetDatabase
         public DbSet<Client> Clients { get; set; }
         public DbSet<Machine> Machines { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<StandardPartSetElement> StandardPartSets { get; set; }
+        public DbSet<AdditionalPartSetElement> AdditionalPartSets { get; set; }
     }
 }
