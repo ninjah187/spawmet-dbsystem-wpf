@@ -136,11 +136,13 @@ namespace SpawmetDatabase
                     var parts = new List<Part>();
                     for (int i = 0; i < dbSize; i++)
                     {
+                        var test = random.Next(2);
+                        var origin = test % 2 == 0 ? Origin.Production : Origin.Outside;
                         parts.Add(new Part()
                         {
                             Name = "część " + i,
                             Amount = random.Next(10001),
-                            Origin = Origin.Production,
+                            Origin = origin,
                         });
                     }
                     context.Parts.AddRange(parts);

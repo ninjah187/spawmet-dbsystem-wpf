@@ -77,11 +77,21 @@ namespace SpawmetDatabaseWPF
             {
                 _parentWindow.IsEnabled = true;
             };
+
+            AmountTextBox.GotFocus += TextBox_GotFocus;
+
+            MainListBox.SelectedIndex = 0;
+            MainListBox.Focus();
         }
 
         private void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             var part = (Part) MainListBox.SelectedItem;
+            if (part == null)
+            {
+                MessageBox.Show("Brak części.", "Błąd");
+                return;
+            }
             int amount;
             try
             {
@@ -89,7 +99,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (FormatException exc)
             {
-                AmountTextBox.Text = "Wpisz wartość liczbową.";
+                MessageBox.Show("Ilość musi być liczbą.", "Błąd");
                 return;
             }
 
@@ -105,6 +115,11 @@ namespace SpawmetDatabaseWPF
             _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet.OrderBy(element => element.Part.Id);
 
             this.Close();
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ((TextBox) sender).SelectAll();
         }
     }
 }

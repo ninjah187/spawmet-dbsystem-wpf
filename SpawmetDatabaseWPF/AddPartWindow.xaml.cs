@@ -41,11 +41,21 @@ namespace SpawmetDatabaseWPF
             {
                 _parentWindow.IsEnabled = true;
             };
+
+            NameTextBox.GotFocus += TextBox_GotFocus;
+            AmountTextBox.GotFocus += TextBox_GotFocus;
+
+            NameTextBox.Focus();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text;
+            if (name.Length == 0)
+            {
+                MessageBox.Show("Brak nazwy.", "Błąd");
+                return;
+            }
             int amount = 0;
             try
             {
@@ -53,20 +63,26 @@ namespace SpawmetDatabaseWPF
             }
             catch (FormatException exc)
             {
-                AmountTextBox.Text = "Wpisz wartość liczbową.";
+                MessageBox.Show("Ilość musi być liczbą.", "Błąd");
                 return;
             }
+            var origin = (Origin) OriginComboBox.SelectedIndex;
 
             var part = new Part()
             {
                 Name = name,
                 Amount = amount,
-                Origin = Origin.Production,
+                Origin = origin,
             };
             _dbContext.Parts.Add(part);
             _dbContext.SaveChanges();
 
             this.Close();
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ((TextBox)sender).SelectAll();
         }
     }
 }

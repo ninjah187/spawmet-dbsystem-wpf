@@ -39,11 +39,21 @@ namespace SpawmetDatabaseWPF
             {
                 _parentWindow.IsEnabled = true;
             };
+
+            NameTextBox.GotFocus += TextBox_GotFocus;
+            PriceTextBox.GotFocus += TextBox_GotFocus;
+
+            NameTextBox.Focus();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var name = NameTextBox.Text;
+            if (name.Length == 0)
+            {
+                MessageBox.Show("Brak nazwy.", "Błąd");
+                return;
+            }
             Decimal price = 0;
             try
             {
@@ -51,7 +61,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (FormatException exc)
             {
-                PriceTextBox.Text = "Wpisz wartość liczbową.";
+                MessageBox.Show("Cena musi być liczbą.", "Błąd");
                 return;
             }
 
@@ -65,6 +75,11 @@ namespace SpawmetDatabaseWPF
             _dbContext.SaveChanges();
 
             this.Close();
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ((TextBox) sender).SelectAll();
         }
     }
 }
