@@ -14,5 +14,10 @@ namespace SpawmetDatabase.Model
         public System.DateTime Date { get; set; }
 
         public virtual ICollection<Part> Parts { get; set; }
+
+        public string Signature
+        {
+            get { return Name + ", " + Date.ToShortDateString(); }
+        }
     }
 }

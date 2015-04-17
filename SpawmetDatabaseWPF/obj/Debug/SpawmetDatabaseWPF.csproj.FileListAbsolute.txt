@@ -32,3 +32,37 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToMachine.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToMachine.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddMachineWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddMachineWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabaseWPF.exe.config
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.exe
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabaseWPF.exe
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\EntityFramework.dll
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\EntityFramework.SqlServer.dll
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\MySql.Data.Entity.EF6.dll
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\EntityFramework.xml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\bin\Debug\EntityFramework.SqlServer.xml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csprojResolveAssemblyReference.cache
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddMachineWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddPartToMachine.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddPartWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MachinesWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MainWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MasterWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\PartsWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.baml
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddMachineWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddPartToMachine.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\AddPartWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MachinesWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MainWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\MasterWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\PartsWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\App.g.cs
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF_MarkupCompile.cache
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.g.resources
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.Properties.Resources.resources
+D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache

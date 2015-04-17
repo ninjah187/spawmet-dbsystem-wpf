@@ -21,21 +21,11 @@
         <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False">
-            <DataGrid.Resources>
-                <!--<ObjectDataProvider x:Key="originEnum"
-                                                MethodName="GetValues"
-                                                ObjectType="{x:Type sys:Enum}">
-                    <ObjectDataProvider.MethodParameters>
-                        <x:Type TypeName="custns:Origin"></x:Type>
-                    </ObjectDataProvider.MethodParameters>
-                </ObjectDataProvider>-->
-            </DataGrid.Resources>
-            
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
-                    <!--<MenuItem x:Name="RefreshContextMenuItem" Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>-->
+                    <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             
@@ -44,42 +34,26 @@
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="SizeToCells" />
             </DataGrid.Columns>
-
-            <!--<DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <DockPanel>
-                        <ListBox x:Name="PartSetListBox" ItemsSource="{Binding StandardPartSet}" 
-                                 DisplayMemberPath="Name" MinWidth="200">
-                            <ListBox.ContextMenu>
-                                <ContextMenu>
-                                    <MenuItem Header="Usuń" Click="DeletePartItem_OnClick" />
-                                </ContextMenu>
-                            </ListBox.ContextMenu>
-                        </ListBox>
-                        <StackPanel DockPanel.Dock="Right" MaxWidth="30">
-                            <Button Margin="0, 10">+</Button>
-                            <Button x:Name="DeletePartFromMachineButton" Click="DeletePartFromMachineButton_OnClick" Margin="0,0,0,10">-</Button>
-                        </StackPanel>
-                    </DockPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>-->
         </DataGrid>
 
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
-            <ScrollViewer MinHeight="400" MaxHeight="400">
-            <!--<Button Name="AddButton" Click="AddButton_OnClick">Dodaj</Button>
-            <Button Name="DeleteButton" Margin="0,10" Click="DeleteButton_OnClick">Usuń</Button>
-            <Button Name="SaveButton" Margin="0,10" Click="SaveButton_OnClick">Zapisz</Button>-->
-
-            <!--<ScrollViewer>-->
-                <StackPanel Margin="0">
-                    <TextBlock Text="Szczegóły:" TextWrapping="Wrap"></TextBlock>
-                    <!--<TextBlock x:Name="DetailTextBlock" Text="" TextWrapping="Wrap"></TextBlock>-->
-
-                    <TextBlock x:Name="BasicInfoTextBlock" TextWrapping="Wrap" />
-                    <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:"></TextBlock>
-                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="200" MaxHeight="200" AutoGenerateColumns="False"
-                              MaxWidth="220">
+            <!--<ScrollViewer MinHeight="400" MaxHeight="400">-->
+                <StackPanel Margin="0" x:Name="DetailsStackPanel">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Left">
+                            <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
+                            <TextBlock Text="Nazwa: " FontWeight="DemiBold"></TextBlock>
+                            <TextBlock Text="Cena: " FontWeight="DemiBold"></TextBlock>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right">
+                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
+                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
+                            <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+                <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
+                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="200" MaxHeight="200" AutoGenerateColumns="False">
+                              <!--MaxWidth="220">-->
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
@@ -92,19 +66,11 @@
                             <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <!--<ListBox x:Name="StandardPartSetListBox" DisplayMemberPath="Name" MinHeight="30" MaxHeight="200">
-                        <ListBox.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem x:Name="AddPartItem" Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
-                                <MenuItem x:Name="DeletePartItem" Header="Usuń" Click="DeletePartItem_OnClick" />
-                            </ContextMenu>
-                        </ListBox.ContextMenu>
-                    </ListBox>-->
-                    <TextBlock x:Name="OrdersTextBlock"></TextBlock>
+                <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
+                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
+                             MinHeight="120" MaxHeight="120"></ListBox>
                 </StackPanel>
-            </ScrollViewer>
             <!--</ScrollViewer>-->
-
         </StackPanel>
 
     </DockPanel>

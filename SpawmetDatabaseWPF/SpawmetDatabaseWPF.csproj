@@ -72,6 +72,7 @@
     <Compile Include="AddPartToMachine.xaml.cs">
       <DependentUpon>AddPartToMachine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
     </Compile>

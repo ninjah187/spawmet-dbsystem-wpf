@@ -92,6 +92,7 @@ namespace SpawmetDatabaseWPF
             this.Loaded += (sender, e) =>
             {
                 LoadDataIntoSource();
+                FillDetailedInfo(null);
                 if (_parentWindow != null)
                 {
                     _parentWindow.MachinesWindowButton.IsEnabled = false;
@@ -112,36 +113,21 @@ namespace SpawmetDatabaseWPF
         {
             if (machine == null)
             {
-                BasicInfoTextBlock.Text = "";
+                IdTextBlock.Text = "";
+                NameTextBlock.Text = "";
+                PriceTextBlock.Text = "";
+
                 StandardPartSetDataGrid.ItemsSource = null;
-                StandardPartSetDataGrid.Visibility = Visibility.Hidden;
-                StandardPartsTextBlock.Visibility = Visibility.Hidden;
-                OrdersTextBlock.Text = "";
+                OrdersListBox.ItemsSource = null;
                 return;
             }
 
-            string basicInfo = "";
-
-            basicInfo += "ID: " + machine.Id +
-                         "\nNazwa: " + machine.Name +
-                         "\nIlość: " + machine.Price;
-
-            BasicInfoTextBlock.Text = basicInfo;
+            IdTextBlock.Text = machine.Id.ToString();
+            NameTextBlock.Text = machine.Name;
+            PriceTextBlock.Text = machine.Price.ToString();
+            
             StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
-            StandardPartSetDataGrid.Visibility = Visibility.Visible;
-            StandardPartsTextBlock.Visibility = Visibility.Visible;
-
-            string ordersInfo = "Zamówienia:\n";
-            foreach (var order in machine.Orders)
-            {
-                string clientName = order.Client != null ? order.Client.Name : "";
-                string machineName = order.Machine != null ? order.Machine.Name : "";
-                ordersInfo += "- " + clientName + ", " + machineName + ", " +
-                              order.StartDate.ToShortDateString() + "\n";
-            }
-
-            OrdersTextBlock.Text = ordersInfo;
-
+            OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
             #region
             //string info = "";
 
@@ -271,6 +257,11 @@ namespace SpawmetDatabaseWPF
         {
             new PartsWindow(this.Left, this.Top).Show();
             this.Close();
+        }
+
+        private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            _dbContext.SaveChanges();
         }
     }
 }

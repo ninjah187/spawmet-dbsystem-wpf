@@ -72,7 +72,7 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (InvalidCastException exc)
                 {
-                    DetailTextBlock.Text = "";
+                    FillDetailedInfo(null);
                     return;
                 }
                 if (part != null)
@@ -97,74 +97,52 @@ namespace SpawmetDatabaseWPF
                     _parentWindow.PartsWindowButton.IsEnabled = true;
                 }
             };
+
+            FillDetailedInfo(null);
         }
 
         private void FillDetailedInfo(Part part)
         {
-            //string basicInfo = "";
-            //string originName = part.Origin == Origin.Production ? "Produkcja" : "Zewnątrz";
-
-            //basicInfo += "ID: " + part.Id +
-            //             "\nNazwa: " + part.Name +
-            //             "\nIlość: " + part.Amount +
-            //             "\nPochodzenie: " + originName;
-            
-            //BasicInfoTextBlock.Text = basicInfo;
-            //MachinesListBox.ItemsSource = part.Machines;
-            //DeliveriesListBox.ItemsSource = part.Deliveries;
-
             if (part == null)
             {
-                DetailTextBlock.Text = "";
+                IdTextBlock.Text = "";
+                NameTextBlock.Text = "";
+                OriginTextBlock.Text = "";
+                AmountTextBlock.Text = "";
+
+                MachinesListBox.ItemsSource = null;
+                OrdersListBox.ItemsSource = null;
+                DeliveriesListBox.ItemsSource = null;
                 return;
             }
 
-            string info = "";
-
             string originName = part.Origin == Origin.Production ? "Produkcja" : "Zewnątrz";
 
-            info += "ID: " + part.Id +
-                    "\nNazwa: " + part.Name +
-                    "\nIlość: " + part.Amount +
-                    "\nPochodzenie: " + originName +
-                    "\n";
-            info += "Maszyny:\n";
+            IdTextBlock.Text = part.Id.ToString();
+            NameTextBlock.Text = part.Name;
+            OriginTextBlock.Text = originName;
+            AmountTextBlock.Text = part.Amount.ToString();
+
+            var relatedMachines = new List<Machine>();
             foreach (var standardPartSetElement in part.StandardPartSets)
             {
-                info += "- " + standardPartSetElement.Machine.Name + " \n";
+                relatedMachines.Add(standardPartSetElement.Machine);
             }
-            //foreach (var machine in part.Machines)
-            //{
-            //    info += "- " + machine.Name + "\n";
-            //}
-            info += "Dostawy:\n";
-            foreach (var delivery in part.Deliveries)
-            {
-                string txt = delivery.Name + ", " + delivery.Date.ToShortDateString();
-                info += "- " + txt + "\n";
-            }
-            info += "Zamówienia:\n";
+            MachinesListBox.ItemsSource = relatedMachines.OrderBy(machine => machine.Id);
+
+            var relatedOrders = new List<Order>();
             foreach (var additionalPartSetElement in part.AdditionalPartSets)
             {
-                var order = additionalPartSetElement.Order;
-
-                string clientName = order.Client != null ? order.Client.Name : "";
-                string machineName = order.Machine != null ? order.Machine.Name : "";
-
-                info += "- " + clientName + ", " + machineName + ", " + order.StartDate.ToShortDateString()
-                        + "\n";
+                relatedOrders.Add(additionalPartSetElement.Order);
             }
-            //foreach (var order in part.Orders)
-            //{
-            //    string clientName = order.Client != null ? order.Client.Name : "";
-            //    string machineName = order.Machine != null ? order.Machine.Name : "";
+            OrdersListBox.ItemsSource = relatedOrders.OrderBy(order => order.Id);
 
-            //    string txt = clientName + ", " + machineName + ", " +
-            //                 order.StartDate.ToShortDateString();
-            //    info += "- " + txt + "\n";
-            //}
-
-            DetailTextBlock.Text = info;
+            var relatedDeliveries = new List<Delivery>();
+            foreach (var delivery in part.Deliveries)
+            {
+                relatedDeliveries.Add(delivery);
+            }
+            DeliveriesListBox.ItemsSource = relatedDeliveries.OrderBy(delivery => delivery.Id);
         }
 
         private void LoadDataIntoSource()
@@ -248,6 +226,11 @@ namespace SpawmetDatabaseWPF
         {
             new MachinesWindow(this.Left, this.Top).Show();
             this.Close();
+        }
+
+        private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            _dbContext.SaveChanges();
         }
     }
 }

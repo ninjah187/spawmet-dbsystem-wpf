@@ -18,5 +18,15 @@ namespace SpawmetDatabase.Model
         public virtual Client Client { get; set; }
         public virtual Machine Machine { get; set; }
         public virtual ICollection<AdditionalPartSetElement> AdditionalPartSet { get; set; }
+
+        public string Signature
+        {
+            get
+            {
+                string clientName = Client != null ? Client.Name : "";
+                string machineName = Machine != null ? Machine.Name : "";
+                return clientName + ", " + machineName + ", " + SendDate.ToShortDateString();
+            }
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace SpawmetDatabase
     {
         private static readonly Random random = new Random();
 
-        private const int dbSize = 10;
+        private const int dbSize = 250;
 
         static void Main(string[] args)
         {
@@ -27,7 +27,7 @@ namespace SpawmetDatabase
             using (var context = new SpawmetDBContext())
             {
                 var part = context.Parts.First();
-
+                
                 Console.WriteLine("ID: " + part.Id);
                 Console.WriteLine("Nazwa: " + part.Name);
                 Console.WriteLine("Ilość: " + part.Amount);
@@ -139,7 +139,7 @@ namespace SpawmetDatabase
                         parts.Add(new Part()
                         {
                             Name = "część " + i,
-                            Amount = i,
+                            Amount = random.Next(10001),
                             Origin = Origin.Production,
                         });
                     }
