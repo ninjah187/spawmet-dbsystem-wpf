@@ -9,9 +9,12 @@
         <!-- NAVBAR -->
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="Opcje">
+                <MenuItem Header="Tabele">
                     <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Części" IsEnabled="False"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Opcje">
+                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -36,6 +39,7 @@
                     <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Click="AddPartMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Click="DeletePartMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             

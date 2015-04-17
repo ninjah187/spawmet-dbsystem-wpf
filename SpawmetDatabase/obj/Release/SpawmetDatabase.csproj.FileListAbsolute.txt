@@ -9,3 +9,14 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabase\bin\Release\EntityFrame
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabase\obj\Release\SpawmetDatabase.csprojResolveAssemblyReference.cache
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabase\obj\Release\SpawmetDatabase.exe
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabase\obj\Release\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\SpawmetDatabase.exe.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServer.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\MySql.Data.Entity.EF6.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServer.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.csprojResolveAssemblyReference.cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.pdb

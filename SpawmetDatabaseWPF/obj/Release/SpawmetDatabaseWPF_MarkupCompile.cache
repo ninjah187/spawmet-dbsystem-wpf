@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Release\
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\
 SpawmetDatabaseWPF
 none
 false
 TRACE
-D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\App.xaml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\App.xaml
 8-1670596336
 
-121763575357
-20-505948561
+131050943758
+20892595798
 AddMachineWindow.xaml;AddPartToMachine.xaml;AddPartWindow.xaml;MachinesWindow.xaml;MainWindow.xaml;MasterWindow.xaml;PartsWindow.xaml;RemoveWindow.xaml;
 
 False

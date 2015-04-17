@@ -32,3 +32,37 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Release\SpawmetD
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.exe
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabaseWPF.exe.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabaseWPF.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\EntityFramework.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\EntityFramework.SqlServer.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\MySql.Data.Entity.EF6.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabase.exe
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\EntityFramework.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\EntityFramework.SqlServer.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.csprojResolveAssemblyReference.cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddMachineWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToMachine.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MachinesWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MainWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MasterWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PartsWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\RemoveWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddMachineWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToMachine.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MachinesWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MainWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MasterWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PartsWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\RemoveWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\App.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF_MarkupCompile.cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.g.resources
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.Properties.Resources.resources
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF.csproj.GenerateResource.Cache

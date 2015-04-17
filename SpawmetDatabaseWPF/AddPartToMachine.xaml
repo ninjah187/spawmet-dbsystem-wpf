@@ -5,12 +5,12 @@
         MaxWidth="300" MinWidth="300" MaxHeight="300" MinHeight="300">
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Top">
-            <TextBlock Text="Część:"></TextBlock>
+            <TextBlock Text="Część:" FontWeight="DemiBold"></TextBlock>
             <ListBox x:Name="MainListBox" DisplayMemberPath="Name" Height="150" DockPanel.Dock="Top"></ListBox>
             
             <DockPanel Margin="0,10,0,0">
                 <StackPanel DockPanel.Dock="Left">
-                    <TextBlock Text="Ilość:"></TextBlock>
+                    <TextBlock Text="Ilość:" FontWeight="DemiBold"></TextBlock>
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Right">
                     <TextBox x:Name="AmountTextBox" Text="0" Margin="5,0,0,0"></TextBox>

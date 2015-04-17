@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -72,7 +73,14 @@ namespace SpawmetDatabaseWPF
             };
 
             _dbContext.Machines.Add(machine);
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (System.Data.Entity.Core.EntityException exc)
+            {
+                Disconnected();
+            }
 
             this.Close();
         }
@@ -80,6 +88,16 @@ namespace SpawmetDatabaseWPF
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ((TextBox) sender).SelectAll();
+        }
+
+        private void Disconnected()
+        {
+            _parentWindow.MainDataGrid.IsEnabled = false;
+            _parentWindow.DetailsStackPanel.IsEnabled = false;
+            _parentWindow.PartsMenuItem.IsEnabled = false;
+            _parentWindow.FillDetailedInfo(null);
+            MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
+            _parentWindow.ConnectMenuItem.IsEnabled = true;
         }
     }
 }

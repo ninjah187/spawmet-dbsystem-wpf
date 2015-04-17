@@ -110,7 +110,14 @@ namespace SpawmetDatabaseWPF
             };
 
             _machine.StandardPartSet.Add(partSetElement);
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (System.Data.Entity.Core.EntityException exc)
+            {
+                Disconnected();
+            }
 
             _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet.OrderBy(element => element.Part.Id);
 
@@ -120,6 +127,16 @@ namespace SpawmetDatabaseWPF
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ((TextBox) sender).SelectAll();
+        }
+
+        private void Disconnected()
+        {
+            _parentWindow.MainDataGrid.IsEnabled = false;
+            _parentWindow.DetailsStackPanel.IsEnabled = false;
+            _parentWindow.PartsMenuItem.IsEnabled = false;
+            _parentWindow.FillDetailedInfo(null);
+            MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
+            _parentWindow.ConnectMenuItem.IsEnabled = true;
         }
     }
 }

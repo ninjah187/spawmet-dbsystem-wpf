@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -24,9 +26,19 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class MachinesWindow : Window
     {
-        public ObservableCollection<Machine> DataGridItemsSource
+        public ObservableCollection<Machine> DataGridItemsSource 
         {
-            get { return _dbContext.Machines.Local; }
+            get
+            {
+                try
+                {
+                    return _dbContext.Machines.Local;
+                }
+                catch (ProviderIncompatibleException exc)
+                {
+                    throw new ProviderIncompatibleException("in DataGridItemsSource");
+                }
+            }
         }
 
         public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
@@ -54,21 +66,6 @@ namespace SpawmetDatabaseWPF
 
             _parentWindow = parentWindow;
 
-            try
-            {
-                Initialize();
-            }
-            catch (ProviderIncompatibleException e)
-            {
-                MessageBox.Show("Brak połączenia z serwerem");
-                Application.Current.Shutdown();
-            }
-        }
-
-        private void Initialize()
-        {
-            _dbContext = new SpawmetDBContext();
-
             this.DataContext = this;
 
             MainDataGrid.SelectionChanged += (sender, e) =>
@@ -76,7 +73,7 @@ namespace SpawmetDatabaseWPF
                 Machine machine = null;
                 try
                 {
-                    machine = (Machine) MainDataGrid.SelectedItem;
+                    machine = (Machine)MainDataGrid.SelectedItem;
                 }
                 catch (InvalidCastException exc)
                 {
@@ -91,7 +88,6 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                LoadDataIntoSource();
                 FillDetailedInfo(null);
                 if (_parentWindow != null)
                 {
@@ -100,16 +96,33 @@ namespace SpawmetDatabaseWPF
             };
             this.Closed += (sender, e) =>
             {
-                _dbContext.SaveChanges();
                 _dbContext.Dispose();
                 if (_parentWindow != null)
                 {
                     _parentWindow.MachinesWindowButton.IsEnabled = true;
                 }
             };
+
+            try
+            {
+                Initialize();
+            }
+            catch (ProviderIncompatibleException e)
+            {
+                Disconnected();
+            }
         }
 
-        private void FillDetailedInfo(Machine machine)
+        private void Initialize()
+        {
+            _dbContext = new SpawmetDBContext();
+
+            LoadDataIntoSource();
+
+            MainDataGrid.Items.Refresh();
+        }
+
+        public void FillDetailedInfo(Machine machine)
         {
             if (machine == null)
             {
@@ -125,9 +138,17 @@ namespace SpawmetDatabaseWPF
             IdTextBlock.Text = machine.Id.ToString();
             NameTextBlock.Text = machine.Name;
             PriceTextBlock.Text = machine.Price.ToString();
-            
-            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
-            OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
+
+            try
+            {
+                StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
+                OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
+
             #region
             //string info = "";
 
@@ -155,14 +176,14 @@ namespace SpawmetDatabaseWPF
 
         private void LoadDataIntoSource()
         {
-            if (DataGridItemsSource.Any())
+            try
             {
-                DataGridItemsSource.Clear();
+                _dbContext.Machines.Load();
+                ConnectMenuItem.IsEnabled = false;
             }
-            
-            foreach (var machine in _dbContext.Machines)
+            catch (EntityException exc)
             {
-                DataGridItemsSource.Add(machine);
+                Disconnected();
             }
         }
 
@@ -198,19 +219,36 @@ namespace SpawmetDatabaseWPF
             }
 
             //machine.StandardPartSet.Remove(partSetElement);
-            _dbContext.StandardPartSets.Remove(partSetElement);
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.StandardPartSets.Remove(partSetElement);
+                _dbContext.SaveChanges();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
 
             StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
         }
 
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            if (DataGridItemsSource == null)
+            {
+                return;
+            }
+
             new AddMachineWindow(this, _dbContext).Show();
         }
 
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            if (DataGridItemsSource == null)
+            {
+                return;
+            }
+
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Machine>();
             foreach (var item in selected)
@@ -226,42 +264,91 @@ namespace SpawmetDatabaseWPF
                 }
                 toDelete.Add(machine);
             }
-            foreach (var machine in toDelete)
+            try
             {
-                foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
+                foreach (var machine in toDelete)
                 {
-                    _dbContext.StandardPartSets.Remove(standardPartSetElement);
-                    _dbContext.SaveChanges();
-                }
-
-                var relatedOrders = _dbContext.Orders.Where(o => o.Machine.Id == machine.Id).ToList();
-                foreach (var order in relatedOrders)
-                {
-                    foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
+                    foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
                     {
-                        _dbContext.AdditionalPartSets.Remove(additionalPartSet);
+                        _dbContext.StandardPartSets.Remove(standardPartSetElement);
                         _dbContext.SaveChanges();
                     }
-                    _dbContext.Orders.Remove(order);
+
+                    var relatedOrders = _dbContext.Orders.Where(o => o.Machine.Id == machine.Id).ToList();
+                    foreach (var order in relatedOrders)
+                    {
+                        foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
+                        {
+                            _dbContext.AdditionalPartSets.Remove(additionalPartSet);
+                            _dbContext.SaveChanges();
+                        }
+                        _dbContext.Orders.Remove(order);
+                        _dbContext.SaveChanges();
+                    }
+                    _dbContext.Machines.Remove(machine);
                     _dbContext.SaveChanges();
                 }
-                _dbContext.Machines.Remove(machine);
-                _dbContext.SaveChanges();
             }
-            //_dbContext.SaveChanges();
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
 
             FillDetailedInfo(null);
         }
 
         private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            new PartsWindow(this.Left, this.Top).Show();
+            try
+            {
+                new PartsWindow(this.Left, this.Top).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+                return;
+            }
             this.Close();
         }
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
+        }
+
+        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            ConnectMenuItem_OnClick(sender, e);
+        }
+
+        private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new MachinesWindow(this.Left, this.Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected();
+            }
+        }
+
+        private void Disconnected()
+        {
+            MainDataGrid.IsEnabled = false;
+            DetailsStackPanel.IsEnabled = false;
+            PartsMenuItem.IsEnabled = false;
+            FillDetailedInfo(null);
+            MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
+            ConnectMenuItem.IsEnabled = true;
         }
     }
 }
