@@ -71,13 +71,16 @@
                 </DockPanel>
                 <TextBlock Text="Maszyny:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name"
-                         Height="95"></ListBox>
+                         Height="90"></ListBox>
+                <ProgressBar x:Name="MachinesProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
-                         Height="95"></ListBox>
+                         Height="90"></ListBox>
+                <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
                 <TextBlock Text="Dostawy:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature"
-                         Height="95"></ListBox>
+                         Height="90"></ListBox>
+                <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
             </StackPanel>
             <!--</ScrollViewer>-->
                 

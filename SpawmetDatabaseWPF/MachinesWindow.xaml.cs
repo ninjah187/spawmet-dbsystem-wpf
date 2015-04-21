@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
@@ -44,6 +45,9 @@ namespace SpawmetDatabaseWPF
         public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
 
         private SpawmetDBContext _dbContext;
+
+        private BackgroundWorker _partsBackgroundWorker;
+        private BackgroundWorker _ordersBackgroundWorker;
 
         private readonly MasterWindow _parentWindow;
 
@@ -109,17 +113,101 @@ namespace SpawmetDatabaseWPF
             }
             catch (ProviderIncompatibleException e)
             {
-                Disconnected();
+                Disconnected("Kod błędu 00.");
             }
         }
 
         private void Initialize()
         {
+            if (_dbContext != null)
+            {
+                _dbContext.Dispose();
+            }
+
             _dbContext = new SpawmetDBContext();
 
             LoadDataIntoSource();
 
             MainDataGrid.Items.Refresh();
+
+            _partsBackgroundWorker = new BackgroundWorker();
+            _ordersBackgroundWorker = new BackgroundWorker();
+            _partsBackgroundWorker.DoWork += _backgroundWorker_DoWorkStandardParts;
+            _partsBackgroundWorker.RunWorkerCompleted += _backgroundWorker_StandardPartsCompleted;
+            _ordersBackgroundWorker.DoWork += _backgroundWorker_DoWorkOrders;
+            _ordersBackgroundWorker.RunWorkerCompleted += _backgroundWorker_OrdersCompleted;
+        }
+
+        private void _backgroundWorker_DoWorkStandardParts(object sender, DoWorkEventArgs e)
+        {
+            //var machine = (Machine) e.Argument;
+            //e.Result = machine.StandardPartSet;
+
+            var machineId = (int) e.Argument;
+            var context = new SpawmetDBContext();
+            var result = context.StandardPartSets
+                .Where(el => el.Machine.Id == machineId)
+                .OrderBy(el => el.Part.Name)
+                .ToList();
+            result.ForEach(el => el.PropertyChanged += (s, args) =>
+            {
+                StandardPartSetDataGrid.Items.Refresh();
+            });
+            e.Result = result;
+            context.Dispose();
+        }
+
+        private void _backgroundWorker_StandardPartsCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var source = (ICollection<StandardPartSetElement>)e.Result;
+            StandardPartSetDataGrid.ItemsSource = source;
+
+            StandardPartSetProgressBar.IsIndeterminate = false;
+            
+            //if (_ordersBackgroundWorker.IsBusy == false)
+            //{
+            //    Machine machine;
+            //    try
+            //    {
+            //        machine = (Machine)MainDataGrid.SelectedItem;
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        machine = null;
+            //    }
+            //    if (machine != null)
+            //    {
+            //        _ordersBackgroundWorker.RunWorkerAsync(machine);
+            //    }
+            //}
+        }
+
+        private void _backgroundWorker_DoWorkOrders(object sender, DoWorkEventArgs e)
+        {
+            //var machine = (Machine)e.Argument;
+            //e.Result = machine.Orders;
+
+            var machineId = (int) e.Argument;
+            var context = new SpawmetDBContext();
+            //var result = context.Orders
+            //    .Where(m => m.Machine.Id == machineId)
+            //    .OrderBy(o => o.Id)
+            //    .ToList();
+            var result = context.Machines
+                .Single(m => m.Id == machineId)
+                .Orders
+                .OrderBy(o => o.Id)
+                .ToList();
+            e.Result = result;
+            context.Dispose();
+        }
+
+        private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var source = (ICollection<Order>)e.Result;
+            OrdersListBox.ItemsSource = source;
+
+            OrdersProgressBar.IsIndeterminate = false;
         }
 
         public void FillDetailedInfo(Machine machine)
@@ -132,6 +220,9 @@ namespace SpawmetDatabaseWPF
 
                 StandardPartSetDataGrid.ItemsSource = null;
                 OrdersListBox.ItemsSource = null;
+
+                StandardPartSetProgressBar.IsIndeterminate = false;
+                OrdersProgressBar.IsIndeterminate = false;
                 return;
             }
 
@@ -139,15 +230,27 @@ namespace SpawmetDatabaseWPF
             NameTextBlock.Text = machine.Name;
             PriceTextBlock.Text = machine.Price.ToString();
 
-            try
+            StandardPartSetDataGrid.ItemsSource = null;
+            OrdersListBox.ItemsSource = null;
+
+            if (_partsBackgroundWorker.IsBusy == false && _ordersBackgroundWorker.IsBusy == false)
             {
-                StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
-                OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
+                StandardPartSetProgressBar.IsIndeterminate = true;
+                OrdersProgressBar.IsIndeterminate = true;
+
+                _partsBackgroundWorker.RunWorkerAsync(machine.Id);
+                _ordersBackgroundWorker.RunWorkerAsync(machine.Id);
             }
-            catch (EntityException exc)
-            {
-                Disconnected();
-            }
+
+            //try
+            //{
+            //    StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
+            //    OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected("Kod błędu: 02.");
+            //}
 
             #region
             //string info = "";
@@ -183,7 +286,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu: 03.");
             }
         }
 
@@ -226,7 +329,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu: 04.");
             }
 
             StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
@@ -291,7 +394,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu 05.");
             }
 
             FillDetailedInfo(null);
@@ -305,10 +408,10 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu: 06.");
                 return;
             }
-            this.Close();
+            //this.Close();
         }
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -319,7 +422,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu: 07.");
             }
         }
 
@@ -337,18 +440,23 @@ namespace SpawmetDatabaseWPF
             }
             catch (ProviderIncompatibleException exc)
             {
-                Disconnected();
+                Disconnected("Kod błędu: 01.");
             }
         }
 
         private void Disconnected()
         {
+            Disconnected("");
+        }
+
+        private void Disconnected(string message)
+        {
             MainDataGrid.IsEnabled = false;
             DetailsStackPanel.IsEnabled = false;
             PartsMenuItem.IsEnabled = false;
             FillDetailedInfo(null);
-            MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
             ConnectMenuItem.IsEnabled = true;
+            MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
     }
 }

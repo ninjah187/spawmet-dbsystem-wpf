@@ -56,7 +56,7 @@
                         </StackPanel>
                     </DockPanel>
                 <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
-                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="200" MaxHeight="200" AutoGenerateColumns="False">
+                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False">
                               <!--MaxWidth="220">-->
                         <DataGrid.ContextMenu>
                             <ContextMenu>
@@ -66,13 +66,15 @@
                         </DataGrid.ContextMenu>
                         
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                            <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                        <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
                         </DataGrid.Columns>
                     </DataGrid>
+                    <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
-                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
-                             MinHeight="120" MaxHeight="120"></ListBox>
+                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Id"
+                             Height="115"></ListBox>
+                    <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
                 </StackPanel>
             <!--</ScrollViewer>-->
         </StackPanel>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SpawmetDatabase.Model;
 using System.Security.Cryptography;
+using System.Diagnostics;
 
 namespace SpawmetDatabase
 {
@@ -13,16 +15,26 @@ namespace SpawmetDatabase
     {
         private static readonly Random random = new Random();
 
-        private const int dbSize = 250;
+        private const int dbSize = 10;
 
         static void Main(string[] args)
         {
+            //Database.SetInitializer(new DropCreateDatabaseAlways<SpawmetDBContext>());
+
             //using (var context = new SpawmetDBContext())
             //{
             //    context.Database.ExecuteSqlCommand("DELETE FROM Parts WHERE id=1");
             //}
 
+            var sw = new Stopwatch();
+            Console.WriteLine("Rozpoczęcie inicjalizacji.");
+            Console.WriteLine("T: " + DateTime.Now);
+            sw.Start();
             InitializeDB();
+            sw.Stop();
+            Console.WriteLine("Zakończono.");
+            Console.WriteLine("T: " + DateTime.Now);
+            Console.WriteLine("Czas operacji: " + sw.Elapsed);
 
             using (var context = new SpawmetDBContext())
             {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +45,10 @@ namespace SpawmetDatabaseWPF
         private SpawmetDBContext _dbContext;
 
         private MasterWindow _parentWindow;
+
+        private BackgroundWorker _machinesBackgroundWorker;
+        private BackgroundWorker _ordersBackgroundWorker;
+        private BackgroundWorker _deliveriesBackgroundWorker;
 
         public PartsWindow(double x, double y)
             : this(null)
@@ -106,11 +112,81 @@ namespace SpawmetDatabaseWPF
 
         private void Initialize()
         {
+            if (_dbContext != null)
+            {
+                _dbContext.Dispose();
+            }
+
             _dbContext = new SpawmetDBContext();
 
             LoadDataIntoSource();
 
             MainDataGrid.Items.Refresh();
+
+            _machinesBackgroundWorker = new BackgroundWorker();
+            _ordersBackgroundWorker = new BackgroundWorker();
+            _deliveriesBackgroundWorker = new BackgroundWorker();
+            _machinesBackgroundWorker.DoWork += (sender, e) =>
+            {
+                var partId = (int)e.Argument;
+                var context = new SpawmetDBContext();
+                var result = context.StandardPartSets
+                    .Where(el => el.Part.Id == partId)
+                    .Select(el => el.Machine)
+                    .OrderBy(m => m.Id)
+                    .ToList();
+                e.Result = result;
+                context.Dispose();
+            };
+            _machinesBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                var source = (List<Machine>)e.Result;
+                MachinesListBox.ItemsSource = source;
+
+                MachinesProgressBar.IsIndeterminate = false;
+            };
+            _ordersBackgroundWorker.DoWork += (sender, e) =>
+            {
+                var partId = (int) e.Argument;
+                var context = new SpawmetDBContext();
+                var result = context.AdditionalPartSets
+                    .Where(el => el.Part.Id == partId)
+                    .Select(el => el.Order)
+                    .OrderBy(o => o.Id)
+                    .ToList();
+                //var result = new List<Order>();
+                //foreach (var additionalPartSetElement in context.AdditionalPartSets)
+                //{
+                //    if (additionalPartSetElement.Part.Id == partId)
+                //    {
+                //        result.Add(additionalPartSetElement.Order);
+                //    }
+                //}
+                e.Result = result;
+                context.Dispose();
+            };
+            _ordersBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                var source = (List<Order>) e.Result;
+                OrdersListBox.ItemsSource = source;
+
+                OrdersProgressBar.IsIndeterminate = false;
+            };
+            _deliveriesBackgroundWorker.DoWork += (sender, e) =>
+            {
+                var partId = (int) e.Argument;
+                var context = new SpawmetDBContext();
+                var result = context.Parts.Single(p => p.Id == partId).Deliveries;
+                e.Result = result;
+                context.Dispose();
+            };
+            _deliveriesBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                var source = (ICollection<Delivery>) e.Result;
+                DeliveriesListBox.ItemsSource = source;
+
+                DeliveriesProgressBar.IsIndeterminate = false;
+            };
         }
 
         public void FillDetailedInfo(Part part)
@@ -125,6 +201,10 @@ namespace SpawmetDatabaseWPF
                 MachinesListBox.ItemsSource = null;
                 OrdersListBox.ItemsSource = null;
                 DeliveriesListBox.ItemsSource = null;
+
+                MachinesProgressBar.IsIndeterminate = false;
+                OrdersProgressBar.IsIndeterminate = false;
+                DeliveriesProgressBar.IsIndeterminate = false;
                 return;
             }
 
@@ -135,33 +215,49 @@ namespace SpawmetDatabaseWPF
             OriginTextBlock.Text = originName;
             AmountTextBlock.Text = part.Amount.ToString();
 
-            try
-            {
-                var relatedMachines = new List<Machine>();
-                foreach (var standardPartSetElement in part.StandardPartSets)
-                {
-                    relatedMachines.Add(standardPartSetElement.Machine);
-                }
-                MachinesListBox.ItemsSource = relatedMachines.OrderBy(machine => machine.Id);
+            MachinesListBox.ItemsSource = null;
+            OrdersListBox.ItemsSource = null;
+            DeliveriesListBox.ItemsSource = null;
 
-                var relatedOrders = new List<Order>();
-                foreach (var additionalPartSetElement in part.AdditionalPartSets)
-                {
-                    relatedOrders.Add(additionalPartSetElement.Order);
-                }
-                OrdersListBox.ItemsSource = relatedOrders.OrderBy(order => order.Id);
-
-                var relatedDeliveries = new List<Delivery>();
-                foreach (var delivery in part.Deliveries)
-                {
-                    relatedDeliveries.Add(delivery);
-                }
-                DeliveriesListBox.ItemsSource = relatedDeliveries.OrderBy(delivery => delivery.Id);
-            }
-            catch (EntityException exc)
+            if (_machinesBackgroundWorker.IsBusy == false && _ordersBackgroundWorker.IsBusy == false &&
+                _deliveriesBackgroundWorker.IsBusy == false)
             {
-                Disconnected();
+                MachinesProgressBar.IsIndeterminate = true;
+                OrdersProgressBar.IsIndeterminate = true;
+                DeliveriesProgressBar.IsIndeterminate = true;
+
+                _machinesBackgroundWorker.RunWorkerAsync(part.Id);
+                _ordersBackgroundWorker.RunWorkerAsync(part.Id);
+                _deliveriesBackgroundWorker.RunWorkerAsync(part.Id);
             }
+
+            //try
+            //{
+            //    var relatedMachines = new List<Machine>();
+            //    foreach (var standardPartSetElement in part.StandardPartSets)
+            //    {
+            //        relatedMachines.Add(standardPartSetElement.Machine);
+            //    }
+            //    MachinesListBox.ItemsSource = relatedMachines.OrderBy(machine => machine.Id);
+
+            //    var relatedOrders = new List<Order>();
+            //    foreach (var additionalPartSetElement in part.AdditionalPartSets)
+            //    {
+            //        relatedOrders.Add(additionalPartSetElement.Order);
+            //    }
+            //    OrdersListBox.ItemsSource = relatedOrders.OrderBy(order => order.Id);
+
+            //    var relatedDeliveries = new List<Delivery>();
+            //    foreach (var delivery in part.Deliveries)
+            //    {
+            //        relatedDeliveries.Add(delivery);
+            //    }
+            //    DeliveriesListBox.ItemsSource = relatedDeliveries.OrderBy(delivery => delivery.Id);
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected();
+            //}
         }
 
         private void LoadDataIntoSource()
@@ -239,7 +335,7 @@ namespace SpawmetDatabaseWPF
                 Disconnected();
                 return;
             }
-            this.Close();
+            //this.Close();
         }
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)

@@ -72,6 +72,9 @@
     <Compile Include="AddPartToMachine.xaml.cs">
       <DependentUpon>AddPartToMachine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectingWindow.xaml.cs">
+      <DependentUpon>ConnectingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
@@ -94,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnectingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,28 +4,13 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Part : IModelElement, INotifyPropertyChanged
+    public class Part : ModelElement
     {
         public Part()
         {
             this.Deliveries = new HashSet<Delivery>();
             this.StandardPartSets = new HashSet<StandardPartSetElement>();
             this.AdditionalPartSets = new HashSet<AdditionalPartSetElement>();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public int Id
-        {
-            get { return _id; }
-            set
-            {
-                if (_id != value)
-                {
-                    _id = value;
-                    NotifyPropertyChanged("Id");
-                }
-            }
         }
 
         public string Name
@@ -67,21 +52,59 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public virtual ICollection<Delivery> Deliveries { get; set; }
-        public virtual ICollection<StandardPartSetElement> StandardPartSets { get; set; }
-        public virtual ICollection<AdditionalPartSetElement> AdditionalPartSets { get; set; }
+        public virtual ICollection<Delivery> Deliveries {
+            get
+            {
+                return _deliveries;
+            }
+            set
+            {
+                if (_deliveries != value)
+                {
+                    _deliveries = value;
+                    NotifyPropertyChanged("Deliveries");
+                }
+            }
+        }
 
-        private int _id;
+        public virtual ICollection<StandardPartSetElement> StandardPartSets
+        {
+            get
+            {
+                return _standardPartSets;
+            }
+            set
+            {
+                if (_standardPartSets != value)
+                {
+                    _standardPartSets = value;
+                    NotifyPropertyChanged("StandardPartSets");
+                }
+            }
+        }
+
+        public virtual ICollection<AdditionalPartSetElement> AdditionalPartSets
+        {
+            get
+            {
+                return _additionalPartSets;
+            }
+            set
+            {
+                if (_additionalPartSets != value)
+                {
+                    _additionalPartSets = value;
+                    NotifyPropertyChanged("AdditionalPartSets");
+                }
+            }
+        }
+
         private string _name;
         private int _amount;
         private Origin? _origin;
 
-        public void NotifyPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        private ICollection<Delivery> _deliveries;
+        private ICollection<StandardPartSetElement> _standardPartSets;
+        private ICollection<AdditionalPartSetElement> _additionalPartSets;
     }
 }

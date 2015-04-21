@@ -66,3 +66,5 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDat
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.g.resources
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.Properties.Resources.resources
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ConnectingWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ConnectingWindow.g.cs

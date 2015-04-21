@@ -11,13 +11,11 @@ namespace SpawmetDatabase
         public SpawmetDBContext()
             : base("name=SpawmetDBContext")
         {
-
         }
 
         public SpawmetDBContext(DbConnection existingConnection, bool contextOwnsConnection)
             : base(existingConnection, contextOwnsConnection)
         {
-
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
