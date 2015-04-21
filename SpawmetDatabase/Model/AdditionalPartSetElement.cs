@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabase.Model
 {
-    public class AdditionalPartSetElement : PartSetElement
+    public class AdditionalPartSetElement //: PartSetElement
     {
+        //public virtual Order Order { get; set; }
+
+        public int Id { get; set; }
+        public int Amount { get; set; }
+
+        public virtual Part Part { get; set; }
         public virtual Order Order { get; set; }
     }
 }

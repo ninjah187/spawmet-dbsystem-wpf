@@ -45,6 +45,7 @@ namespace SpawmetDatabaseWPF
         public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
 
         private SpawmetDBContext _dbContext;
+        private object _dbContextLock;
 
         private BackgroundWorker _partsBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
@@ -125,6 +126,7 @@ namespace SpawmetDatabaseWPF
             }
 
             _dbContext = new SpawmetDBContext();
+            _dbContextLock = new object();
 
             LoadDataIntoSource();
 
@@ -138,68 +140,71 @@ namespace SpawmetDatabaseWPF
             _ordersBackgroundWorker.RunWorkerCompleted += _backgroundWorker_OrdersCompleted;
         }
 
+        /***********************************************************************************/
+        /*** Main rule about loading data to UI from another threads:                    ***/
+        /***   - readonly data (like OrdersListBox in MachinesWindow) can be loaded from ***/
+        /***     another context (with using Include() to load all related data, to      ***/
+        /***     display signature.                                                      ***/
+        /***   - read/write data (like StandardPartSetGrid in MachinesWindow) MUST be    ***/
+        /***     loaded from main _dbContext (with using lock and Include).              ***/
+        /***********************************************************************************/
+
         private void _backgroundWorker_DoWorkStandardParts(object sender, DoWorkEventArgs e)
         {
             //var machine = (Machine) e.Argument;
             //e.Result = machine.StandardPartSet;
 
             var machineId = (int) e.Argument;
-            var context = new SpawmetDBContext();
-            var result = context.StandardPartSets
-                .Where(el => el.Machine.Id == machineId)
-                .OrderBy(el => el.Part.Name)
-                .ToList();
-            result.ForEach(el => el.PropertyChanged += (s, args) =>
+            //var context = new SpawmetDBContext();
+            List<StandardPartSetElement> result;
+            lock (_dbContextLock)
             {
-                StandardPartSetDataGrid.Items.Refresh();
-            });
+                result = _dbContext.StandardPartSets
+                    .Where(el => el.Machine.Id == machineId)
+                    .Include(el => el.Part)
+                    .OrderBy(el => el.Part.Name)
+                    .ToList();
+            }
+            //result.ForEach(el =>
+            //{
+            //    //el.PropertyChanged += (s, args) =>
+            //    //{
+            //    //    StandardPartSetDataGrid.Items.Refresh();
+            //    //};
+            //});
             e.Result = result;
-            context.Dispose();
+            //context.Dispose();
         }
 
         private void _backgroundWorker_StandardPartsCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var source = (ICollection<StandardPartSetElement>)e.Result;
+            var source = (ICollection<StandardPartSetElement>) e.Result;
             StandardPartSetDataGrid.ItemsSource = source;
 
             StandardPartSetProgressBar.IsIndeterminate = false;
-            
-            //if (_ordersBackgroundWorker.IsBusy == false)
-            //{
-            //    Machine machine;
-            //    try
-            //    {
-            //        machine = (Machine)MainDataGrid.SelectedItem;
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        machine = null;
-            //    }
-            //    if (machine != null)
-            //    {
-            //        _ordersBackgroundWorker.RunWorkerAsync(machine);
-            //    }
-            //}
         }
 
         private void _backgroundWorker_DoWorkOrders(object sender, DoWorkEventArgs e)
         {
-            //var machine = (Machine)e.Argument;
-            //e.Result = machine.Orders;
-
             var machineId = (int) e.Argument;
             var context = new SpawmetDBContext();
-            //var result = context.Orders
-            //    .Where(m => m.Machine.Id == machineId)
-            //    .OrderBy(o => o.Id)
-            //    .ToList();
-            var result = context.Machines
-                .Single(m => m.Id == machineId)
-                .Orders
+            var result = context.Orders
+                .Where(m => m.Machine.Id == machineId)
+                .Include(o => o.Client)
+                .Include(o => o.Machine)
                 .OrderBy(o => o.Id)
                 .ToList();
+            //List<Order> result;
+            //lock (_dbContextLock)
+            //{
+            //    result = _dbContext.Machines
+            //        .Single(m => m.Id == machineId)
+            //        .Orders
+            //        .OrderBy(o => o.Id)
+            //        .ToList();
+            //}
             e.Result = result;
-            context.Dispose();
+            //context.Dispose();
         }
 
         private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -251,30 +256,6 @@ namespace SpawmetDatabaseWPF
             //{
             //    Disconnected("Kod błędu: 02.");
             //}
-
-            #region
-            //string info = "";
-
-            //info += "ID: " + machine.Id +
-            //        "\nNazwa: " + machine.Name +
-            //        "\nCena: " + machine.Price +
-            //        "\n";
-            //info += "Standardowy zestaw części:\n";
-            //foreach (var part in machine.StandardPartSet)
-            //{
-            //    info += "- " + part.Name + "\n";
-            //}
-            //info += "Zamówienia:\n";
-            //foreach (var order in machine.Orders)
-            //{
-            //    string clientName = order.Client != null ? order.Client.Name : "";
-
-            //    string txt = clientName + ", " + order.StartDate.ToShortDateString();
-            //    info += "- " + txt + "\n";
-            //}
-
-            //DetailTextBlock.Text = info;
-            #endregion
         }
 
         private void LoadDataIntoSource()
@@ -324,6 +305,7 @@ namespace SpawmetDatabaseWPF
             //machine.StandardPartSet.Remove(partSetElement);
             try
             {
+                //_dbContext.StandardPartSets.Attach(partSetElement); //because it was loaded by other context
                 _dbContext.StandardPartSets.Remove(partSetElement);
                 _dbContext.SaveChanges();
             }
@@ -332,7 +314,7 @@ namespace SpawmetDatabaseWPF
                 Disconnected("Kod błędu: 04.");
             }
 
-            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet; //.OrderBy(element => element.Part.Id);
         }
 
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -404,7 +386,7 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                new PartsWindow(this.Left, this.Top).Show();
+                new PartsWindow(this.Left + 40, this.Top + 40).Show();
             }
             catch (EntityException exc)
             {

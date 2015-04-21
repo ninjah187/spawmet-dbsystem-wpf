@@ -57,7 +57,6 @@
                     </DockPanel>
                 <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
                     <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False">
-                              <!--MaxWidth="220">-->
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
@@ -66,13 +65,13 @@
                         </DataGrid.ContextMenu>
                         
                         <DataGrid.Columns>
-                            <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
-                        <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells"></DataGridTextColumn>
+                            <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells" />
+                            <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
                         </DataGrid.Columns>
                     </DataGrid>
                     <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
-                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Id"
+                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
                              Height="115"></ListBox>
                     <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
                 </StackPanel>

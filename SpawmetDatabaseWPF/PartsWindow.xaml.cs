@@ -132,6 +132,7 @@ namespace SpawmetDatabaseWPF
                 var context = new SpawmetDBContext();
                 var result = context.StandardPartSets
                     .Where(el => el.Part.Id == partId)
+                    //.Include(el => el.Machine)
                     .Select(el => el.Machine)
                     .OrderBy(m => m.Id)
                     .ToList();
@@ -152,6 +153,8 @@ namespace SpawmetDatabaseWPF
                 var result = context.AdditionalPartSets
                     .Where(el => el.Part.Id == partId)
                     .Select(el => el.Order)
+                    .Include(o => o.Client)
+                    .Include(o => o.Machine)
                     .OrderBy(o => o.Id)
                     .ToList();
                 //var result = new List<Order>();
@@ -328,7 +331,7 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                new MachinesWindow(this.Left, this.Top).Show();
+                new MachinesWindow(this.Left + 40, this.Top + 40).Show();
             }
             catch (EntityException exc)
             {

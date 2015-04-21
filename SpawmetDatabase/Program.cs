@@ -38,16 +38,21 @@ namespace SpawmetDatabase
 
             using (var context = new SpawmetDBContext())
             {
-                var part = context.Parts.First();
-                
-                Console.WriteLine("ID: " + part.Id);
-                Console.WriteLine("Nazwa: " + part.Name);
-                Console.WriteLine("Ilość: " + part.Amount);
+                Console.WriteLine(context.Parts.Count());
+            }
 
-                foreach (var standardPartSetElement in part.StandardPartSets)
-                {
-                    Console.WriteLine(standardPartSetElement.Machine.Name);
-                }
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    var part = context.Parts.First();
+                
+            //    Console.WriteLine("ID: " + part.Id);
+            //    Console.WriteLine("Nazwa: " + part.Name);
+            //    Console.WriteLine("Ilość: " + part.Amount);
+
+            //    foreach (var standardPartSetElement in part.StandardPartSets)
+            //    {
+            //        Console.WriteLine(standardPartSetElement.Machine.Name);
+            //    }
 
                 //foreach (var order in context.Orders.ToList())
                 //{
@@ -86,7 +91,7 @@ namespace SpawmetDatabase
                 //    Console.WriteLine();
                 //}
                 //Console.WriteLine();
-            }
+            //}
 
             Console.ReadKey();
         }
@@ -190,31 +195,54 @@ namespace SpawmetDatabase
                     var machines = new List<Machine>();
                     for (int i = 0; i < dbSize; i++)
                     {
+                        //var parts = context.Parts.ToList();
+                        //int partsCount = random.Next(parts.Count);
+                        //var standardPartSet = new List<StandardPartSetElement>();
+                        //for (int j = 0; j < partsCount; j++)
+                        //{
+                        //    int index = random.Next(parts.Count);
+                        //    var part = parts[index];
+                        //    var partSetElement = new StandardPartSetElement()
+                        //    {
+                        //        Part = part, /*********************************************************/
+                        //        Amount = random.Next(1001),
+                        //    };
+                        //    standardPartSet.Add(partSetElement);
+                        //    parts.RemoveAt(index);
+                        //}
+                        machines.Add(new Machine()
+                        {
+                            Name = "maszyna " + i,
+                            Price = random.Next(10000),
+                            //StandardPartSet = standardPartSet,
+                        });
+                    }
+                    context.Machines.AddRange(machines);
+                    context.SaveChanges();
+                }
+                if (context.StandardPartSets.Count() == 0)
+                {
+                    var standardPartSets = new List<StandardPartSetElement>();
+                    for (int i = 0; i < dbSize; i++)
+                    {
                         var parts = context.Parts.ToList();
                         int partsCount = random.Next(parts.Count);
-                        var standardPartSet = new List<StandardPartSetElement>();
+                        var machine = context.Machines.Find(i);
                         for (int j = 0; j < partsCount; j++)
                         {
                             int index = random.Next(parts.Count);
                             var part = parts[index];
                             var partSetElement = new StandardPartSetElement()
                             {
+                                Machine = machine,
                                 Part = part,
                                 Amount = random.Next(1001),
                             };
-                            standardPartSet.Add(partSetElement);
+                            standardPartSets.Add(partSetElement);
                             parts.RemoveAt(index);
                         }
-
-                        machines.Add(new Machine()
-                        {
-                            Name = "maszyna " + i,
-                            Price = random.Next(10000),
-                            StandardPartSet = standardPartSet,
-                        });
+                        context.StandardPartSets.AddRange(standardPartSets);
                     }
-                    context.Machines.AddRange(machines);
-                    context.SaveChanges();
                 }
                 if (context.Orders.Count() == 0)
                 {
@@ -222,23 +250,23 @@ namespace SpawmetDatabase
                     for (int i = 0; i < dbSize; i++)
                     {
                         var parts = context.Parts.ToList();
-                        var randomClient = context.Clients.Find(random.Next(context.Clients.Count()));
-                        var randomMachine = context.Machines.Find(random.Next(context.Machines.Count()));
+                        var randomClient = context.Clients.Find(random.Next(context.Clients.Count() + 1));
+                        var randomMachine = context.Machines.Find(random.Next(context.Machines.Count() + 1));
 
-                        var additionalPartSet = new List<AdditionalPartSetElement>();
-                        int partCount = random.Next(parts.Count);
-                        for (int j = 0; j < partCount; j++)
-                        {
-                            int index = random.Next(parts.Count);
-                            var part = parts[index];
-                            var partSetElement = new AdditionalPartSetElement()
-                            {
-                                Part = part,
-                                Amount = random.Next(1001),
-                            };
-                            additionalPartSet.Add(partSetElement);
-                            parts.RemoveAt(index);
-                        }
+                        //var additionalPartSet = new List<AdditionalPartSetElement>();
+                        //int partCount = random.Next(parts.Count);
+                        //for (int j = 0; j < partCount; j++)
+                        //{
+                        //    int index = random.Next(parts.Count);
+                        //    var part = parts[index];
+                        //    var partSetElement = new AdditionalPartSetElement()
+                        //    {
+                        //        Part = part,
+                        //        Amount = random.Next(1001),
+                        //    };
+                        //    additionalPartSet.Add(partSetElement);
+                        //    parts.RemoveAt(index);
+                        //}
 
                         orders.Add(new Order()
                         {
@@ -248,10 +276,35 @@ namespace SpawmetDatabase
                             Status = OrderStatus.Start,
                             Client = randomClient,
                             Machine = randomMachine,
-                            AdditionalPartSet = additionalPartSet,
+                            //AdditionalPartSet = additionalPartSet,
                         });
                     }
                     context.Orders.AddRange(orders);
+                    context.SaveChanges();
+                }
+                if (context.AdditionalPartSets.Count() == 0)
+                {
+                    var additionalPartSets = new List<AdditionalPartSetElement>();
+                    for (int i = 0; i < dbSize; i++)
+                    {
+                        var parts = context.Parts.ToList();
+                        int partsCount = random.Next(parts.Count);
+                        var order = context.Orders.Find(i + 1);
+                        for (int j = 0; j < partsCount; j++)
+                        {
+                            int index = random.Next(parts.Count);
+                            var part = parts[index];
+                            var partSetElement = new AdditionalPartSetElement()
+                            {
+                                Order = order,
+                                Part = part,
+                                Amount = random.Next(1001)
+                            };
+                            additionalPartSets.Add(partSetElement);
+                            parts.RemoveAt(index);
+                        }
+                    }
+                    context.AdditionalPartSets.AddRange(additionalPartSets);
                     context.SaveChanges();
                 }
 

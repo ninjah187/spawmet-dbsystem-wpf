@@ -124,10 +124,9 @@ namespace SpawmetDatabase.Model
         {
             get
             {
-                //string clientName = Client != null ? Client.Name : "";
-                //string machineName = Machine != null ? Machine.Name : "";
-                //return clientName + ", " + machineName + ", " + StartDate.ToShortDateString();
-                return Id.ToString();
+                string clientName = Client != null ? Client.Name : "";
+                string machineName = Machine != null ? Machine.Name : "";
+                return clientName + ", " + machineName + ", " + StartDate.ToShortDateString();
             }
         }
     }
