@@ -94,6 +94,9 @@ namespace SpawmetDatabaseWPF
             this.Closed += (sender, e) =>
             {
                 _dbContext.Dispose();
+                _machinesBackgroundWorker.Dispose();
+                _ordersBackgroundWorker.Dispose();
+                _deliveriesBackgroundWorker.Dispose();
                 if (_parentWindow != null)
                 {
                     _parentWindow.PartsWindowButton.IsEnabled = true;
@@ -122,6 +125,19 @@ namespace SpawmetDatabaseWPF
             LoadDataIntoSource();
 
             MainDataGrid.Items.Refresh();
+
+            if (_machinesBackgroundWorker != null)
+            {
+                _machinesBackgroundWorker.Dispose();
+            }
+            if (_ordersBackgroundWorker != null)
+            {
+                _ordersBackgroundWorker.Dispose();
+            }
+            if (_deliveriesBackgroundWorker != null)
+            {
+                _deliveriesBackgroundWorker.Dispose();
+            }
 
             _machinesBackgroundWorker = new BackgroundWorker();
             _ordersBackgroundWorker = new BackgroundWorker();

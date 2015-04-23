@@ -23,7 +23,7 @@
         
         <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
                 <ObjectDataProvider x:Key="originEnum"
                                                 MethodName="GetValues"
@@ -55,7 +55,33 @@
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
             <!--<ScrollViewer MinHeight="400" MaxHeight="400">-->
             <StackPanel Margin="0" x:Name="DetailsStackPanel">
-                <DockPanel>
+                <StackPanel Height="65">
+                    <ScrollViewer MaxHeight="65">
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                                           Margin="10,0"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                                           Margin="10,0"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Pochodzenie: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                                           Margin="10,0"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Ilość: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                                           Margin="10,0"/>
+                            </DockPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+                <!--<DockPanel>
                     <StackPanel DockPanel.Dock="Left">
                         <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
                         <TextBlock Text="Nazwa: " FontWeight="DemiBold"></TextBlock>
@@ -68,7 +94,7 @@
                         <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
                         <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
                     </StackPanel>
-                </DockPanel>
+                </DockPanel>-->
                 <TextBlock Text="Maszyny:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name"
                          Height="90"></ListBox>

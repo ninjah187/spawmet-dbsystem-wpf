@@ -67,7 +67,7 @@ namespace SpawmetDatabaseWPF
                 parts.Remove(standardPartSetElement.Part);
             }
             //parts = parts.OrderBy(part => part.Id).ToList();
-            MainListBox.ItemsSource = parts.OrderBy(part => part.Id);
+            MainListBox.ItemsSource = parts.OrderBy(part => part.Name);
 
             this.Loaded += (sender, e) =>
             {
@@ -117,6 +117,7 @@ namespace SpawmetDatabaseWPF
             catch (System.Data.Entity.Core.EntityException exc)
             {
                 Disconnected();
+                return;
             }
 
             _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet;//.OrderBy(element => element.Part.Id);

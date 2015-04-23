@@ -1,0 +1,29 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.AddOrderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dodaj zamówienie" Height="330" Width="300" ResizeMode="CanMinimize">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Left">
+            <TextBlock Text="Klient: " FontWeight="DemiBold" Margin="0,15"></TextBlock>
+            <TextBlock Text="Maszyna: " FontWeight="DemiBold"></TextBlock>
+            <TextBlock Text="Przyjęcie: " FontWeight="DemiBold" Margin="0,17"></TextBlock>
+            <TextBlock Text="Wysyłka: " FontWeight="DemiBold" Margin="0,2"></TextBlock>
+            <TextBlock Text="Status: " FontWeight="DemiBold" Margin="0,14"></TextBlock>
+            <TextBlock Text="Uwagi: " FontWeight="DemiBold"></TextBlock>
+        </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Right">
+            <ComboBox x:Name="ClientComboBox" DisplayMemberPath="Name" Margin="5,10" />
+            <ComboBox x:Name="MachineComboBox" DisplayMemberPath="Name" Margin="5,0" />
+            <DatePicker x:Name="StartDatePicker" Margin="5,10" IsTodayHighlighted="True" />
+            <DatePicker x:Name="SendDatePicker" Margin="5,0" IsTodayHighlighted="True" />
+            <ComboBox x:Name="StatusComboBox" Margin="5,10">
+                <ComboBoxItem IsSelected="True">Start</ComboBoxItem>
+            </ComboBox>
+            <!--<ScrollViewer MaxHeight="60">-->
+                <TextBox x:Name="RemarksTextBox" Margin="5,0" Height="60" TextWrapping="Wrap" />
+            <!--</ScrollViewer>-->
+            <Button Width="60" Click="ButtonBase_OnClick" Margin="0,10">Dodaj</Button>
+        </StackPanel>
+    </DockPanel>
+</Window>

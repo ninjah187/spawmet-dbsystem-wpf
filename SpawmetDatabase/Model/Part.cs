@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Part : ModelElement
+    public class Part //: ModelElement
     {
         public Part()
         {
@@ -12,6 +12,8 @@ namespace SpawmetDatabase.Model
             this.StandardPartSets = new HashSet<StandardPartSetElement>();
             this.AdditionalPartSets = new HashSet<AdditionalPartSetElement>();
         }
+
+        public int Id { get; set; }
 
         public string Name
         {
@@ -21,7 +23,7 @@ namespace SpawmetDatabase.Model
                 if (_name != value)
                 {
                     _name = value;
-                    NotifyPropertyChanged("Name");
+                    //NotifyPropertyChanged("Name");
                 }
             }
         }
@@ -34,7 +36,7 @@ namespace SpawmetDatabase.Model
                 if (_amount != value)
                 {
                     _amount = value;
-                    NotifyPropertyChanged("Amount");
+                    //NotifyPropertyChanged("Amount");
                 }
             }
         }
@@ -47,7 +49,7 @@ namespace SpawmetDatabase.Model
                 if (_origin != value)
                 {
                     _origin = value;
-                    NotifyPropertyChanged("Origin");
+                    //NotifyPropertyChanged("Origin");
                 }
             }
         }
@@ -62,7 +64,7 @@ namespace SpawmetDatabase.Model
                 if (_deliveries != value)
                 {
                     _deliveries = value;
-                    NotifyPropertyChanged("Deliveries");
+                    //NotifyPropertyChanged("Deliveries");
                 }
             }
         }
@@ -78,7 +80,7 @@ namespace SpawmetDatabase.Model
                 if (_standardPartSets != value)
                 {
                     _standardPartSets = value;
-                    NotifyPropertyChanged("StandardPartSets");
+                    //NotifyPropertyChanged("StandardPartSets");
                 }
             }
         }
@@ -94,7 +96,7 @@ namespace SpawmetDatabase.Model
                 if (_additionalPartSets != value)
                 {
                     _additionalPartSets = value;
-                    NotifyPropertyChanged("AdditionalPartSets");
+                    //NotifyPropertyChanged("AdditionalPartSets");
                 }
             }
         }

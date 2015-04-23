@@ -68,3 +68,9 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDat
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ConnectingWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ConnectingWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\OrdersWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\OrdersWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddOrderWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddOrderWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToOrderWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToOrderWindow.g.cs

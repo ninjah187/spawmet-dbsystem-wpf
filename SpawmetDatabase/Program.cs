@@ -20,11 +20,17 @@ namespace SpawmetDatabase
         static void Main(string[] args)
         {
             //Database.SetInitializer(new DropCreateDatabaseAlways<SpawmetDBContext>());
+            //Database.SetInitializer<SpawmetDBContext>(null);
 
             //using (var context = new SpawmetDBContext())
             //{
             //    context.Database.ExecuteSqlCommand("DELETE FROM Parts WHERE id=1");
             //}
+
+            using (var context = new SpawmetDBContext())
+            {
+                Console.WriteLine(context.Parts.Count());
+            }
 
             var sw = new Stopwatch();
             Console.WriteLine("Rozpoczęcie inicjalizacji.");
@@ -35,11 +41,6 @@ namespace SpawmetDatabase
             Console.WriteLine("Zakończono.");
             Console.WriteLine("T: " + DateTime.Now);
             Console.WriteLine("Czas operacji: " + sw.Elapsed);
-
-            using (var context = new SpawmetDBContext())
-            {
-                Console.WriteLine(context.Parts.Count());
-            }
 
             //using (var context = new SpawmetDBContext())
             //{
@@ -134,15 +135,17 @@ namespace SpawmetDatabase
                     var clients = new List<Client>();
                     for (int i = 0; i < dbSize; i++)
                     {
+                        var city = "miasto " + i;
+                        var street = "ulica " + i;
+                        var postalCode = "89-32" + i;
+                        var address = city + ", " + street + ", " + postalCode;
                         clients.Add(new Client()
                         {
                             Name = "klient " + i,
-                            City = "miasto " + i,
                             Email = "email@poczta" + i + ".pl",
                             Nip = i.ToString() + i + i + i + i,
                             Phone = "0123215" + i,
-                            Street = "ulica " + i,
-                            PostalCode = "89-32" + i,
+                            Address = address,
                         });
                     }
                     context.Clients.AddRange(clients);
@@ -227,7 +230,7 @@ namespace SpawmetDatabase
                     {
                         var parts = context.Parts.ToList();
                         int partsCount = random.Next(parts.Count);
-                        var machine = context.Machines.Find(i);
+                        var machine = context.Machines.Find(i + 1);
                         for (int j = 0; j < partsCount; j++)
                         {
                             int index = random.Next(parts.Count);
@@ -250,8 +253,8 @@ namespace SpawmetDatabase
                     for (int i = 0; i < dbSize; i++)
                     {
                         var parts = context.Parts.ToList();
-                        var randomClient = context.Clients.Find(random.Next(context.Clients.Count() + 1));
-                        var randomMachine = context.Machines.Find(random.Next(context.Machines.Count() + 1));
+                        var randomClient = context.Clients.Find(random.Next(context.Clients.Count()) + 1);
+                        var randomMachine = context.Machines.Find(random.Next(context.Machines.Count()) + 1);
 
                         //var additionalPartSet = new List<AdditionalPartSetElement>();
                         //int partCount = random.Next(parts.Count);

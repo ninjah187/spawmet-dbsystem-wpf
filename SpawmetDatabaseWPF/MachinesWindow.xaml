@@ -12,6 +12,7 @@
                 <MenuItem Header="Tabele">
                     <MenuItem Header="Maszyny" IsEnabled="False"></MenuItem>
                     <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
@@ -23,7 +24,7 @@
         
         <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
@@ -43,20 +44,43 @@
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
             <!--<ScrollViewer MinHeight="400" MaxHeight="400">-->
                 <StackPanel Margin="0" x:Name="DetailsStackPanel">
-                    <DockPanel>
+                    <StackPanel Height="50">
+                        <ScrollViewer MaxHeight="50">
+                            <StackPanel>
+                                <DockPanel>
+                                    <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                    <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
+                                </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Cena: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
+                            </DockPanel>
+                        </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+                    <!--<DockPanel>
+                        <ScrollViewer>
+                            <DockPanel>
                         <StackPanel DockPanel.Dock="Left">
                             <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
                             <TextBlock Text="Nazwa: " FontWeight="DemiBold"></TextBlock>
                             <TextBlock Text="Cena: " FontWeight="DemiBold"></TextBlock>
                         </StackPanel>
-                        <StackPanel DockPanel.Dock="Right">
+                        <StackPanel DockPanel.Dock="Right" Margin="0,0,10,0">
                             <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
                             <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
                             <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
                         </StackPanel>
-                    </DockPanel>
+                        </DockPanel>
+                    </ScrollViewer>
+                </DockPanel>-->
                 <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
-                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False">
+                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False"
+                              CanUserAddRows="False">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>

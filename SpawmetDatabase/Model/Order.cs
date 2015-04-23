@@ -11,7 +11,7 @@ namespace SpawmetDatabase.Model
             this.AdditionalPartSet = new HashSet<AdditionalPartSetElement>();
         }
 
-        public OrderStatus Status
+        public OrderStatus? Status
         {
             get
             {
@@ -43,7 +43,7 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public DateTime StartDate
+        public DateTime? StartDate
         {
             get
             {
@@ -59,7 +59,7 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public DateTime SendDate
+        public DateTime? SendDate
         {
             get { return _sendDate; }
             set
@@ -111,10 +111,10 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        private OrderStatus _orderStatus;
+        private OrderStatus? _orderStatus;
         private string _remarks;
-        private DateTime _startDate;
-        private DateTime _sendDate;
+        private DateTime? _startDate;
+        private DateTime? _sendDate;
 
         private Client _client;
         private Machine _machine;
@@ -126,7 +126,7 @@ namespace SpawmetDatabase.Model
             {
                 string clientName = Client != null ? Client.Name : "";
                 string machineName = Machine != null ? Machine.Name : "";
-                return clientName + ", " + machineName + ", " + StartDate.ToShortDateString();
+                return clientName + ", " + machineName + ", " + StartDate.Value.ToShortDateString();
             }
         }
     }

@@ -20,7 +20,7 @@
         <TabControl x:Name="TabMenuControl">
             <TabItem x:Name="PartsTabItem" Header="Części">
                 <DataGrid x:Name="PartsDataGrid" ItemsSource="{Binding DataGridItemsSource}" Margin="0,0,10,0" DockPanel.Dock="Left"
-                      MaxWidth="480" MinWidth="480" AutoGenerateColumns="False">
+                      MaxWidth="480" MinWidth="480" AutoGenerateColumns="False" CanUserAddRows="False">
                 
                         <DataGrid.Resources>
                             <ObjectDataProvider x:Key="originEnum"

@@ -69,8 +69,14 @@
     <Compile Include="AddMachineWindow.xaml.cs">
       <DependentUpon>AddMachineWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddOrderWindow.xaml.cs">
+      <DependentUpon>AddOrderWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddPartToMachine.xaml.cs">
       <DependentUpon>AddPartToMachine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddPartToOrderWindow.xaml.cs">
+      <DependentUpon>AddPartToOrderWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConnectingWindow.xaml.cs">
       <DependentUpon>ConnectingWindow.xaml</DependentUpon>
@@ -82,6 +88,9 @@
     <Compile Include="MasterWindow.xaml.cs">
       <DependentUpon>MasterWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OrdersWindow.xaml.cs">
+      <DependentUpon>OrdersWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PartsWindow.xaml.cs">
       <DependentUpon>PartsWindow.xaml</DependentUpon>
     </Compile>
@@ -92,7 +101,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddOrderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddPartToMachine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPartToOrderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,6 +141,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MasterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OrdersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

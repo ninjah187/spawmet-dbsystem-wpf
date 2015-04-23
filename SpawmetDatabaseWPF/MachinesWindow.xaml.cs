@@ -42,7 +42,7 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
+        //public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
 
         private SpawmetDBContext _dbContext;
         private object _dbContextLock;
@@ -102,6 +102,8 @@ namespace SpawmetDatabaseWPF
             this.Closed += (sender, e) =>
             {
                 _dbContext.Dispose();
+                _partsBackgroundWorker.Dispose();
+                _ordersBackgroundWorker.Dispose();
                 if (_parentWindow != null)
                 {
                     _parentWindow.MachinesWindowButton.IsEnabled = true;
@@ -132,6 +134,15 @@ namespace SpawmetDatabaseWPF
 
             MainDataGrid.Items.Refresh();
 
+            if (_partsBackgroundWorker != null)
+            {
+                _partsBackgroundWorker.Dispose();
+            }
+            if (_ordersBackgroundWorker != null)
+            {
+                _ordersBackgroundWorker.Dispose();
+            }
+
             _partsBackgroundWorker = new BackgroundWorker();
             _ordersBackgroundWorker = new BackgroundWorker();
             _partsBackgroundWorker.DoWork += _backgroundWorker_DoWorkStandardParts;
@@ -143,8 +154,8 @@ namespace SpawmetDatabaseWPF
         /***********************************************************************************/
         /*** Main rule about loading data to UI from another threads:                    ***/
         /***   - readonly data (like OrdersListBox in MachinesWindow) can be loaded from ***/
-        /***     another context (with using Include() to load all related data, to      ***/
-        /***     display signature.                                                      ***/
+        /***     another context (with using Include() to load all related data, in      ***/
+        /***     order to display Signature).                                            ***/
         /***   - read/write data (like StandardPartSetGrid in MachinesWindow) MUST be    ***/
         /***     loaded from main _dbContext (with using lock and Include).              ***/
         /***********************************************************************************/
@@ -264,6 +275,9 @@ namespace SpawmetDatabaseWPF
             {
                 _dbContext.Machines.Load();
                 ConnectMenuItem.IsEnabled = false;
+
+                PartsMenuItem.IsEnabled = true;
+                OrdersMenuItem.IsEnabled = true;
             }
             catch (EntityException exc)
             {
@@ -396,6 +410,20 @@ namespace SpawmetDatabaseWPF
             //this.Close();
         }
 
+        private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new OrdersWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06.");
+                return;
+            }
+            //this.Close();
+        }
+
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -436,6 +464,7 @@ namespace SpawmetDatabaseWPF
             MainDataGrid.IsEnabled = false;
             DetailsStackPanel.IsEnabled = false;
             PartsMenuItem.IsEnabled = false;
+            OrdersMenuItem.IsEnabled = false;
             FillDetailedInfo(null);
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
