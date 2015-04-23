@@ -285,6 +285,9 @@ namespace SpawmetDatabaseWPF
             {
                 _dbContext.Parts.Load();
                 ConnectMenuItem.IsEnabled = false;
+
+                MachinesMenuItem.IsEnabled = true;
+                OrdersMenuItem.IsEnabled = true;
             }
             catch (EntityException exc)
             {
@@ -357,6 +360,32 @@ namespace SpawmetDatabaseWPF
             //this.Close();
         }
 
+        private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new OrdersWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06a.");
+                return;
+            }
+            //this.Close();
+        }
+
+        private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new ClientsWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06b.");
+            }
+        }
+
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -389,12 +418,18 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
+            Disconnected("");
+        }
+
+        private void Disconnected(string message)
+        {
             MainDataGrid.IsEnabled = false;
             DetailsStackPanel.IsEnabled = false;
             MachinesMenuItem.IsEnabled = false;
+            OrdersMenuItem.IsEnabled = false;
             FillDetailedInfo(null);
-            MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
             ConnectMenuItem.IsEnabled = true;
+            MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
     }
 }

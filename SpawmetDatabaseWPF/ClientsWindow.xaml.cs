@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
-using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,17 +21,17 @@ using SpawmetDatabase.Model;
 namespace SpawmetDatabaseWPF
 {
     /// <summary>
-    /// Interaction logic for OrdersWindow.xaml
+    /// Interaction logic for ClientsWindow.xaml
     /// </summary>
-    public partial class OrdersWindow : Window
+    public partial class ClientsWindow : Window
     {
-        public ObservableCollection<Order> DataGridItemsSource
+        public ObservableCollection<Client> DataGridItemsSource
         {
             get
             {
                 try
                 {
-                    return _dbContext.Orders.Local;
+                    return _dbContext.Clients.Local;
                 }
                 catch (ProviderIncompatibleException exc)
                 {
@@ -42,17 +41,17 @@ namespace SpawmetDatabaseWPF
         }
 
         private SpawmetDBContext _dbContext;
-        private object _dbContextLock;
+        //private object _dbContextLock;
 
-        private BackgroundWorker _partsBackgroundWorker;
+        private BackgroundWorker _ordersBackgroundWorker;
 
-        public OrdersWindow()
+        public ClientsWindow()
             : this(0, 0)
         {
             
         }
 
-        public OrdersWindow(double x, double y)
+        public ClientsWindow(double x, double y)
         {
             InitializeComponent();
 
@@ -60,19 +59,19 @@ namespace SpawmetDatabaseWPF
 
             MainDataGrid.SelectionChanged += (sender, e) =>
             {
-                Order order;
+                Client client;
                 try
                 {
-                    order = (Order) MainDataGrid.SelectedItem;
+                    client = (Client) MainDataGrid.SelectedItem;
                 }
                 catch (InvalidCastException exc)
                 {
                     FillDetailedInfo(null);
                     return;
                 }
-                if (order != null)
+                if (client != null)
                 {
-                    FillDetailedInfo(order);
+                    FillDetailedInfo(client);
                 }
             };
 
@@ -83,7 +82,7 @@ namespace SpawmetDatabaseWPF
             this.Closed += (sender, e) =>
             {
                 _dbContext.Dispose();
-                _partsBackgroundWorker.Dispose();
+                _ordersBackgroundWorker.Dispose();
             };
 
             try
@@ -107,43 +106,39 @@ namespace SpawmetDatabaseWPF
             }
 
             _dbContext = new SpawmetDBContext();
-            _dbContextLock = new object();
+            //_dbContextLock = new object();
 
             LoadDataIntoSource();
 
             MainDataGrid.Items.Refresh();
 
-            ClientComboBoxColumn.ItemsSource = _dbContext.Clients.ToList();
-            //ClientComboBoxColumn.SelectedItemBinding = new Binding("Client");
-            MachineComboBoxColumn.ItemsSource = _dbContext.Machines.ToList();
-            //MachineComboBoxColumn.SelectedItemBinding = new Binding("Machine");
-
-            if (_partsBackgroundWorker != null)
+            if (_ordersBackgroundWorker != null)
             {
-                _partsBackgroundWorker.Dispose();
+                _ordersBackgroundWorker.Dispose();
             }
 
-            _partsBackgroundWorker = new BackgroundWorker();
-            _partsBackgroundWorker.DoWork += (sender, e) =>
+            _ordersBackgroundWorker = new BackgroundWorker();
+            _ordersBackgroundWorker.DoWork += (sender, e) =>
             {
-                var orderId = (int) e.Argument;
-                List<AdditionalPartSetElement> result;
-                lock (_dbContextLock)
+                var clientId = (int) e.Argument;
+                List<Order> result;
+                using (var context = new SpawmetDBContext())
                 {
-                    result = _dbContext.AdditionalPartSets
-                        .Where(el => el.Order.Id == orderId)
-                        .Include(el => el.Part)
-                        .OrderBy(p => p.Id)
+                    result = context.Orders
+                        .Where(o => o.Client.Id == clientId)
+                        .Include(o => o.Client)
+                        .Include(o => o.Machine)
+                        .OrderBy(o => o.Id)
                         .ToList();
                 }
                 e.Result = result;
             };
-            _partsBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            _ordersBackgroundWorker.RunWorkerCompleted += (sender, e) =>
             {
-                var source = (List<AdditionalPartSetElement>) e.Result;
-                AdditionalPartSetDataGrid.ItemsSource = source;
+                var source = (List<Order>) e.Result;
+                OrdersListBox.ItemsSource = source;
 
-                AdditionalPartSetProgressBar.IsIndeterminate = false;
+                OrdersProgressBar.IsIndeterminate = false;
             };
         }
 
@@ -151,12 +146,7 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                //_dbContext.Orders.Load();
-                _dbContext.Orders
-                    .Include(o => o.Client)
-                    .Include(o => o.Machine)
-                    .Load();
-                //include client and machine ???
+                _dbContext.Clients.Load();
                 ConnectMenuItem.IsEnabled = false;
 
                 MachinesMenuItem.IsEnabled = true;
@@ -168,49 +158,34 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        public void FillDetailedInfo(Order order)
+        public void FillDetailedInfo(Client client)
         {
-            if (order == null)
+            if (client == null)
             {
                 IdTextBlock.Text = "";
-                ClientTextBlock.Text = "";
-                MachineTextBlock.Text = "";
-                StartDateTextBlock.Text = "";
-                SendDateTextBlock.Text = "";
-                StatusTextBlock.Text = "";
-                RemarksTextBlock.Text = "";
+                NameTextBlock.Text = "";
+                PhoneTextBlock.Text = "";
+                EmailTextBlock.Text = "";
+                NipTextBlock.Text = "";
+                AddressTextBlock.Text = "";
 
-                AdditionalPartSetDataGrid.ItemsSource = null;
-                AdditionalPartSetProgressBar.IsIndeterminate = false;
+                OrdersListBox.ItemsSource = null;
+                OrdersProgressBar.IsIndeterminate = false;
                 return;
             }
 
-            string statusName = "";
-            switch (order.Status)
+            IdTextBlock.Text = client.Id.ToString();
+            NameTextBlock.Text = client.Name;
+            PhoneTextBlock.Text = client.Phone;
+            EmailTextBlock.Text = client.Email;
+            NipTextBlock.Text = client.Nip;
+            AddressTextBlock.Text = client.Address;
+
+            if (_ordersBackgroundWorker.IsBusy == false)
             {
-                case OrderStatus.Start:
-                    statusName = "Nowe";
-                    break;
-            }
+                OrdersProgressBar.IsIndeterminate = true;
 
-            string clientName = order.Client != null ? order.Client.Name : "";
-            string machineName = order.Machine != null ? order.Machine.Name : "";
-            string startDate = order.StartDate != null ? order.StartDate.Value.ToShortDateString() : "";
-            string sendDate = order.SendDate != null ? order.SendDate.Value.ToShortDateString() : "";
-
-            IdTextBlock.Text = order.Id.ToString();
-            ClientTextBlock.Text = clientName;
-            MachineTextBlock.Text = machineName;
-            StartDateTextBlock.Text = startDate;
-            SendDateTextBlock.Text = sendDate;
-            StatusTextBlock.Text = statusName;
-            RemarksTextBlock.Text = order.Remarks;
-
-            if (_partsBackgroundWorker.IsBusy == false)
-            {
-                AdditionalPartSetProgressBar.IsIndeterminate = true;
-
-                _partsBackgroundWorker.RunWorkerAsync(order.Id);
+                _ordersBackgroundWorker.RunWorkerAsync(client.Id);
             }
         }
 
@@ -226,7 +201,7 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            new AddOrderWindow(this, _dbContext).Show();
+            new AddClientWindow(this, _dbContext).Show();
         }
 
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -237,49 +212,35 @@ namespace SpawmetDatabaseWPF
             }
 
             var selected = MainDataGrid.SelectedItems;
-            var toDelete = new List<Order>();
+            var toDelete = new List<Client>();
             foreach (var item in selected)
             {
-                Order order = null;
+                Client client = null;
                 try
                 {
-                    order = (Order) item;
+                    client = (Client) item;
                 }
                 catch (InvalidCastException exc)
                 {
                     continue;
                 }
-                toDelete.Add(order);
+                toDelete.Add(client);
             }
             try
             {
-                foreach (var order in toDelete)
+                foreach (var client in toDelete)
                 {
-                    Delete(order);
+                    foreach (var order in client.Orders.ToList())
+                    {
+                        Delete(order);
+                    }
+
+                    Delete(client);
                 }
             }
             catch (EntityException exc)
             {
                 Disconnected("Kod błędu: 05.");
-                //throw exc;
-            }
-        }
-
-        private void Delete(Order order)
-        {
-            foreach (var additionalPartSetElement in order.AdditionalPartSet.ToList())
-            {
-                _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
-                _dbContext.SaveChanges();
-            }
-
-            order.Client = null;
-            order.Machine = null;
-
-            lock (_dbContextLock)
-            {
-                _dbContext.Orders.Remove(order);
-                _dbContext.SaveChanges();
             }
         }
 
@@ -302,61 +263,6 @@ namespace SpawmetDatabaseWPF
 
         /***********************************************************************************/
         /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
-        /*** END                                                                         ***/
-        /***********************************************************************************/
-
-        /***********************************************************************************/
-        /*** AdditionalPartSetDataGrid ContextMenu event OnClick handlers.               ***/
-        /*** BEGIN                                                                       ***/
-        /***********************************************************************************/
-
-        private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            Order order = null;
-            try
-            {
-                order = (Order) MainDataGrid.SelectedItem;
-            }
-            catch (InvalidCastException exc)
-            {
-                order = null;
-            }
-            finally
-            {
-                if (order != null)
-                {
-                    new AddPartToOrderWindow(this, _dbContext, order).Show();
-                }
-            }
-        }
-
-        private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            var dataGrid = AdditionalPartSetDataGrid;
-            var order = (Order) MainDataGrid.SelectedItem;
-            var partSetElement = (AdditionalPartSetElement) dataGrid.SelectedItem;
-
-            if (partSetElement == null)
-            {
-                return;
-            }
-
-            try
-            {
-                _dbContext.AdditionalPartSets.Remove(partSetElement);
-                _dbContext.SaveChanges();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 04.");
-                return;
-            }
-
-            AdditionalPartSetDataGrid.ItemsSource = order.AdditionalPartSet;
-        }
-
-        /***********************************************************************************/
-        /*** AdditionalPartSetDataGrid ContextMenu event OnClick handlers.               ***/
         /*** END                                                                         ***/
         /***********************************************************************************/
 
@@ -389,11 +295,11 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                new ClientsWindow(this.Left + 40, this.Top + 40).Show();
+                new OrdersWindow(this.Left + 40, this.Top + 40).Show();
             }
             catch (EntityException exc)
             {
@@ -405,7 +311,7 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                new OrdersWindow(this.Left, this.Top).Show();
+                new ClientsWindow(this.Left, this.Top).Show();
                 this.Close();
             }
             catch (ProviderIncompatibleException exc)
@@ -419,6 +325,30 @@ namespace SpawmetDatabaseWPF
         /*** END                                                                         ***/
         /***********************************************************************************/
 
+        private void Delete(Order order)
+        {
+            foreach (var additionalPartSetElement in order.AdditionalPartSet.ToList())
+            {
+                _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
+                _dbContext.SaveChanges();
+            }
+
+            order.Client = null;
+            order.Machine = null;
+
+            //lock (_dbContextLock)
+            //{
+            _dbContext.Orders.Remove(order);
+            _dbContext.SaveChanges();
+            //}
+        }
+
+        private void Delete(Client client)
+        {
+            _dbContext.Clients.Remove(client);
+            _dbContext.SaveChanges();
+        }
+
         private void Disconnected(string message)
         {
             MainDataGrid.IsEnabled = false;
@@ -427,6 +357,5 @@ namespace SpawmetDatabaseWPF
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
-
     }
 }

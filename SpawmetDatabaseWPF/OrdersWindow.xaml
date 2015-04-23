@@ -12,6 +12,7 @@
                     <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick" IsEnabled="False"></MenuItem>
                     <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Zamówienia" IsEnabled="False"></MenuItem>
+                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
@@ -76,30 +77,40 @@
         
         <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
             <StackPanel Margin="0" x:Name="DetailsStackPanel">
-                <DockPanel Height="115">
+                <StackPanel Height="115">
                     <ScrollViewer MaxHeight="115">
-                        <DockPanel>
-                    <StackPanel DockPanel.Dock="Left">
-                        <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Klient: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Maszyna: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Przyjęcie: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Wysyłka: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Status: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Uwagi: " FontWeight="DemiBold"></TextBlock>
-                    </StackPanel>
-                    <StackPanel DockPanel.Dock="Right" Margin="0,0,10,0">
-                        <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="ClientTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="MachineTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="StartDateTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="SendDateTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="StatusTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="RemarksTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                    </StackPanel>
-                        </DockPanel>
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                                <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Klient: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="ClientTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Maszyna: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="MachineTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Przyjęcie: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="StartDateTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Wysyłka: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="SendDateTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Status: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="StatusTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Uwagi: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="RemarksTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                        </StackPanel>
                     </ScrollViewer>
-                </DockPanel>
+                </StackPanel>
                 <TextBlock Text="Dodatkowe części:" FontWeight="DemiBold"></TextBlock>
                 <DataGrid x:Name="AdditionalPartSetDataGrid" Height="260" AutoGenerateColumns="False" CanUserAddRows="False">
                     <DataGrid.ContextMenu>

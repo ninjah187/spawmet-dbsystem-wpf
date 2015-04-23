@@ -1,0 +1,24 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.AddClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dodaj klienta" Height="250" Width="300" ResizeMode="CanMinimize">
+    <DockPanel Margin="10">
+        <StackPanel DockPanel.Dock="Left">
+            <TextBlock Text="Nazwa: " FontWeight="DemiBold" Margin="0,10"></TextBlock>
+            <TextBlock Text="Telefon: " FontWeight="DemiBold" Margin="0,2"></TextBlock>
+            <TextBlock Text="Email: " FontWeight="DemiBold" Margin="0,11"></TextBlock>
+            <TextBlock Text="NIP: " FontWeight="DemiBold" Margin="0,2"></TextBlock>
+            <TextBlock Text="Adres: " FontWeight="DemiBold" Margin="0,10"></TextBlock>
+        </StackPanel>
+        
+        <StackPanel DockPanel.Dock="Right">
+            <TextBox x:Name="NameTextBox" TextWrapping="Wrap" Margin="5,10" />
+            <TextBox x:Name="PhoneTextBox" TextWrapping="Wrap" Margin="5,0" />
+            <TextBox x:Name="EmailTextBox" TextWrapping="Wrap" Margin="5,10" />
+            <TextBox x:Name="NipTextBox" TextWrapping="Wrap" Margin="5,0" />
+            <TextBox x:Name="AddressTextBox" TextWrapping="Wrap" Margin="5,10" />
+
+            <Button Width="60" Click="ButtonBase_OnClick" Margin="0,10">Dodaj</Button>
+        </StackPanel>
+    </DockPanel>
+</Window>

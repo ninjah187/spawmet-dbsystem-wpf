@@ -418,10 +418,23 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected("Kod błędu: 06.");
+                Disconnected("Kod błędu: 06a.");
                 return;
             }
             //this.Close();
+        }
+
+        private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new ClientsWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu 06b.");
+                return;
+            }
         }
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
