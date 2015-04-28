@@ -23,7 +23,7 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartToOrderWindow : Window
     {
-        public ObservableCollection<Part> ListBoxItemsSource { get; set; }
+        //public ObservableCollection<Part> ListBoxItemsSource { get; set; }
 
         private readonly OrdersWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
@@ -92,7 +92,9 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            _parentWindow.AdditionalPartSetDataGrid.ItemsSource = _order.AdditionalPartSet;
+            _parentWindow.AdditionalPartSetDataGrid.ItemsSource = _order.AdditionalPartSet
+                .OrderBy(el => el.Part.Name)
+                .ToList();
 
             this.Close();
         }

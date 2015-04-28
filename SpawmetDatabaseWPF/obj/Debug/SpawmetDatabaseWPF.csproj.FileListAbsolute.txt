@@ -22,8 +22,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\MySql.Data.Entity.EF6.dll
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\MasterWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\MasterWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PartsWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PartsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\MachinesWindow.baml
@@ -78,3 +76,13 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddClientWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ClientsWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddClientWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ClientsWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeliveriesWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeliveriesWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\MySql.Data.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\MySql.Data.Entity.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddDeliveryWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddDeliveryWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToDelivery.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddPartToDelivery.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\InitialWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\InitialWindow.g.cs

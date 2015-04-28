@@ -1,0 +1,90 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.DeliveriesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dostawy" Height="480" Width="800" ResizeMode="CanMinimize"
+        Icon="icon.ico">
+    <DockPanel>
+        <!-- NAVBAR -->
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Tabele">
+                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick" IsEnabled="False"></MenuItem>
+                    <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Dostawy" IsEnabled="False"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Opcje">
+                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
+        <DockPanel></DockPanel>
+        <!-- END NAVBAR -->
+
+        <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
+                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
+                  AutoGenerateColumns="False" CanUserAddRows="False">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
+                <DataGridTemplateColumn Header="Data przyjęcia">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Date, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
+            <StackPanel Margin="0" x:Name="DetailsStackPanel">
+                <StackPanel Height="50">
+                    <ScrollViewer MaxHeight="50">
+                        <StackPanel>
+                            <DockPanel>
+                                <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBlock Text="Data: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
+                                <TextBlock x:Name="DateTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            </DockPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+                
+                <TextBlock Text="Części:" FontWeight="DemiBold"></TextBlock>
+                <DataGrid x:Name="PartsDataGrid" Height="330" AutoGenerateColumns="False" CanUserAddRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
+                            <MenuItem Header="Usuń" Click="DeletePartItem_OnClick"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells" />
+                        <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <ProgressBar x:Name="PartsProgressBar" Height="5"></ProgressBar>
+                
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

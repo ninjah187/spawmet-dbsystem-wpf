@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="Części" Height="480" Width="800" ResizeMode="CanMinimize">
+        Title="Części" Height="480" Width="800" ResizeMode="CanMinimize"
+        Icon="icon.ico">
     <DockPanel>
         
         <!-- NAVBAR -->
@@ -14,6 +15,7 @@
                     <MenuItem Header="Części" IsEnabled="False"></MenuItem>
                     <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
@@ -100,15 +102,15 @@
                 <TextBlock Text="Maszyny:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name"
                          Height="90"></ListBox>
-                <ProgressBar x:Name="MachinesProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
+                <ProgressBar x:Name="MachinesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
                          Height="90"></ListBox>
-                <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
+                <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Dostawy:" FontWeight="DemiBold"></TextBlock>
                 <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature"
                          Height="90"></ListBox>
-                <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="True"></ProgressBar>
+                <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
             </StackPanel>
             <!--</ScrollViewer>-->
                 

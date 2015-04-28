@@ -53,6 +53,12 @@ namespace SpawmetDatabaseWPF
         }
 
         public OrdersWindow(double x, double y)
+            : this(null, x, y)
+        {
+            
+        }
+
+        public OrdersWindow(Order selectedOrder, double x, double y)
         {
             InitializeComponent();
 
@@ -63,7 +69,7 @@ namespace SpawmetDatabaseWPF
                 Order order;
                 try
                 {
-                    order = (Order) MainDataGrid.SelectedItem;
+                    order = (Order)MainDataGrid.SelectedItem;
                 }
                 catch (InvalidCastException exc)
                 {
@@ -78,7 +84,17 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                FillDetailedInfo(null);
+                Order order;
+                try
+                {
+                    order = DataGridItemsSource.First(o => o.Id == selectedOrder.Id);
+                }
+                catch (NullReferenceException exc)
+                {
+                    order = null;
+                }
+
+                MainDataGrid.SelectedItem = order;
             };
             this.Closed += (sender, e) =>
             {
@@ -133,7 +149,7 @@ namespace SpawmetDatabaseWPF
                     result = _dbContext.AdditionalPartSets
                         .Where(el => el.Order.Id == orderId)
                         .Include(el => el.Part)
-                        .OrderBy(p => p.Id)
+                        .OrderBy(el => el.Part.Id)
                         .ToList();
                 }
                 e.Result = result;
@@ -161,6 +177,7 @@ namespace SpawmetDatabaseWPF
 
                 MachinesMenuItem.IsEnabled = true;
                 PartsMenuItem.IsEnabled = true;
+                ClientsMenuItem.IsEnabled = true;
             }
             catch (EntityException exc)
             {
@@ -285,19 +302,29 @@ namespace SpawmetDatabaseWPF
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 07");
-            }
+            _dbContext.SaveChanges();
         }
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ConnectMenuItem_OnClick(sender, e);
+            Order selectedOrder = null;
+            try
+            {
+                selectedOrder = (Order)MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedOrder = null;
+            }
+            try
+            {
+                new OrdersWindow(selectedOrder, Left, Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01a.");
+            }
         }
 
         /***********************************************************************************/
@@ -401,6 +428,18 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06c.");
+            }
+        }
+
         private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -423,7 +462,9 @@ namespace SpawmetDatabaseWPF
         {
             MainDataGrid.IsEnabled = false;
             DetailsStackPanel.IsEnabled = false;
+            MachinesMenuItem.IsEnabled = false;
             PartsMenuItem.IsEnabled = false;
+            ClientsMenuItem.IsEnabled = false;
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }

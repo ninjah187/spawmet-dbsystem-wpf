@@ -20,3 +20,5 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServ
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.csprojResolveAssemblyReference.cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\MySql.Data.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\MySql.Data.Entity.dll

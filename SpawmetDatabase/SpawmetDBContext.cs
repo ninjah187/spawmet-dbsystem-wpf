@@ -37,5 +37,6 @@ namespace SpawmetDatabase
         public DbSet<Order> Orders { get; set; }
         public DbSet<StandardPartSetElement> StandardPartSets { get; set; }
         public DbSet<AdditionalPartSetElement> AdditionalPartSets { get; set; }
+        public DbSet<DeliveryPartSetElement> DeliveryPartSets { get; set; }
     }
 }

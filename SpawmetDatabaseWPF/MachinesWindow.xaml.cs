@@ -50,26 +50,20 @@ namespace SpawmetDatabaseWPF
         private BackgroundWorker _partsBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
 
-        private readonly MasterWindow _parentWindow;
-
+        // TIDY UP THAT MESS IN CONSTRUCTORS !!!!!!!!!
         public MachinesWindow()
-            : this(null)
+            : this(0, 0)
         {
-            
         }
 
         public MachinesWindow(double x, double y)
-            : this(null)
+            : this(null, x, y)
         {
-            this.Left = x;
-            this.Top = y;
         }
 
-        public MachinesWindow(MasterWindow parentWindow)
+        public MachinesWindow(Machine selectedMachine, double x, double y)
         {
             InitializeComponent();
-
-            _parentWindow = parentWindow;
 
             this.DataContext = this;
 
@@ -93,21 +87,23 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                FillDetailedInfo(null);
-                if (_parentWindow != null)
+                Machine machine;
+                try
                 {
-                    _parentWindow.MachinesWindowButton.IsEnabled = false;
+                    machine = DataGridItemsSource.First(m => m.Id == selectedMachine.Id);
                 }
+                catch (NullReferenceException exc)
+                {
+                    machine = null;
+                }
+
+                MainDataGrid.SelectedItem = machine;
             };
             this.Closed += (sender, e) =>
             {
                 _dbContext.Dispose();
                 _partsBackgroundWorker.Dispose();
                 _ordersBackgroundWorker.Dispose();
-                if (_parentWindow != null)
-                {
-                    _parentWindow.MachinesWindowButton.IsEnabled = true;
-                }
             };
 
             try
@@ -118,6 +114,9 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected("Kod błędu 00.");
             }
+
+            Left = x;
+            Top = y;
         }
 
         private void Initialize()
@@ -220,6 +219,7 @@ namespace SpawmetDatabaseWPF
 
         private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //InvokationTargetException gdy nie ma połączenia
             var source = (ICollection<Order>)e.Result;
             OrdersListBox.ItemsSource = source;
 
@@ -437,6 +437,19 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu 06b.");
+                return;
+            }
+        }
+
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -451,7 +464,24 @@ namespace SpawmetDatabaseWPF
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ConnectMenuItem_OnClick(sender, e);
+            Machine selectedMachine = null;
+            try
+            {
+                selectedMachine = (Machine) MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedMachine = null;
+            }
+            try
+            {
+                new MachinesWindow(selectedMachine, Left, Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01a.");
+            }
         }
 
         private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -482,5 +512,6 @@ namespace SpawmetDatabaseWPF
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
+
     }
 }

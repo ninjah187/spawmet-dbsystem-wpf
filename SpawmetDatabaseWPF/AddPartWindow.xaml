@@ -1,7 +1,8 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.AddPartWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Dodaj część" Height="170" Width="300" ResizeMode="CanMinimize">
+        Title="Dodaj część" Height="170" Width="300" ResizeMode="CanMinimize"
+        Icon="icon.ico">
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Left">
             <TextBlock Text="Nazwa:" FontWeight="DemiBold"></TextBlock>

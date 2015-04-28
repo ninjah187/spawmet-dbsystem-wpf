@@ -52,6 +52,12 @@ namespace SpawmetDatabaseWPF
         }
 
         public ClientsWindow(double x, double y)
+            : this(null, x, y)
+        {
+            
+        }
+
+        public ClientsWindow(Client selectedClient, double x, double y)
         {
             InitializeComponent();
 
@@ -77,7 +83,17 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                FillDetailedInfo(null);
+                Client client;
+                try
+                {
+                    client = DataGridItemsSource.First(c => c.Id == selectedClient.Id);
+                }
+                catch (NullReferenceException exc)
+                {
+                    client = null;
+                }
+
+                MainDataGrid.SelectedItem = client;
             };
             this.Closed += (sender, e) =>
             {
@@ -258,7 +274,24 @@ namespace SpawmetDatabaseWPF
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ConnectMenuItem_OnClick(sender, e);
+            Client selectedClient;
+            try
+            {
+                selectedClient = (Client) MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedClient = null;
+            }
+            try
+            {
+                new ClientsWindow(selectedClient, Left, Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01a.");
+            }
         }
 
         /***********************************************************************************/
@@ -304,6 +337,18 @@ namespace SpawmetDatabaseWPF
             catch (EntityException exc)
             {
                 Disconnected("Kod błędu: 06b.");
+            }
+        }
+
+        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06c.");
             }
         }
 
@@ -357,5 +402,6 @@ namespace SpawmetDatabaseWPF
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
+
     }
 }

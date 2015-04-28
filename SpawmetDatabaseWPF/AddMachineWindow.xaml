@@ -1,7 +1,8 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.AddMachineWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Dodaj maszynę" Height="150" Width="300">
+        Title="Dodaj maszynę" Height="150" Width="300"
+        Icon="icon.ico">
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Left">
             <TextBlock Text="Nazwa:" FontWeight="DemiBold"></TextBlock>

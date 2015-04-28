@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="Maszyny" Height="480" Width="800" ResizeMode="CanMinimize">
+        Title="Maszyny" Height="480" Width="800" ResizeMode="CanMinimize"
+        Icon="icon.ico">
     <DockPanel>
 
         <!-- NAVBAR -->
@@ -14,6 +15,7 @@
                     <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>

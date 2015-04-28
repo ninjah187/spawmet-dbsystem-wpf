@@ -4,11 +4,26 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Order : ModelElement
+    public class Order : INotifyPropertyChanged//ModelElement
     {
         public Order()
         {
             this.AdditionalPartSet = new HashSet<AdditionalPartSetElement>();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id != value)
+                {
+                    _id = value;
+                    NotifyPropertyChanged("Id");
+                }
+            }
         }
 
         public OrderStatus? Status
@@ -111,6 +126,17 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public string Signature
+        {
+            get
+            {
+                string clientName = Client != null ? Client.Name : "";
+                string machineName = Machine != null ? Machine.Name : "";
+                return clientName + ", " + machineName + ", " + StartDate.Value.ToShortDateString();
+            }
+        }
+
+        private int _id;
         private OrderStatus? _orderStatus;
         private string _remarks;
         private DateTime? _startDate;
@@ -120,13 +146,11 @@ namespace SpawmetDatabase.Model
         private Machine _machine;
         private ICollection<AdditionalPartSetElement> _additionalPartSet;
 
-        public string Signature
+        protected void NotifyPropertyChanged(string propertyName)
         {
-            get
+            if (PropertyChanged != null)
             {
-                string clientName = Client != null ? Client.Name : "";
-                string machineName = Machine != null ? Machine.Name : "";
-                return clientName + ", " + machineName + ", " + StartDate.Value.ToShortDateString();
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

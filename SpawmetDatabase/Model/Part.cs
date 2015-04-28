@@ -8,7 +8,7 @@ namespace SpawmetDatabase.Model
     {
         public Part()
         {
-            this.Deliveries = new HashSet<Delivery>();
+            this.DeliveryPartSets = new HashSet<DeliveryPartSetElement>();
             this.StandardPartSets = new HashSet<StandardPartSetElement>();
             this.AdditionalPartSets = new HashSet<AdditionalPartSetElement>();
         }
@@ -54,16 +54,16 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public virtual ICollection<Delivery> Deliveries {
+        public virtual ICollection<DeliveryPartSetElement> DeliveryPartSets {
             get
             {
-                return _deliveries;
+                return _deliveryPartSets;
             }
             set
             {
-                if (_deliveries != value)
+                if (_deliveryPartSets != value)
                 {
-                    _deliveries = value;
+                    _deliveryPartSets = value;
                     //NotifyPropertyChanged("Deliveries");
                 }
             }
@@ -105,7 +105,7 @@ namespace SpawmetDatabase.Model
         private int _amount;
         private Origin? _origin;
 
-        private ICollection<Delivery> _deliveries;
+        private ICollection<DeliveryPartSetElement> _deliveryPartSets;
         private ICollection<StandardPartSetElement> _standardPartSets;
         private ICollection<AdditionalPartSetElement> _additionalPartSets;
     }

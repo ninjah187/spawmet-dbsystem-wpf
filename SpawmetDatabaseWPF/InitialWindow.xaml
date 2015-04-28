@@ -1,0 +1,15 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.InitialWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="InitialWindow" Width="300" SizeToContent="Height"
+        Icon="icon.ico">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <TextBlock Text="Wczytywanie..." FontWeight="DemiBold" TextAlignment="Center"
+                       Margin="0,10"></TextBlock>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom">
+            <ProgressBar Height="30" IsIndeterminate="True" Margin="0,0,0,10"></ProgressBar>
+        </StackPanel>
+    </DockPanel>
+</Window>

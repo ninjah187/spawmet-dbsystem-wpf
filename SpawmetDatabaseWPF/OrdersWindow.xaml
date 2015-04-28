@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="Zamówienia" Height="480" Width="800" ResizeMode="CanMinimize">
+        Title="Zamówienia" Height="480" Width="800" ResizeMode="CanMinimize"
+        Icon="icon.ico">
     <DockPanel>
         <!-- NAVBAR -->
         <DockPanel DockPanel.Dock="Top">
@@ -13,6 +14,7 @@
                     <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Zamówienia" IsEnabled="False"></MenuItem>
                     <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
@@ -44,6 +46,8 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
 
+            <!--http://stackoverflow.com/questions/6203554/wpf-data-binding-combobox-in-datagridtemplatecolumn-->
+            
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="SizeToCells" />
                 <!--<DataGridTextColumn Header="Klient" Binding="{Binding Client.Name}" Width="SizeToCells" />
@@ -57,14 +61,14 @@
                 <DataGridTemplateColumn Header="Data przyjęcia">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding StartDate}" BorderThickness="0" ></DatePicker>
+                            <DatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" ></DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Data wysyłki">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding SendDate}" BorderThickness="0"></DatePicker>
+                            <DatePicker SelectedDate="{Binding SendDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"></DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

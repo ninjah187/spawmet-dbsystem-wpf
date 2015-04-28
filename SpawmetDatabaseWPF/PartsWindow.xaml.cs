@@ -44,24 +44,23 @@ namespace SpawmetDatabaseWPF
 
         private SpawmetDBContext _dbContext;
 
-        private MasterWindow _parentWindow;
-
         private BackgroundWorker _machinesBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
         private BackgroundWorker _deliveriesBackgroundWorker;
 
-        public PartsWindow(double x, double y)
-            : this(null)
+        public PartsWindow()
+            : this(0, 0)
         {
-            this.Left = x;
-            this.Top = y;
         }
 
-        public PartsWindow(MasterWindow parentWindow)
+        public PartsWindow(double x, double y)
+            : this(null, x, y)
+        {
+        }
+
+        public PartsWindow(Part selectedPart, double x, double y)
         {
             InitializeComponent();
-
-            _parentWindow = parentWindow;
 
             this.DataContext = this;
 
@@ -85,11 +84,17 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                FillDetailedInfo(null);
-                if (_parentWindow != null)
+                Part part;
+                try
                 {
-                    _parentWindow.PartsWindowButton.IsEnabled = false;
+                    part = DataGridItemsSource.First(p => p.Id == selectedPart.Id);
                 }
+                catch (NullReferenceException exc)
+                {
+                    part = null;
+                }
+
+                MainDataGrid.SelectedItem = part;
             };
             this.Closed += (sender, e) =>
             {
@@ -97,10 +102,6 @@ namespace SpawmetDatabaseWPF
                 _machinesBackgroundWorker.Dispose();
                 _ordersBackgroundWorker.Dispose();
                 _deliveriesBackgroundWorker.Dispose();
-                if (_parentWindow != null)
-                {
-                    _parentWindow.PartsWindowButton.IsEnabled = true;
-                }
             };
 
             try
@@ -111,6 +112,9 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected();
             }
+
+            Left = x;
+            Top = y;
         }
 
         private void Initialize()
@@ -173,14 +177,6 @@ namespace SpawmetDatabaseWPF
                     .Include(o => o.Machine)
                     .OrderBy(o => o.Id)
                     .ToList();
-                //var result = new List<Order>();
-                //foreach (var additionalPartSetElement in context.AdditionalPartSets)
-                //{
-                //    if (additionalPartSetElement.Part.Id == partId)
-                //    {
-                //        result.Add(additionalPartSetElement.Order);
-                //    }
-                //}
                 e.Result = result;
                 context.Dispose();
             };
@@ -195,7 +191,11 @@ namespace SpawmetDatabaseWPF
             {
                 var partId = (int) e.Argument;
                 var context = new SpawmetDBContext();
-                var result = context.Parts.Single(p => p.Id == partId).Deliveries;
+                var result = context.DeliveryPartSets
+                    .Where(el => el.Part.Id == partId)
+                    .Select(el => el.Delivery)
+                    .OrderBy(d => d.Id)
+                    .ToList();
                 e.Result = result;
                 context.Dispose();
             };
@@ -249,34 +249,6 @@ namespace SpawmetDatabaseWPF
                 _ordersBackgroundWorker.RunWorkerAsync(part.Id);
                 _deliveriesBackgroundWorker.RunWorkerAsync(part.Id);
             }
-
-            //try
-            //{
-            //    var relatedMachines = new List<Machine>();
-            //    foreach (var standardPartSetElement in part.StandardPartSets)
-            //    {
-            //        relatedMachines.Add(standardPartSetElement.Machine);
-            //    }
-            //    MachinesListBox.ItemsSource = relatedMachines.OrderBy(machine => machine.Id);
-
-            //    var relatedOrders = new List<Order>();
-            //    foreach (var additionalPartSetElement in part.AdditionalPartSets)
-            //    {
-            //        relatedOrders.Add(additionalPartSetElement.Order);
-            //    }
-            //    OrdersListBox.ItemsSource = relatedOrders.OrderBy(order => order.Id);
-
-            //    var relatedDeliveries = new List<Delivery>();
-            //    foreach (var delivery in part.Deliveries)
-            //    {
-            //        relatedDeliveries.Add(delivery);
-            //    }
-            //    DeliveriesListBox.ItemsSource = relatedDeliveries.OrderBy(delivery => delivery.Id);
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected();
-            //}
         }
 
         private void LoadDataIntoSource()
@@ -329,9 +301,9 @@ namespace SpawmetDatabaseWPF
                         _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
                         _dbContext.SaveChanges();
                     }
-                    foreach (var delivery in part.Deliveries.ToList())
+                    foreach (var deliveryPartSetElement in part.DeliveryPartSets.ToList())
                     {
-                        _dbContext.Deliveries.Remove(delivery);
+                        _dbContext.DeliveryPartSets.Remove(deliveryPartSetElement);
                         _dbContext.SaveChanges();
                     }
                     _dbContext.Parts.Remove(part);
@@ -386,6 +358,18 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06c.");
+            }
+        }
+
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -400,7 +384,24 @@ namespace SpawmetDatabaseWPF
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            ConnectMenuItem_OnClick(sender, e);
+            Part selectedPart = null;
+            try
+            {
+                selectedPart = (Part) MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedPart = null;
+            }
+            try
+            {
+                new PartsWindow(selectedPart, Left, Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01a.");
+            }
         }
 
         private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -431,5 +432,6 @@ namespace SpawmetDatabaseWPF
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
+
     }
 }

@@ -120,7 +120,9 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet;//.OrderBy(element => element.Part.Id);
+            _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet
+                .OrderBy(el => el.Part.Name)
+                .ToList();
 
             this.Close();
         }
