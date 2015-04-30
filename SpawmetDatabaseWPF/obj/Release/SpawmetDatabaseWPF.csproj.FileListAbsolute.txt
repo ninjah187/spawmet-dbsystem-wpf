@@ -50,7 +50,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToMachine.bam
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MachinesWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MainWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MasterWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PartsWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\RemoveWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddMachineWindow.g.cs
@@ -58,7 +57,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToMachine.g.c
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MachinesWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MainWindow.g.cs
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MasterWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PartsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\RemoveWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\App.g.cs
@@ -86,3 +84,5 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddDeliveryWindow.ba
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToDelivery.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddDeliveryWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToDelivery.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\InitialWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\InitialWindow.g.cs

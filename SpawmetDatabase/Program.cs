@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using SpawmetDatabase.Model;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace SpawmetDatabase
 {
@@ -19,28 +20,32 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
+            var mainProcess = Process.Start(@".\SpawmetDatabaseWPF.exe");
+
+            //Process.GetCurrentProcess().Close();
+
             //Database.SetInitializer(new DropCreateDatabaseAlways<SpawmetDBContext>());
-            //Database.SetInitializer<SpawmetDBContext>(null);
+            ////Database.SetInitializer<SpawmetDBContext>(null);
 
             //using (var context = new SpawmetDBContext())
             //{
             //    context.Database.ExecuteSqlCommand("DELETE FROM Parts WHERE id=1");
             //}
 
-            using (var context = new SpawmetDBContext())
-            {
-                Console.WriteLine(context.Parts.Count());
-            }
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    Console.WriteLine(context.Parts.Count());
+            //}
 
-            var sw = new Stopwatch();
-            Console.WriteLine("Rozpoczęcie inicjalizacji.");
-            Console.WriteLine("T: " + DateTime.Now);
-            sw.Start();
-            InitializeDB();
-            sw.Stop();
-            Console.WriteLine("Zakończono.");
-            Console.WriteLine("T: " + DateTime.Now);
-            Console.WriteLine("Czas operacji: " + sw.Elapsed);
+            //var sw = new Stopwatch();
+            //Console.WriteLine("Rozpoczęcie inicjalizacji.");
+            //Console.WriteLine("T: " + DateTime.Now);
+            //sw.Start();
+            //InitializeDB();
+            //sw.Stop();
+            //Console.WriteLine("Zakończono.");
+            //Console.WriteLine("T: " + DateTime.Now);
+            //Console.WriteLine("Czas operacji: " + sw.Elapsed);
 
             //using (var context = new SpawmetDBContext())
             //{
@@ -93,8 +98,8 @@ namespace SpawmetDatabase
                 //}
                 //Console.WriteLine();
             //}
-
-            Console.ReadKey();
+            
+            //Console.ReadKey();
         }
 
         private static void InitializeDB()
@@ -203,9 +208,9 @@ namespace SpawmetDatabase
                             deliveryPartSets.Add(partSetElement);
                             parts.RemoveAt(index);
                         }
-                        context.DeliveryPartSets.AddRange(deliveryPartSets);
-                        context.SaveChanges();
                     }
+                    context.DeliveryPartSets.AddRange(deliveryPartSets);
+                    context.SaveChanges();
                 }
                 if (context.Machines.Count() == 0)
                 {
@@ -238,14 +243,14 @@ namespace SpawmetDatabase
                             {
                                 Machine = machine,
                                 Part = part,
-                                Amount = random.Next(1001),
+                                Amount = random.Next(1001)
                             };
                             standardPartSets.Add(partSetElement);
                             parts.RemoveAt(index);
                         }
-                        context.StandardPartSets.AddRange(standardPartSets);
-                        context.SaveChanges();
                     }
+                    context.StandardPartSets.AddRange(standardPartSets);
+                    context.SaveChanges();
                 }
                 if (context.Orders.Count() == 0)
                 {

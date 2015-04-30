@@ -60,6 +60,8 @@ namespace SpawmetDatabaseWPF {
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
         public static void Main() {
+            SplashScreen splashScreen = new SplashScreen("splashscreen2.png");
+            splashScreen.Show(true);
             SpawmetDatabaseWPF.App app = new SpawmetDatabaseWPF.App();
             app.InitializeComponent();
             app.Run();

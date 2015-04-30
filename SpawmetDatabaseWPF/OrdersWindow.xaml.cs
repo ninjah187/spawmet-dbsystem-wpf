@@ -93,6 +93,10 @@ namespace SpawmetDatabaseWPF
                 {
                     order = null;
                 }
+                catch (InvalidOperationException exc)
+                {
+                    order = null;
+                }
 
                 MainDataGrid.SelectedItem = order;
             };

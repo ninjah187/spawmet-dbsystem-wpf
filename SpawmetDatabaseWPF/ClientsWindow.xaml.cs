@@ -92,6 +92,10 @@ namespace SpawmetDatabaseWPF
                 {
                     client = null;
                 }
+                catch (InvalidOperationException exc)
+                {
+                    client = null;
+                }
 
                 MainDataGrid.SelectedItem = client;
             };
