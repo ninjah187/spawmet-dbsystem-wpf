@@ -42,6 +42,11 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public string StatusDescription
+        {
+            get { return _orderStatus.Value.GetDescription(); }
+        }
+
         public string Remarks
         {
             get

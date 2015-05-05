@@ -115,9 +115,12 @@
     <Compile Include="ConnectingWindow.xaml.cs">
       <DependentUpon>ConnectingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\OrderStatusToStringConverter.cs" />
+    <Compile Include="Converters\OriginToStringConverter.cs" />
     <Compile Include="DeliveriesWindow.xaml.cs">
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EnumToFriendlyNameConverter.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="InitialWindow.xaml.cs">
       <DependentUpon>InitialWindow.xaml</DependentUpon>
@@ -273,6 +276,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="icon2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="InputWindows\" />
+    <Folder Include="MainWindows\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

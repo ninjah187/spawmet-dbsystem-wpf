@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:spawmetDatabaseWpf="clr-namespace:SpawmetDatabaseWPF"
         Title="Części" Height="480" Width="800" ResizeMode="CanMinimize"
         Icon="icon.ico">
     <DockPanel>
@@ -36,6 +37,8 @@
                         <x:Type TypeName="custns:Origin"></x:Type>
                     </ObjectDataProvider.MethodParameters>
                 </ObjectDataProvider>
+                
+                <spawmetDatabaseWpf:OriginToStringConverter x:Key="enumItemsConverter" />
             </DataGrid.Resources>
 
             <DataGrid.ContextMenu>
@@ -51,8 +54,30 @@
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
-                <DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
-                                                    ItemsSource="{Binding Source={StaticResource originEnum}}" />
+                <!--<DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
+                                                    ItemsSource="{Binding Source={StaticResource originEnum}}" />-->
+                
+                <DataGridTemplateColumn Header="Pochodzenie" SortMemberPath="Origin">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Content="{Binding Origin, Converter={StaticResource enumItemsConverter}}"></Label>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding Source={StaticResource originEnum}}"
+                                      SelectedItem="{Binding Origin, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=., Mode=OneWay,
+                                                         Converter={StaticResource enumItemsConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                
             </DataGrid.Columns>
         </DataGrid>
 

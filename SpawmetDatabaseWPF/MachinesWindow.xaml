@@ -94,6 +94,13 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells" />
                             <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
+                            <DataGridTemplateColumn Header="Wypalanie">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="CraftPartButton_OnClick">Wypal</Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
                     <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>

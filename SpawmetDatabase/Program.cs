@@ -20,7 +20,33 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            var mainProcess = Process.Start(@".\SpawmetDatabaseWPF.exe");
+            Console.WriteLine(OrderStatus.Done.GetDescription());
+
+            //var yearBegin = new DateTime(DateTime.Now.Year, 1, 1);
+
+            //var step = new TimeSpan(1, 0, 0, 0);
+
+            //while (yearBegin.DayOfWeek != DayOfWeek.Monday)
+            //{
+            //    yearBegin += step;
+            //}
+
+            //var yearEnd = new DateTime(DateTime.Now.Year, 12, 31);
+            //var timeSpan = new TimeSpan(7, 0, 0, 0);
+
+            //var temp = yearBegin;
+            //int i = 1;
+            //while (temp.Year != DateTime.Now.Year + 1)
+            //{
+            //    Console.WriteLine("Tydzień " + i++ + ": " + temp.ToShortDateString());
+            //    temp += timeSpan;
+            //}
+
+            Console.ReadKey();
+
+            //var mainProcess = Process.Start(@".\SpawmetDatabaseWPF.exe");
+
+
 
             //Process.GetCurrentProcess().Close();
 
@@ -50,7 +76,7 @@ namespace SpawmetDatabase
             //using (var context = new SpawmetDBContext())
             //{
             //    var part = context.Parts.First();
-                
+
             //    Console.WriteLine("ID: " + part.Id);
             //    Console.WriteLine("Nazwa: " + part.Name);
             //    Console.WriteLine("Ilość: " + part.Amount);
@@ -60,45 +86,45 @@ namespace SpawmetDatabase
             //        Console.WriteLine(standardPartSetElement.Machine.Name);
             //    }
 
-                //foreach (var order in context.Orders.ToList())
-                //{
-                //    Console.WriteLine("ID zamówienia: " + order.Id);
-                //    Console.WriteLine("Data złożenia: " + order.StartDate);
-                //    Console.WriteLine("Data wysyłki: " + order.SendDate);
-                //    Console.WriteLine("Status: " + order.Status);
+            //foreach (var order in context.Orders.ToList())
+            //{
+            //    Console.WriteLine("ID zamówienia: " + order.Id);
+            //    Console.WriteLine("Data złożenia: " + order.StartDate);
+            //    Console.WriteLine("Data wysyłki: " + order.SendDate);
+            //    Console.WriteLine("Status: " + order.Status);
 
-                //    var clientName = order.Client != null ? order.Client.Name : "";
-                //    Console.WriteLine("Nazwa klienta: " + clientName);
+            //    var clientName = order.Client != null ? order.Client.Name : "";
+            //    Console.WriteLine("Nazwa klienta: " + clientName);
 
-                //    var machineName = order.Machine != null ? order.Machine.Name : "";
-                //    Console.WriteLine("Nazwa maszyny: " + machineName);
+            //    var machineName = order.Machine != null ? order.Machine.Name : "";
+            //    Console.WriteLine("Nazwa maszyny: " + machineName);
 
-                //    Console.WriteLine("Podstawowe części maszyny: ");
-                //    if (order.Machine != null)
-                //    {
-                //        foreach (var partSet in order.Machine.StandardPartSet)
-                //        {
-                //            Console.WriteLine("-- " + partSet.Part.Name);
-                //        }
-                //    }
-                //    Console.WriteLine("Dodatkowe części: ");
-                //    foreach (var partSet in order.AdditionalPartSet)
-                //    {
-                //        Console.WriteLine("-- " + partSet.Part.Name);
-                //    }
-                //    Console.WriteLine();
-                //}
-
-                //foreach (var user in context.Users.ToList())
-                //{
-                //    Console.WriteLine("Id: " + user.Id);
-                //    Console.WriteLine("Login: " + user.Login);
-                //    Console.WriteLine("Password sha512: " + user.Password);
-                //    Console.WriteLine();
-                //}
-                //Console.WriteLine();
+            //    Console.WriteLine("Podstawowe części maszyny: ");
+            //    if (order.Machine != null)
+            //    {
+            //        foreach (var partSet in order.Machine.StandardPartSet)
+            //        {
+            //            Console.WriteLine("-- " + partSet.Part.Name);
+            //        }
+            //    }
+            //    Console.WriteLine("Dodatkowe części: ");
+            //    foreach (var partSet in order.AdditionalPartSet)
+            //    {
+            //        Console.WriteLine("-- " + partSet.Part.Name);
+            //    }
+            //    Console.WriteLine();
             //}
-            
+
+            //foreach (var user in context.Users.ToList())
+            //{
+            //    Console.WriteLine("Id: " + user.Id);
+            //    Console.WriteLine("Login: " + user.Login);
+            //    Console.WriteLine("Password sha512: " + user.Password);
+            //    Console.WriteLine();
+            //}
+            //Console.WriteLine();
+            //}
+
             //Console.ReadKey();
         }
 
@@ -261,12 +287,14 @@ namespace SpawmetDatabase
                         var randomClient = context.Clients.Find(random.Next(context.Clients.Count()) + 1);
                         var randomMachine = context.Machines.Find(random.Next(context.Machines.Count()) + 1);
 
+                        var status = random.Next(3);
+
                         orders.Add(new Order()
                         {
                             Remarks = "Kilka uwag na temat zamówienia numer " + i,
                             StartDate = DateTime.Now,
                             SendDate = DateTime.Now,
-                            Status = OrderStatus.Start,
+                            Status = (OrderStatus) status,
                             Client = randomClient,
                             Machine = randomMachine,
                             //AdditionalPartSet = additionalPartSet,

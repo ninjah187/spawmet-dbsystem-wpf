@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -160,7 +161,16 @@ namespace SpawmetDatabaseWPF
             };
             _partsBackgroundWorker.RunWorkerCompleted += (sender, e) =>
             {
-                var source = (List<AdditionalPartSetElement>) e.Result;
+                ICollection<AdditionalPartSetElement> source = null;
+                try
+                {
+                    source = (List<AdditionalPartSetElement>) e.Result;
+                }
+                catch (TargetInvocationException exc)
+                {
+                    Disconnected("Kod błędu: pBW.");
+                    return;
+                }
                 AdditionalPartSetDataGrid.ItemsSource = source;
 
                 AdditionalPartSetProgressBar.IsIndeterminate = false;
@@ -206,13 +216,13 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            string statusName = "";
-            switch (order.Status)
+            string statusName = order.Status.Value.GetDescription();
+            /*switch (order.Status)
             {
                 case OrderStatus.Start:
                     statusName = "Nowe";
                     break;
-            }
+            }*/
 
             string clientName = order.Client != null ? order.Client.Name : "";
             string machineName = order.Machine != null ? order.Machine.Name : "";
@@ -306,7 +316,14 @@ namespace SpawmetDatabaseWPF
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            _dbContext.SaveChanges();
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: OWxSCMI_OC.");
+            }
         }
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -473,5 +490,23 @@ namespace SpawmetDatabaseWPF
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
 
+        private void CraftPartButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            AdditionalPartSetElement selectedElement = null;
+            try
+            {
+                selectedElement = (AdditionalPartSetElement) AdditionalPartSetDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedElement = null;
+                return;
+            }
+
+            var part = selectedElement.Part;
+            part.Amount += selectedElement.Amount;
+
+            _dbContext.SaveChanges();
+        }
     }
 }

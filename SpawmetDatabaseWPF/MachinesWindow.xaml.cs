@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,9 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (ProviderIncompatibleException exc)
                 {
-                    throw new ProviderIncompatibleException("in DataGridItemsSource");
+                    //throw new ProviderIncompatibleException("in DataGridItemsSource");
+                    Disconnected("Kod błędu: MWxDGIS.");
+                    return null;
                 }
             }
         }
@@ -91,6 +94,10 @@ namespace SpawmetDatabaseWPF
                 try
                 {
                     machine = DataGridItemsSource.First(m => m.Id == selectedMachine.Id);
+                }
+                catch (ArgumentNullException exc)
+                {
+                    machine = null;
                 }
                 catch (NullReferenceException exc)
                 {
@@ -224,7 +231,16 @@ namespace SpawmetDatabaseWPF
         private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //InvokationTargetException gdy nie ma połączenia
-            var source = (ICollection<Order>)e.Result;
+            ICollection<Order> source = null;
+            try
+            {
+                source = (ICollection<Order>) e.Result;
+            }
+            catch (TargetInvocationException exc)
+            {
+                Disconnected("Kod błędu: MWxOBW_OC.");
+                return;
+            }
             OrdersListBox.ItemsSource = source;
 
             OrdersProgressBar.IsIndeterminate = false;
@@ -285,7 +301,7 @@ namespace SpawmetDatabaseWPF
             }
             catch (EntityException exc)
             {
-                Disconnected("Kod błędu: 03.");
+                Disconnected("Kod błędu: MWxLDIS.");
             }
         }
 
@@ -512,10 +528,32 @@ namespace SpawmetDatabaseWPF
             DetailsStackPanel.IsEnabled = false;
             PartsMenuItem.IsEnabled = false;
             OrdersMenuItem.IsEnabled = false;
+            ClientsMenuItem.IsEnabled = false;
+            DeliveriesMenuItem.IsEnabled = false;
             FillDetailedInfo(null);
             ConnectMenuItem.IsEnabled = true;
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
 
+        private void CraftPartButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            //var button = (Part) sender;
+            //var partSetElement = (StandardPartSetElement) StandardPartSetDataGrid.SelectedItem;
+
+            StandardPartSetElement selectedElement = null;
+            try
+            {
+                selectedElement = (StandardPartSetElement) StandardPartSetDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedElement = null;
+                return;
+            }
+
+            var part = selectedElement.Part;
+            part.Amount += selectedElement.Amount;
+            _dbContext.SaveChanges();
+        }
     }
 }
