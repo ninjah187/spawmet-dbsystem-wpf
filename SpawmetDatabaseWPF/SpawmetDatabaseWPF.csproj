@@ -117,6 +117,21 @@
     </Compile>
     <Compile Include="Converters\OrderStatusToStringConverter.cs" />
     <Compile Include="Converters\OriginToStringConverter.cs" />
+    <Compile Include="DeleteClientWindow.xaml.cs">
+      <DependentUpon>DeleteClientWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteDeliveryWindow.xaml.cs">
+      <DependentUpon>DeleteDeliveryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteMachineWindow.xaml.cs">
+      <DependentUpon>DeleteMachineWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteOrderWindow.xaml.cs">
+      <DependentUpon>DeleteOrderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeletingPartWindow.xaml.cs">
+      <DependentUpon>DeletingPartWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeliveriesWindow.xaml.cs">
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
@@ -174,6 +189,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConnectingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteClientWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteDeliveryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteMachineWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteOrderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeletingPartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -243,7 +278,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpawmetDatabase\SpawmetDatabase.csproj">

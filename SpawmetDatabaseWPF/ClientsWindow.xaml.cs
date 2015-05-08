@@ -226,42 +226,57 @@ namespace SpawmetDatabaseWPF
 
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataGridItemsSource == null)
-            {
-                return;
-            }
-
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Client>();
             foreach (var item in selected)
             {
-                Client client = null;
                 try
                 {
-                    client = (Client) item;
+                    toDelete.Add((Client) item);
                 }
                 catch (InvalidCastException exc)
                 {
                     continue;
                 }
-                toDelete.Add(client);
             }
-            try
-            {
-                foreach (var client in toDelete)
-                {
-                    foreach (var order in client.Orders.ToList())
-                    {
-                        Delete(order);
-                    }
+            new DeleteClientWindow(this, _dbContext, toDelete).Show();
 
-                    Delete(client);
-                }
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 05.");
-            }
+            //if (DataGridItemsSource == null)
+            //{
+            //    return;
+            //}
+
+            //var selected = MainDataGrid.SelectedItems;
+            //var toDelete = new List<Client>();
+            //foreach (var item in selected)
+            //{
+            //    Client client = null;
+            //    try
+            //    {
+            //        client = (Client) item;
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        continue;
+            //    }
+            //    toDelete.Add(client);
+            //}
+            //try
+            //{
+            //    foreach (var client in toDelete)
+            //    {
+            //        foreach (var order in client.Orders.ToList())
+            //        {
+            //            Delete(order);
+            //        }
+
+            //        Delete(client);
+            //    }
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected("Kod błędu: 05.");
+            //}
         }
 
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)

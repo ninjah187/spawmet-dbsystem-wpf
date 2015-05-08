@@ -363,57 +363,74 @@ namespace SpawmetDatabaseWPF
 
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataGridItemsSource == null)
-            {
-                return;
-            }
-
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Machine>();
             foreach (var item in selected)
             {
-                Machine machine = null;
                 try
                 {
-                    machine = (Machine) item;
+                    toDelete.Add((Machine) item);
                 }
                 catch (InvalidCastException exc)
                 {
                     continue;
                 }
-                toDelete.Add(machine);
             }
-            try
-            {
-                foreach (var machine in toDelete)
-                {
-                    foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
-                    {
-                        _dbContext.StandardPartSets.Remove(standardPartSetElement);
-                        _dbContext.SaveChanges();
-                    }
+            new DeleteMachineWindow(this, _dbContext, toDelete).Show();
 
-                    var relatedOrders = _dbContext.Orders.Where(o => o.Machine.Id == machine.Id).ToList();
-                    foreach (var order in relatedOrders)
-                    {
-                        foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
-                        {
-                            _dbContext.AdditionalPartSets.Remove(additionalPartSet);
-                            _dbContext.SaveChanges();
-                        }
-                        _dbContext.Orders.Remove(order);
-                        _dbContext.SaveChanges();
-                    }
-                    _dbContext.Machines.Remove(machine);
-                    _dbContext.SaveChanges();
-                }
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu 05.");
-            }
+            //if (DataGridItemsSource == null)
+            //{
+            //    return;
+            //}
 
-            FillDetailedInfo(null);
+            //var selected = MainDataGrid.SelectedItems;
+            //var toDelete = new List<Machine>();
+            //foreach (var item in selected)
+            //{
+            //    Machine machine = null;
+            //    try
+            //    {
+            //        machine = (Machine) item;
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        continue;
+            //    }
+            //    toDelete.Add(machine);
+            //}
+            //try
+            //{
+            //    foreach (var machine in toDelete)
+            //    {
+            //        foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
+            //        {
+            //            _dbContext.StandardPartSets.Remove(standardPartSetElement);
+            //            _dbContext.SaveChanges();
+            //        }
+
+            //        var relatedOrders = _dbContext.Orders
+            //            .Where(o => o.Machine.Id == machine.Id)
+            //            .ToList();
+            //        foreach (var order in relatedOrders.ToList())
+            //        {
+            //            foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
+            //            {
+            //                _dbContext.AdditionalPartSets.Remove(additionalPartSet);
+            //                _dbContext.SaveChanges();
+            //            }
+            //            _dbContext.Orders.Remove(order);
+            //            _dbContext.SaveChanges();
+            //        }
+            //        _dbContext.Machines.Remove(machine);
+            //        _dbContext.SaveChanges();
+            //    }
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected("Kod błędu 05.");
+            //}
+
+            //FillDetailedInfo(null);
         }
 
         private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -482,12 +499,12 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        public void Refresh()
         {
             Machine selectedMachine = null;
             try
             {
-                selectedMachine = (Machine) MainDataGrid.SelectedItem;
+                selectedMachine = (Machine)MainDataGrid.SelectedItem;
             }
             catch (InvalidCastException exc)
             {
@@ -502,6 +519,11 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected("Kod błędu: 01a.");
             }
+        }
+
+        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Refresh();
         }
 
         private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)

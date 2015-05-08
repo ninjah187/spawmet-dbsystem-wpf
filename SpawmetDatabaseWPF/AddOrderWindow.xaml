@@ -19,7 +19,9 @@
             <DatePicker x:Name="StartDatePicker" Margin="5,10" IsTodayHighlighted="True" />
             <DatePicker x:Name="SendDatePicker" Margin="5,0" IsTodayHighlighted="True" />
             <ComboBox x:Name="StatusComboBox" Margin="5,10">
-                <ComboBoxItem IsSelected="True">Start</ComboBoxItem>
+                <ComboBoxItem IsSelected="True">Nowe</ComboBoxItem>
+                <ComboBoxItem>W toku</ComboBoxItem>
+                <ComboBoxItem>Zakończone</ComboBoxItem>
             </ComboBox>
             <!--<ScrollViewer MaxHeight="60">-->
                 <TextBox x:Name="RemarksTextBox" Margin="5,0" Height="60" TextWrapping="Wrap" />

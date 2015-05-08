@@ -10,11 +10,11 @@ none
 false
 TRACE
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\App.xaml
-171728569770
+221756888004
 
-291423716626
+34169530547
 20892595798
-AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ClientsWindow.xaml;ConnectingWindow.xaml;DeliveriesWindow.xaml;InitialWindow.xaml;MachinesWindow.xaml;MainWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;RemoveWindow.xaml;
+AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ClientsWindow.xaml;ConnectingWindow.xaml;DeleteClientWindow.xaml;DeleteDeliveryWindow.xaml;DeleteMachineWindow.xaml;DeleteOrderWindow.xaml;DeletingPartWindow.xaml;DeliveriesWindow.xaml;InitialWindow.xaml;MachinesWindow.xaml;MainWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;RemoveWindow.xaml;
 splashscreen2.png
 True
 

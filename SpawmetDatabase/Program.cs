@@ -9,6 +9,7 @@ using SpawmetDatabase.Model;
 using System.Security.Cryptography;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using SpawmetDatabase.Scripts;
 
 namespace SpawmetDatabase
 {
@@ -20,7 +21,11 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            Console.WriteLine(OrderStatus.Done.GetDescription());
+            string path = Console.ReadLine();
+            PCDatabaseConnection.AddMachine(path);
+            //PCDatabaseConnection.AddMachine(@"D:\Widły z krokodylem");
+
+            //Console.WriteLine(OrderStatus.Done.GetDescription());
 
             //var yearBegin = new DateTime(DateTime.Now.Year, 1, 1);
 

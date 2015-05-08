@@ -25,3 +25,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\MySql.Data.Entity.dll
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.OrderStatusResource.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.EnumResources.resources
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\App.config

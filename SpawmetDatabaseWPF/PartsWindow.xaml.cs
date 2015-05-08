@@ -278,6 +278,9 @@ namespace SpawmetDatabaseWPF
 
         private void DeletePartMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            //var selected = (Part) MainDataGrid.SelectedItem;
+            //new DeletingPartWindow(this, _dbContext, selected).Show();
+
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Part>();
             foreach (var item in selected)
@@ -291,35 +294,50 @@ namespace SpawmetDatabaseWPF
                     continue;
                 }
             }
-            try
-            {
-                foreach (var part in toDelete)
-                {
-                    foreach (var standardPartSetElement in part.StandardPartSets.ToList())
-                    {
-                        _dbContext.StandardPartSets.Remove(standardPartSetElement);
-                        _dbContext.SaveChanges();
-                    }
-                    foreach (var additionalPartSetElement in part.AdditionalPartSets.ToList())
-                    {
-                        _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
-                        _dbContext.SaveChanges();
-                    }
-                    foreach (var deliveryPartSetElement in part.DeliveryPartSets.ToList())
-                    {
-                        _dbContext.DeliveryPartSets.Remove(deliveryPartSetElement);
-                        _dbContext.SaveChanges();
-                    }
-                    _dbContext.Parts.Remove(part);
-                    _dbContext.SaveChanges();
+            new DeletingPartWindow(this, _dbContext, toDelete).Show();
 
-                    FillDetailedInfo(null);
-                }
-            }
-            catch (EntityException exc)
-            {
-                Disconnected();
-            }
+            //var selected = MainDataGrid.SelectedItems;
+            //var toDelete = new List<Part>();
+            //foreach (var item in selected)
+            //{
+            //    try
+            //    {
+            //        toDelete.Add((Part) item);
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        continue;
+            //    }
+            //}
+            //try
+            //{
+            //    foreach (var part in toDelete)
+            //    {
+            //        foreach (var standardPartSetElement in part.StandardPartSets.ToList())
+            //        {
+            //            _dbContext.StandardPartSets.Remove(standardPartSetElement);
+            //            _dbContext.SaveChanges();
+            //        }
+            //        foreach (var additionalPartSetElement in part.AdditionalPartSets.ToList())
+            //        {
+            //            _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
+            //            _dbContext.SaveChanges();
+            //        }
+            //        foreach (var deliveryPartSetElement in part.DeliveryPartSets.ToList())
+            //        {
+            //            _dbContext.DeliveryPartSets.Remove(deliveryPartSetElement);
+            //            _dbContext.SaveChanges();
+            //        }
+            //        _dbContext.Parts.Remove(part);
+            //        _dbContext.SaveChanges();
+            //    }
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected();
+            //}
+
+            //FillDetailedInfo(null);
         }
 
         private void MachinesMenuItem_OnClick(object sender, RoutedEventArgs e)

@@ -40,3 +40,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.Properties.Re
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Release\App.config

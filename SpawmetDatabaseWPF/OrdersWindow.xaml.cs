@@ -262,38 +262,53 @@ namespace SpawmetDatabaseWPF
 
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataGridItemsSource == null)
-            {
-                return;
-            }
-
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Order>();
             foreach (var item in selected)
             {
-                Order order = null;
                 try
                 {
-                    order = (Order) item;
+                    toDelete.Add((Order) item);
                 }
                 catch (InvalidCastException exc)
                 {
                     continue;
                 }
-                toDelete.Add(order);
             }
-            try
-            {
-                foreach (var order in toDelete)
-                {
-                    Delete(order);
-                }
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 05.");
-                //throw exc;
-            }
+            new DeleteOrderWindow(this, _dbContext, toDelete).Show();
+
+            //if (DataGridItemsSource == null)
+            //{
+            //    return;
+            //}
+
+            //var selected = MainDataGrid.SelectedItems;
+            //var toDelete = new List<Order>();
+            //foreach (var item in selected)
+            //{
+            //    Order order = null;
+            //    try
+            //    {
+            //        order = (Order) item;
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        continue;
+            //    }
+            //    toDelete.Add(order);
+            //}
+            //try
+            //{
+            //    foreach (var order in toDelete)
+            //    {
+            //        Delete(order);
+            //    }
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected("Kod błędu: 05.");
+            //    //throw exc;
+            //}
         }
 
         private void Delete(Order order)
@@ -327,6 +342,11 @@ namespace SpawmetDatabaseWPF
         }
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Refresh();
+        }
+
+        public void Refresh()
         {
             Order selectedOrder = null;
             try

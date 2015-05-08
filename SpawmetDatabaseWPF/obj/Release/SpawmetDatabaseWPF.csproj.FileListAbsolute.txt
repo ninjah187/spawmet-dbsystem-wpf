@@ -88,3 +88,14 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\InitialWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\InitialWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\GeneratedInternalTypeHelper.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SpawmetDatabaseWPF_MarkupCompile.lref
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeletingPartWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeletingPartWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteMachineWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteMachineWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteOrderWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteOrderWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteClientWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteClientWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteDeliveryWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteDeliveryWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\App.config

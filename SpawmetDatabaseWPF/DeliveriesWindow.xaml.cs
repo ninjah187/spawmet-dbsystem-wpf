@@ -222,37 +222,52 @@ namespace SpawmetDatabaseWPF
         /*** Delete selected Delivery items. ***/
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            if (DataGridItemsSource == null)
-            {
-                return;
-            }
-
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Delivery>();
             foreach (var item in selected)
             {
-                Delivery delivery = null;
                 try
                 {
-                    delivery = (Delivery) delivery;
+                    toDelete.Add((Delivery) item);
                 }
                 catch (InvalidCastException exc)
                 {
                     continue;
                 }
-                toDelete.Add(delivery);
             }
-            try
-            {
-                foreach (var delivery in toDelete)
-                {
-                    Delete(delivery);
-                }
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 05.");
-            }
+            new DeleteDeliveryWindow(this, _dbContext, toDelete).Show();
+
+            //if (DataGridItemsSource == null)
+            //{
+            //    return;
+            //}
+
+            //var selected = MainDataGrid.SelectedItems;
+            //var toDelete = new List<Delivery>();
+            //foreach (var item in selected)
+            //{
+            //    Delivery delivery = null;
+            //    try
+            //    {
+            //        delivery = (Delivery) delivery;
+            //    }
+            //    catch (InvalidCastException exc)
+            //    {
+            //        continue;
+            //    }
+            //    toDelete.Add(delivery);
+            //}
+            //try
+            //{
+            //    foreach (var delivery in toDelete)
+            //    {
+            //        Delete(delivery);
+            //    }
+            //}
+            //catch (EntityException exc)
+            //{
+            //    Disconnected("Kod błędu: 05.");
+            //}
         }
 
         /*** Delete from database specific Delivery element and all related ***/
@@ -286,10 +301,15 @@ namespace SpawmetDatabaseWPF
 
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            Refresh();
+        }
+
+        public void Refresh()
+        {
             Delivery selectedDelivery = null;
             try
             {
-                selectedDelivery = (Delivery) MainDataGrid.SelectedItem;
+                selectedDelivery = (Delivery)MainDataGrid.SelectedItem;
             }
             catch (InvalidCastException exc)
             {
