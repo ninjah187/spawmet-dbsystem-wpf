@@ -528,5 +528,108 @@ namespace SpawmetDatabaseWPF
 
             _dbContext.SaveChanges();
         }
+
+        private void StatusComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OrderStatus previousSelection;
+            OrderStatus newSelection;
+
+            if (e.RemovedItems.Count != 0)
+            {
+                previousSelection = (OrderStatus) e.RemovedItems[0];
+            }
+            else
+            {
+                return;
+            }
+
+            newSelection = (OrderStatus) e.AddedItems[0];
+
+            switch (previousSelection)
+            {
+                case OrderStatus.New:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.InProgress:
+                            ApplyPartSets((Order) MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.Done:
+                            ApplyPartSets((Order) MainDataGrid.SelectedItem);
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.InProgress:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.New:
+                            UndoApplyPartSets((Order) MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.Done:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.Done:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.New:
+                            UndoApplyPartSets((Order) MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.InProgress:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
+        private void ApplyPartSets(Order order)
+        {
+            foreach (var element in order.Machine.StandardPartSet)
+            {
+                var part = _dbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount -= element.Amount;
+            }
+            foreach (var element in order.AdditionalPartSet)
+            {
+                var part = _dbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount -= element.Amount;
+            }
+            _dbContext.SaveChanges();
+        }
+
+        private void UndoApplyPartSets(Order order)
+        {
+            foreach (var element in order.Machine.StandardPartSet)
+            {
+                var part = _dbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount += element.Amount;
+            }
+            foreach (var element in order.AdditionalPartSet)
+            {
+                var part = _dbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount += element.Amount;
+            }
+            _dbContext.SaveChanges();
+        }
     }
 }

@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using SpawmetDatabase.Model;
 using System.Security.Cryptography;
 using System.Diagnostics;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using SpawmetDatabase.Scripts;
+using System.Drawing.Printing;
+using System.IO;
 
 namespace SpawmetDatabase
 {
@@ -21,8 +24,92 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            string path = Console.ReadLine();
-            PCDatabaseConnection.AddMachine(path);
+            using (var context = new SpawmetDBContext())
+            {
+                //var machine = context.Machines.First();
+                //var fileStream = new FileStream(@".\print_temp.txt", FileMode.Create, FileAccess.ReadWrite);
+                
+                //var streamWriter = new StreamWriter(fileStream);
+                //streamWriter.WriteLine("Data: " + DateTime.Now);
+                //streamWriter.WriteLine("Maszyna: " + machine.Name);
+                //streamWriter.WriteLine("Części: ");
+                //foreach (var element in machine.StandardPartSet)
+                //{
+                //    streamWriter.WriteLine(" - " + element.Part.Name + "; x" + element.Amount);
+                //}
+
+                //streamWriter.Close();
+                //streamWriter.Dispose();
+                //fileStream.Dispose();
+
+                var machines = context.Machines.ToList();
+                var fileStream = new FileStream(@".\print_temp.txt", FileMode.Create, FileAccess.ReadWrite);
+
+                var streamWriter = new StreamWriter(fileStream);
+                foreach (var machine in machines)
+                {
+                    streamWriter.WriteLine("Data: " + DateTime.Now);
+                    streamWriter.WriteLine("Maszyna: " + machine.Name);
+                    streamWriter.WriteLine("Części:");
+                    foreach (var element in machine.StandardPartSet)
+                    {
+                        streamWriter.WriteLine(" - " + element.Part.Name + "; x" + element.Amount);
+                    }
+                }
+                streamWriter.Close();
+                streamWriter.Dispose();
+                fileStream.Dispose();
+
+                var streamReader = new StreamReader(@".\print_temp.txt");
+
+                var font = new Font("Arial", 10);
+
+                var printDocument = new PrintDocument();
+                //printDocument.DocumentName = machine.Name;
+                printDocument.DocumentName = "Wykaz maszyn, " + DateTime.Now;
+                printDocument.PrinterSettings = new PrinterSettings()
+                {
+                    PrinterName = "PDFCreator",
+                };
+                printDocument.PrintPage += (sender, e) =>
+                {
+                    float linesPerPage = 0;
+                    float yPos = 0;
+                    int count = 0;
+                    float leftMargin = e.MarginBounds.Left;
+                    float topMargin = e.MarginBounds.Top;
+                    string line = null;
+
+                    linesPerPage = e.MarginBounds.Height / font.GetHeight(e.Graphics);
+
+                    while (count < linesPerPage &&
+                           (line = streamReader.ReadLine()) != null)
+                    {
+                        yPos = topMargin + (count*font.GetHeight(e.Graphics));
+                        e.Graphics.DrawString(line, font, Brushes.Black, leftMargin, yPos, new StringFormat());
+                        count++;
+                    }
+
+                    if (line != null)
+                    {
+                        e.HasMorePages = true;
+                    }
+                    else
+                    {
+                        e.HasMorePages = false;
+                    }
+                };
+                printDocument.Print();
+
+                streamReader.Close();
+                streamReader.Dispose();
+                printDocument.Dispose();
+                //fileStream.Close();
+            }
+
+            //string path = Console.ReadLine();
+            //PCDatabaseConnection.AddMachine(path);
+
             //PCDatabaseConnection.AddMachine(@"D:\Widły z krokodylem");
 
             //Console.WriteLine(OrderStatus.Done.GetDescription());

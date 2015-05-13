@@ -40,3 +40,4 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.Pro
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.exe
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Debug\App.config

@@ -86,8 +86,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <ComboBox ItemsSource="{Binding Source={StaticResource statusEnum}}"
-                                      SelectedItem="{Binding Status, Mode=TwoWay}">
+                            <ComboBox x:Name="StatusComboBox"
+                                      ItemsSource="{Binding Source={StaticResource statusEnum}}"
+                                      SelectedItem="{Binding Status, Mode=TwoWay}"
+                                      SelectionChanged="StatusComboBox_OnSelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=., Mode=OneWay,

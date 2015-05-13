@@ -1,0 +1,497 @@
+Data: 2015-05-13 02:16:51
+Maszyna: Widły z krokodylem Mini 0,78m; 1 siłownik; 5 zębów
+Części:
+ - belka zębowa[wzkm0,78] - 4mm; x1
+ - boczek krótki[wzkm] - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x4
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm0,78] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x1
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x5
+ - zabezpieczenie sworzeń fi25 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias krótki[wzkm] - 8mm; x2
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:03
+Maszyna: Widły z krokodylem Mini 0,87m; 1 siłownik; 5 zębów
+Części:
+ - belka zębowa [wzkm0,87] - 4mm; x1
+ - boczek krótki[wzkm] - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x4
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm0,87] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x1
+ - zabezpieczenie nakładka fi17 - fi 35   - 10mm; x5
+ - zabezpieczenie sworzeń fi25 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias krótki[wzkm] - 8mm; x2
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:05
+Maszyna: Widły z krokodylem Mini 1,00m; 1 siłownik; 6 zębów
+Części:
+ - belka zębowa[wzkm1,0] - 4mm; x1
+ - boczek krótki[wzkm] - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x4
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,0] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x1
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x5
+ - zabezpieczenie sworzeń fi25 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias krótki[wzkm] - 8mm; x2
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:07
+Maszyna: Widły z krokodylem Mini 1,10m; 1 siłownik; 6 zębów
+Części:
+ - belka zębowa[wzkm1,1] - 4mm; x1
+ - boczek krótki[wzkm] - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x4
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,1] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x1
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x5
+ - zabezpieczenie sworzeń fi25 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias krótki[wzkm] - 8mm; x2
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:08
+Maszyna: Widły z krokodylem Mini 1,20m; 1 siłownik; 7 zębów
+Części:
+ - belka zębowa[wzkm1,2] - 4mm; x1
+ - boczek krótki[wzkm] - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x4
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,2] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x1
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x5
+ - zabezpieczenie sworzeń fi25 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias krótki[wzkm] - 8mm; x2
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:11
+Maszyna: Widły z krokodylem Mini 1,20m; 2 siłowniki; 7 zębów
+Części:
+ - belka zębowa[wzkm1,2] - 4mm; x1
+ - boczek[wzkm]  - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x2
+ - mocowanie trójniki - 4mm; x1
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,2] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x3
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:14
+Maszyna: Widły z krokodylem Mini 1,30m; 2 siłowniki; 7 zębów
+Części:
+ - belka zębowa[wzkm1,3] - 4mm; x1
+ - boczek[wzkm]  - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x2
+ - mocowanie trójniki - 4mm; x1
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,3]  -4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x3
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:18
+Maszyna: Widły z krokodylem Mini 1,50m; 2 siłowniki; 8 zębów
+Części:
+ - belka zębowa[wzkm1,5] - 4mm; x1
+ - boczek[wzkm]  - 8mm; x2
+ - klin szczęka[wzkm] - 8mm; x2
+ - mocowanie trójniki - 4mm; x1
+ - szczęka zewnętrzna[wzkm] - 8mm; x2
+ - szczęka[wzkm] - 8mm; x2
+ - tylna ściana[wzkm1,5] - 4mm; x1
+ - wzmocnienie szczęki[wzkm] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x3
+ - zabezpieczenie sworzeń fi30 - 10mm; x3
+ - zawias[wzkm] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzkm] - 8mm; x2
+Data: 2015-05-13 02:17:20
+Maszyna: Widły z krokodylem S szer. 1,0m; 5 zębów
+Części:
+ - belka zębowa[wzks1,0] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks1,0] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawas[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x4
+Data: 2015-05-13 02:17:25
+Maszyna: Widły z krokodylem S szer. 1,2m; 6 zębów
+Części:
+ - belka zębowa[wzks1,2] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks1,2] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias [wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro [wzks] - 8mm; x4
+Data: 2015-05-13 02:17:30
+Maszyna: Widły z krokodylem S szer. 1,4m; 7 zębów
+Części:
+ - belka zębowa[wzks1,4] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x2
+ - szczęka [wzks] - 8mm; x2
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks1,4] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias [wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x4
+Data: 2015-05-13 02:17:34
+Maszyna: Widły z krokodylem S szer. 1,6m; 8 zębów
+Części:
+ - belka zębowa[wzks1,6] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x2
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks1,6] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x4
+Data: 2015-05-13 02:17:36
+Maszyna: Widły z krokodylem S szer. 1,8m; 9 zębów
+Części:
+ - belka zębowa[wzks1,8] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x2
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks1,8] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x4
+Data: 2015-05-13 02:17:37
+Maszyna: Widły z krokodylem S szer. 2,0m; 10 zębów
+Części:
+ - belka zębowa[wzks2,0] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x3
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks2,0] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x6
+Data: 2015-05-13 02:17:40
+Maszyna: Widły z krokodylem S szer. 2,2m; 11 zębów
+Części:
+ - belka zębowa[wzks2,2] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x3
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks2,2] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x6
+Data: 2015-05-13 02:17:44
+Maszyna: Widły z krokodylem S szer. 2,4m; 12 zębów
+Części:
+ - belka zębowa[wzks2,4] - 6mm; x1
+ - boczek[wzks] - 8mm; x2
+ - grzebień węże - 2mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - pałąk szczęka[wzks] - 8mm; x3
+ - szczęka zewnętrzna[wzks] - 8mm; x2
+ - szczęka[wzks] - 8mm; x2
+ - tylna ściana[wzks2,4] - 4mm; x1
+ - wzmocnienie szczęki[wzks] - 8mm; x2
+ - wzmocnienie zawias[wzks] - 8mm; x2
+ - zabezpieczenie nakładka fi17 - fi 35 - 10mm; x6
+ - zabezpieczenie sworzeń fi25 - 10mm; x4
+ - zabezpieczenie sworzeń fi30 - 10mm; x2
+ - zawias[wzks] - 8mm; x2
+ - ząbek - 10mm; x2
+ - żebro[wzks] - 8mm; x6
+Data: 2015-05-13 02:17:48
+Maszyna: Widły z krokodylem L 1,8m; 9 zębów
+Części:
+ - boczek[wzkl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny[wzkl1,8] - 8mm; x1
+ - kątownik górny krótki[wzkl] - 8mm; x2
+ - kątownik górny[wzkl1,8] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skurupa[wzkl1,8] - 6mm; x1
+ - szczęka ii[wzkl] - 10mm; x2
+ - szczęka i[wzkl] - 10mm; x2
+ - zabezpieczenie nakładka fi17 - fi35 - 10mm; x4
+ - zabezpieczenie nakładka fi40 - fi80 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x4
+ - zabezpieczenie sworzeń fi40 - 10mm; x2
+ - zamknięcie siłownik[wzkl] - 6mm; x2
+ - zawias szczęka[wzkl] - 10mm; x2
+ - łączenie szczęka[wzkl] - 10mm; x2
+ - żebro[wzkl] - 10mm; x2
+Data: 2015-05-13 02:18:02
+Maszyna: Widły z krokodylem L 2,0m; 10 zębów
+Części:
+ - boczek[wzkl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny[wzkl2,0] - 8mm; x1
+ - kątownik górny krótki[wzkl] - 8mm; x2
+ - kątownik górny[wzkl2,0] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skurupa[wzkl2,0] - 6mm; x1
+ - szczęka ii[wzkl] - 10mm; x2
+ - szczęka i[wzkl] - 10mm; x2
+ - zabezpieczenie nakładka fi17 - fi35 - 10mm; x4
+ - zabezpieczenie nakładka fi40 - fi80 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x4
+ - zabezpieczenie sworzeń fi40 - 10mm; x2
+ - zamknięcie siłownik[wzkl] - 6mm; x2
+ - zawias szczęka[wzkl] - 10mm; x2
+ - łączenie szczęka[wzkl] - 10mm; x2
+ - żebro[wzkl] - 10mm; x2
+Data: 2015-05-13 02:18:06
+Maszyna: Widły z krokodylem L 2,2m; 11 zębów
+Części:
+ - boczek[wzkl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny[wzkl2,2] - 8mm; x1
+ - kątownik górny krótki[wzkl] - 8mm; x2
+ - kątownik górny[wzkl2,2] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skurupa[wzkl2,2] - 6mm; x1
+ - szczęka ii[wzkl] - 10mm; x2
+ - szczęka i[wzkl] - 10mm; x2
+ - zabezpieczenie nakładka fi17 - fi35 - 10mm; x4
+ - zabezpieczenie nakładka fi40 - fi80 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x4
+ - zabezpieczenie sworzeń fi40 - 10mm; x2
+ - zamknięcie siłownik[wzkl] - 6mm; x2
+ - zawias szczęka[wzkl] - 10mm; x2
+ - łączenie szczęka[wzkl] - 10mm; x2
+ - żebro[wzkl] - 10mm; x2
+Data: 2015-05-13 02:18:11
+Maszyna: Widły z krokodylem L 2,4m; 12 zębów
+Części:
+ - boczek[wzkl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny[wzkl2,4] - 8mm; x1
+ - kątownik górny krótki[wzkl] - 8mm; x2
+ - kątownik górny[wzkl2,4] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skurupa[wzkl2,4] - 6mm; x1
+ - szczęka ii[wzkl] - 10mm; x2
+ - szczęka i[wzkl] - 10mm; x2
+ - zabezpieczenie nakładka fi17 - fi35 - 10mm; x4
+ - zabezpieczenie nakładka fi40 - fi80 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x4
+ - zabezpieczenie sworzeń fi40 - 10mm; x2
+ - zamknięcie siłownik[wzkl] - 6mm; x2
+ - zawias szczęka[wzkl] - 10mm; x2
+ - łączenie szczęka[wzkl] - 10mm; x2
+ - żebro[wzkl] - 10mm; x2
+Data: 2015-05-13 02:18:14
+Maszyna: Widły z krokodylem L 2,6m; 13 zębów
+Części:
+ - boczek[wzkl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny[wzkl2,6] - 8mm; x1
+ - kątownik górny krótki[wzkl] - 8mm; x2
+ - kątownik górny[wzkl2,6] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skurupa[wzkl2,6] - 6mm; x1
+ - szczęka ii[wzkl]x2 - 10mm; x0
+ - szczęka i[wzkl] - 10mm; x2
+ - zabezpieczenie nakładka fi17 - fi35 - 10mm; x4
+ - zabezpieczenie nakładka fi40 - fi80 - 10mm; x2
+ - zabezpieczenie sworzeń fi30 - 10mm; x4
+ - zabezpieczenie sworzeń fi40 - 10mm; x2
+ - zamknięcie siłownik[wzkl] - 6mm; x2
+ - zawias szczęka[wzkl] - 10mm; x2
+ - łączenie szczęka[wzkl] - 10mm; x2
+ - żebro[wzkl] - 10mm; x2
+Data: 2015-05-13 02:18:15
+Maszyna: Widły z krokodylem XL 1,8m; 9 zębów
+Części:
+ - boczek[wzkxl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny (duże zęby)[wzkxl1,8]  - 8mm; x1
+ - kątownik dolny[wzkxl1,8] - 8mm; x1
+ - kątownik górny krótki[wzkxl]  - 8mm; x2
+ - kątownik górny[wzkxl1,8] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skorupa (duże zęby)[wzkxl1,8] - 6mm; x1
+ - skorupa[wzkxl1,8] - 6mm; x1
+ - szczęka ii[wzkxl]  - 10mm; x2
+ - szczęka i[wzkxl]  - 10mm; x2
+ - zabezpieczenie nakładka większa - 10mm; x2
+ - zabezpieczenie nakładka - 10mm; x4
+ - zabezpieczenie sworzeń dolny - 10mm; x4
+ - zabezpieczenie sworzeń główny - 10mm; x2
+ - zamknięcie siłownik[wzkxl] - 6mm; x2
+ - zawias szczęka[wzkxl] - 10mm; x2
+ - łączenie szczęka[wzkxl]  - 10mm; x2
+ - żebro[wzkxl] - 10mm; x2
+Data: 2015-05-13 02:18:22
+Maszyna: Widły z krokodylem XL 2,0m; 10 zębów
+Części:
+ - boczek[wzkxl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny (duże zęby)[wzkxl2,0] - 8mm; x1
+ - kątownik dolny[wzkxl2,0] - 8mm; x1
+ - kątownik górny krótki[wzkxl] - 8mm; x2
+ - kątownik górny[wzkxl2,0]  - 8mm; x1
+ - mocowanie trójniki[wzkxl] - 4mm; x1
+ - skorupa (duże zęby)[wzkxl2,0]  - 6mm; x1
+ - skorupa[wzkxl2,0] - 6mm; x1
+ - szczęka ii[wzkxl] - 10mm; x2
+ - szczęka i[wzkxl] - 10mm; x2
+ - zabezpieczenie nakładka większa - 10mm; x2
+ - zabezpieczenie nakładka - 10mm; x4
+ - zabezpieczenie sworzeń dolny - 10mm; x4
+ - zabezpieczenie sworzeń główny - 10mm; x2
+ - zamknięcie siłownik[wzkxl] - 6mm; x2
+ - zawias szczęka[wzkxl]  - 10mm; x2
+ - łączenie szczęka[wzkxl] - 10mm; x2
+ - żebro[wzkxl] - 10mm; x2
+Data: 2015-05-13 02:18:36
+Maszyna: Widły z krokodylem XL 2,2m; 11 zębów
+Części:
+ - boczek[wzkxl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny (duże zęby)[wzkxl2,2] - 8mm; x1
+ - kątownik dolny[wzkxl2,2] - 8mm; x1
+ - kątownik górny krótki[wzkxl2,2] - 8mm; x2
+ - kątownik górny[wzkxl2,2] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skorupa (duże zęby)[wzkxl2,2] - 6mm; x1
+ - skorupa[wzkxl2,2] - 6mm; x1
+ - szczęka ii[wzkxl] - 10mm; x2
+ - szczęka i[wzkxl]  - 10mm; x2
+ - zabezpieczenie nakładka większa - 10mm; x2
+ - zabezpieczenie nakładka - 10mm; x4
+ - zabezpieczenie sworzeń dolny - 10mm; x4
+ - zabezpieczenie sworzeń główny - 10mm; x2
+ - zamknięcie siłownik[wzkxl] - 6mm; x2
+ - zawias szczęka[wzkxl] - 10mm; x2
+ - łączenie szczęka[wzkxl] - 10mm; x2
+ - żebro[wzkxl] - 10mm; x2
+Data: 2015-05-13 02:18:41
+Maszyna: Widły z krokodylem XL 2,4m; 12 zębów
+Części:
+ - boczek[wzkxl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny (duże zęby)[wzkxl2,4] - 8mm; x1
+ - kątownik dolny[wzkxl2,4] - 8mm; x1
+ - kątownik górny krótki[wzkxl2,4] - 8mm; x2
+ - kątownik górny[wzkxl2,4] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skorupa (duże zęby)[wzkxl2,4] - 6mm; x1
+ - skorupa[wzkxl2,4] - 6mm; x1
+ - szczęka ii[wzkxl] - 10mm; x2
+ - szczęka i[wzkxl] - 10mm; x2
+ - zabezpieczenie nakładka większa - 10mm; x2
+ - zabezpieczenie nakładka - 10mm; x4
+ - zabezpieczenie sworzeń dolny - 10mm; x4
+ - zabezpieczenie sworzeń główny - 10mm; x2
+ - zamknięcie siłownik[wzkxl] - 6mm; x2
+ - zawias szczęka[wzkxl] - 10mm; x2
+ - łączenie szczęka[wzkxl] - 10mm; x2
+ - żebro[wzkxl] - 10mm; x2
+Data: 2015-05-13 02:18:49
+Maszyna: Widły z krokodylem XL 2,6m; 13 zębów
+Części:
+ - boczek[wzkxl] - 10mm; x2
+ - grzebień węże - 2mm; x1
+ - kątownik dolny (duże zęby)[wzkxl2,6] - 8mm; x1
+ - kątownik dolny[wzkxl2,6] - 8mm; x1
+ - kątownik górny krótki[wzkxl2,6] - 8mm; x2
+ - kątownik górny[wzkxl2,6] - 8mm; x1
+ - mocowanie trójniki - 4mm; x1
+ - skorupa (duże zęby)[wzkxl2,6] - 6mm; x1
+ - skorupa[wzkxl2,6] - 6mm; x1
+ - szczęka ii[wzkxl] - 10mm; x2
+ - szczęka i[wzkxl] - 10mm; x2
+ - zabezpieczenie nakładka większa - 10mm; x2
+ - zabezpieczenie nakładka - 10mm; x4
+ - zabezpieczenie sworzeń dolny - 10mm; x4
+ - zabezpieczenie sworzeń główny - 10mm; x2
+ - zamknięcie siłownik[wzkxl] - 6mm; x2
+ - zawias szczęka[wzkxl] - 10mm; x2
+ - łączenie szczęka[wzkxl] - 10mm; x2
+ - żebro[wzkxl] - 10mm; x2
