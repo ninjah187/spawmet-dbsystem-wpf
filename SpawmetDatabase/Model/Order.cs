@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Order : INotifyPropertyChanged//ModelElement
+    public class Order : IModelElement, INotifyPropertyChanged
     {
         public Order()
         {

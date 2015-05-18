@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabase.Model
 {
-    public class DeliveryPartSetElement
+    public class DeliveryPartSetElement : IModelElement
     {
         public int Id { get; set; }
         public int Amount { get; set; }

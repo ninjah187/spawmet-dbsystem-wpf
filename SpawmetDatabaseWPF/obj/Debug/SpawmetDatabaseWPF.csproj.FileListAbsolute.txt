@@ -99,3 +99,8 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeleteOrderWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeletingPartWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF_MarkupCompile.lref
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\DocX.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.g.cs

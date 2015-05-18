@@ -32,8 +32,12 @@
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
                     <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Zapisz">
+                        <MenuItem Header="Stan bazy" Click="SaveContextMenuItem_OnClick"></MenuItem>
+                        <MenuItem Header="Do pliku" Click="SaveToFileContextMenuItem_OnClick"></MenuItem>
+                    </MenuItem>
                     <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="PrintContextMenuItem" Header="Drukuj" Click="PrintContextMenuItem_OnClick"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             

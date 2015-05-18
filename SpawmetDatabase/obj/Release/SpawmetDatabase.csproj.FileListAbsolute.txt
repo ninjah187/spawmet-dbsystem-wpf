@@ -26,3 +26,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.OrderSt
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.EnumResources.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\App.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\DocX.dll

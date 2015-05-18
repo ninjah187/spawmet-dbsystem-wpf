@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Part //: ModelElement
+    public class Part : IModelElement
     {
         public Part()
         {

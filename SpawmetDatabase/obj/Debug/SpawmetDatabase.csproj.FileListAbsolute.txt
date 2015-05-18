@@ -15,3 +15,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\App.config
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.EnumResources.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.OrderStatusResource.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.csproj.GenerateResource.Cache
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\DocX.dll

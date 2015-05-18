@@ -99,3 +99,8 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteClientWindow.g
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteDeliveryWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\DeleteDeliveryWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\App.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\DocX.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PrintWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SaveFileWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\PrintWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\SaveFileWindow.g.cs

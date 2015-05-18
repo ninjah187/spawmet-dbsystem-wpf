@@ -41,3 +41,4 @@ D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.csp
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.exe
 D:\Pisane\C#\SpawmetDatabase - produkcja\SpawmetDBWPF\obj\Debug\SpawmetDBWPF.pdb
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Debug\App.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Debug\DocX.dll

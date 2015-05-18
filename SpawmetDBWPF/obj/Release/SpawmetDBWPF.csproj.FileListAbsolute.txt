@@ -41,3 +41,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.csproj.Genera
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\obj\Release\SpawmetDBWPF.pdb
 D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Release\App.config
+D:\Pisane\C#\SpawmetDatabase\SpawmetDBWPF\bin\Release\DocX.dll

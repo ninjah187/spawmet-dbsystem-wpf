@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using SpawmetDatabase.Model;
 
 namespace SpawmetDatabase
 {
@@ -22,6 +24,11 @@ namespace SpawmetDatabase
             {
                 return value.ToString();
             }
+        }
+
+        public static IEnumerable<T> AsEnumerable<T>(this T item)
+        {
+            yield return item;
         }
     }
 }

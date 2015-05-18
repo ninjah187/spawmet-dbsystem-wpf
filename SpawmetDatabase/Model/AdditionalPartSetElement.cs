@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabase.Model
 {
-    public class AdditionalPartSetElement //: PartSetElement
+    public class AdditionalPartSetElement : IModelElement
     {
         //public virtual Order Order { get; set; }
 

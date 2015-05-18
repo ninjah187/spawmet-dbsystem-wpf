@@ -13,6 +13,8 @@ using System.Runtime.CompilerServices;
 using SpawmetDatabase.Scripts;
 using System.Drawing.Printing;
 using System.IO;
+using Microsoft.Office.Interop.Word;
+using SpawmetDatabase.FileCreators;
 
 namespace SpawmetDatabase
 {
@@ -24,11 +26,93 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            using (var context = new SpawmetDBContext())
-            {
+            //var creator = new PDFCreator();
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    creator.Create(context.Machines.ToList(), 
+            //                    @"D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\creator_output.pdf");
+            //}
+
+            //// Create an instance of the Word ApplicationClass object:
+            //var wordApplication = new Application();
+            //Document wordDocument = null;
+
+            //object paramSourceDocPath = @"D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\creator_output.docx";
+            //object paramMissing = Type.Missing;
+
+            //var paramExportFilePath = @"D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Debug\test.pdf";
+            //var paramExportFormat = WdExportFormat.wdExportFormatPDF;
+            //var paramOpenAfterExport = false;
+            //var paramExportOptimizeFor = WdExportOptimizeFor.wdExportOptimizeForPrint;
+            //var paramExportRange = WdExportRange.wdExportAllDocument;
+            //int paramStartPage = 0;
+            //int paramEndPage = 0;
+            //var paramExportItem = WdExportItem.wdExportDocumentContent;
+            //var paramIncludeDocProps = true;
+            //var paramKeepIRM = true;
+            //var paramCreateBookmarks = WdExportCreateBookmarks.wdExportCreateWordBookmarks;
+            //var paramDoStructureTags = true;
+            //var paramBitmapMissingFonts = true;
+            //var paramUseISO19005_1 = false;
+
+            //try
+            //{
+            //    // Open the source document.
+            //    wordDocument = wordApplication.Documents.Open(
+            //        ref paramSourceDocPath, ref paramMissing, ref paramMissing,
+            //        ref paramMissing, ref paramMissing, ref paramMissing,
+            //        ref paramMissing, ref paramMissing, ref paramMissing,
+            //        ref paramMissing, ref paramMissing, ref paramMissing,
+            //        ref paramMissing, ref paramMissing, ref paramMissing,
+            //        ref paramMissing);
+
+            //    // Export it in the specified format:
+            //    if (wordDocument != null)
+            //    {
+            //        wordDocument.ExportAsFixedFormat(paramExportFilePath,
+            //            paramExportFormat, paramOpenAfterExport,
+            //            paramExportOptimizeFor, paramExportRange, paramStartPage,
+            //            paramEndPage, paramExportItem, paramIncludeDocProps,
+            //            paramKeepIRM, paramCreateBookmarks, paramDoStructureTags,
+            //            paramBitmapMissingFonts, paramUseISO19005_1,
+            //            ref paramMissing);
+            //    }
+            //}
+            //catch (Exception exc)
+            //{
+            //    throw exc;
+            //}
+            //finally
+            //{
+            //    // Close and release the Document object:
+            //    if (wordDocument != null)
+            //    {
+            //        wordDocument.Close(ref paramMissing, ref paramMissing, ref paramMissing);
+            //        wordDocument = null;
+            //    }
+
+            //    // Quit Word and release the ApplicationClass object:
+            //    if (wordApplication != null)
+            //    {
+            //        wordApplication.NormalTemplate.Saved = true;
+            //        wordApplication.Quit(ref paramMissing, ref paramMissing, ref paramMissing);
+            //        wordApplication = null;
+            //    }
+            //}
+
+            //using (var context = new SpawmetDBContext())
+            //{
+            //    var creator = new DocXCreator(@".\creator_output.docx");
+            //    creator.Create(context.Machines.ToList());
+            //}
+
+            //DocXExample.CreateSampleFormattedDocument();
+            
+            //using (var context = new SpawmetDBContext())
+            //{
                 //var machine = context.Machines.First();
                 //var fileStream = new FileStream(@".\print_temp.txt", FileMode.Create, FileAccess.ReadWrite);
-                
+
                 //var streamWriter = new StreamWriter(fileStream);
                 //streamWriter.WriteLine("Data: " + DateTime.Now);
                 //streamWriter.WriteLine("Maszyna: " + machine.Name);
@@ -42,73 +126,75 @@ namespace SpawmetDatabase
                 //streamWriter.Dispose();
                 //fileStream.Dispose();
 
-                var machines = context.Machines.ToList();
-                var fileStream = new FileStream(@".\print_temp.txt", FileMode.Create, FileAccess.ReadWrite);
+                //var machines = context.Machines.ToList();
+                //var fileStream = new FileStream(@".\print_temp.txt", FileMode.Create, FileAccess.ReadWrite);
 
-                var streamWriter = new StreamWriter(fileStream);
-                foreach (var machine in machines)
-                {
-                    streamWriter.WriteLine("Data: " + DateTime.Now);
-                    streamWriter.WriteLine("Maszyna: " + machine.Name);
-                    streamWriter.WriteLine("Części:");
-                    foreach (var element in machine.StandardPartSet)
-                    {
-                        streamWriter.WriteLine(" - " + element.Part.Name + "; x" + element.Amount);
-                    }
-                }
-                streamWriter.Close();
-                streamWriter.Dispose();
-                fileStream.Dispose();
+                //var streamWriter = new StreamWriter(fileStream);
+                //foreach (var machine in machines)
+                //{
+                //    streamWriter.WriteLine("Data: " + DateTime.Now);
+                //    streamWriter.WriteLine("Maszyna: " + machine.Name);
+                //    streamWriter.WriteLine("Części:");
+                //    foreach (var element in machine.StandardPartSet)
+                //    {
+                //        streamWriter.WriteLine(" - " + element.Part.Name + "; x" + element.Amount);
+                //    }
+                //}
+                //streamWriter.Close();
+                //streamWriter.Dispose();
+                //fileStream.Dispose();
 
-                var streamReader = new StreamReader(@".\print_temp.txt");
+                //var streamReader = new StreamReader(@".\print_temp.txt");
+            //    var streamReader = new StreamReader(@".\DocXExample.docx");
 
-                var font = new Font("Arial", 10);
+            //    var font = new Font("Arial", 10);
 
-                var printDocument = new PrintDocument();
-                //printDocument.DocumentName = machine.Name;
-                printDocument.DocumentName = "Wykaz maszyn, " + DateTime.Now;
-                printDocument.PrinterSettings = new PrinterSettings()
-                {
-                    PrinterName = "PDFCreator",
-                };
-                printDocument.PrintPage += (sender, e) =>
-                {
-                    float linesPerPage = 0;
-                    float yPos = 0;
-                    int count = 0;
-                    float leftMargin = e.MarginBounds.Left;
-                    float topMargin = e.MarginBounds.Top;
-                    string line = null;
+            //    var printDocument = new PrintDocument();
+            //    //printDocument.DocumentName = machine.Name;
+            //    printDocument.DocumentName = "Wykaz maszyn, " + DateTime.Now;
+            //    printDocument.PrinterSettings = new PrinterSettings()
+            //    {
+            //        PrinterName = "PDFCreator",
+            //    };
+            //    printDocument.PrintPage += (sender, e) =>
+            //    {
+            //        float linesPerPage = 0;
+            //        float yPos = 0;
+            //        int count = 0;
+            //        float leftMargin = e.MarginBounds.Left;
+            //        float topMargin = e.MarginBounds.Top;
+            //        string line = null;
 
-                    linesPerPage = e.MarginBounds.Height / font.GetHeight(e.Graphics);
+            //        linesPerPage = e.MarginBounds.Height / font.GetHeight(e.Graphics);
 
-                    while (count < linesPerPage &&
-                           (line = streamReader.ReadLine()) != null)
-                    {
-                        yPos = topMargin + (count*font.GetHeight(e.Graphics));
-                        e.Graphics.DrawString(line, font, Brushes.Black, leftMargin, yPos, new StringFormat());
-                        count++;
-                    }
+            //        while (count < linesPerPage &&
+            //               (line = streamReader.ReadLine()) != null)
+            //        {
+            //            yPos = topMargin + (count * font.GetHeight(e.Graphics));
+            //            e.Graphics.DrawString(line, font, Brushes.Black, leftMargin, yPos, new StringFormat());
+            //            count++;
+            //        }
 
-                    if (line != null)
-                    {
-                        e.HasMorePages = true;
-                    }
-                    else
-                    {
-                        e.HasMorePages = false;
-                    }
-                };
-                printDocument.Print();
+            //        if (line != null)
+            //        {
+            //            e.HasMorePages = true;
+            //        }
+            //        else
+            //        {
+            //            e.HasMorePages = false;
+            //        }
+            //    };
+            //    printDocument.Print();
 
-                streamReader.Close();
-                streamReader.Dispose();
-                printDocument.Dispose();
-                //fileStream.Close();
-            }
+            //    streamReader.Close();
+            //    streamReader.Dispose();
+            //    printDocument.Dispose();
+            //    //fileStream.Close();
+            //}
 
-            //string path = Console.ReadLine();
-            //PCDatabaseConnection.AddMachine(path);
+            Console.Write("Podaj ścieżkę dostępu: ");
+            string path = Console.ReadLine();
+            PCDatabaseConnection.AddMachine(path);
 
             //PCDatabaseConnection.AddMachine(@"D:\Widły z krokodylem");
 

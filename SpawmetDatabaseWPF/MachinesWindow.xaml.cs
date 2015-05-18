@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Data.Entity.Core;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -18,7 +19,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Xps.Packaging;
+using Microsoft.Win32;
 using SpawmetDatabase;
+using SpawmetDatabase.FileCreators;
 using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
@@ -225,7 +229,7 @@ namespace SpawmetDatabaseWPF
             //        .ToList();
             //}
             e.Result = result;
-            //context.Dispose();
+            context.Dispose();
         }
 
         private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -377,60 +381,6 @@ namespace SpawmetDatabaseWPF
                 }
             }
             new DeleteMachineWindow(this, _dbContext, toDelete).Show();
-
-            //if (DataGridItemsSource == null)
-            //{
-            //    return;
-            //}
-
-            //var selected = MainDataGrid.SelectedItems;
-            //var toDelete = new List<Machine>();
-            //foreach (var item in selected)
-            //{
-            //    Machine machine = null;
-            //    try
-            //    {
-            //        machine = (Machine) item;
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        continue;
-            //    }
-            //    toDelete.Add(machine);
-            //}
-            //try
-            //{
-            //    foreach (var machine in toDelete)
-            //    {
-            //        foreach (var standardPartSetElement in machine.StandardPartSet.ToList())
-            //        {
-            //            _dbContext.StandardPartSets.Remove(standardPartSetElement);
-            //            _dbContext.SaveChanges();
-            //        }
-
-            //        var relatedOrders = _dbContext.Orders
-            //            .Where(o => o.Machine.Id == machine.Id)
-            //            .ToList();
-            //        foreach (var order in relatedOrders.ToList())
-            //        {
-            //            foreach (var additionalPartSet in order.AdditionalPartSet.ToList())
-            //            {
-            //                _dbContext.AdditionalPartSets.Remove(additionalPartSet);
-            //                _dbContext.SaveChanges();
-            //            }
-            //            _dbContext.Orders.Remove(order);
-            //            _dbContext.SaveChanges();
-            //        }
-            //        _dbContext.Machines.Remove(machine);
-            //        _dbContext.SaveChanges();
-            //    }
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected("Kod błędu 05.");
-            //}
-
-            //FillDetailedInfo(null);
         }
 
         private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -577,5 +527,96 @@ namespace SpawmetDatabaseWPF
             part.Amount += selectedElement.Amount;
             _dbContext.SaveChanges();
         }
+
+        private void PrintContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selected = MainDataGrid.SelectedItems;
+
+            if (selected.Count == 0 ||
+                selected == null)
+            {
+                return;
+            }
+
+            var machines = new List<Machine>();
+            foreach (var item in selected)
+            {
+                try
+                {
+                    machines.Add((Machine)item);
+                }
+                catch (InvalidCastException exc)
+                {
+                    continue;
+                }
+            }
+
+            var printDialog = new PrintDialog();
+            printDialog.PageRangeSelection = PageRangeSelection.AllPages;
+            printDialog.UserPageRangeEnabled = false;
+            printDialog.SelectedPagesEnabled = false;
+
+            bool? print = printDialog.ShowDialog();
+            if (print == true)
+            {
+                string description = machines.Count == 1
+                ? machines.First().Name
+                : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
+
+                var printWindow = new PrintWindow(machines, printDialog, this);
+                printWindow.Show();
+                // Create stream to get full path of .\temp.xps (it's needed in XpsDocument constructor).
+                //var stream = File.Open(@".\temp.xps", FileMode.Create);
+                //string xpsPath = stream.Name;
+                //stream.Close();
+                //stream.Dispose();
+                //var xpsCreator = new XPSCreator();
+                //xpsCreator.Create(machines, xpsPath);
+
+                //var xpsDocument = new XpsDocument(xpsPath, FileAccess.ReadWrite);
+                //var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
+                //printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
+
+                //File.Delete(xpsPath);
+            }
+        }
+
+        private void SaveToFileContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var selected = MainDataGrid.SelectedItems;
+
+            if (selected.Count == 0 ||
+                selected == null)
+            {
+                return;
+            }
+
+            var machines = new List<Machine>();
+
+            foreach (var item in selected)
+            {
+                try
+                {
+                    machines.Add((Machine) item);
+                }
+                catch (InvalidCastException exc)
+                {
+                    continue;
+                }
+            }
+
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Plik Word 2007 (*.docx)|*.docx|Plik PDF (*.pdf)|*.pdf";
+            saveFileDialog.AddExtension = true;
+            saveFileDialog.FileName = machines.Count == 1
+                ? machines.First().Name
+                : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                new SaveFileWindow(machines, saveFileDialog.FileName, this).Show();
+            }
+        }
+
     }
 }
