@@ -65,7 +65,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DocXExample.cs" />
+    <Compile Include="DatabaseItemAddedEventArgs.cs" />
+    <Compile Include="DirectoryCrawler.cs" />
     <Compile Include="EnumResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -83,12 +84,10 @@
     <Compile Include="Model\Delivery.cs" />
     <Compile Include="Model\Client.cs" />
     <Compile Include="Model\Machine.cs" />
-    <Compile Include="Model\ModelElement.cs" />
     <Compile Include="Model\Order.cs" />
     <Compile Include="Model\OrderStatus.cs" />
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Part.cs" />
-    <Compile Include="Model\PartSetElement.cs" />
     <Compile Include="Model\StandardPartSetElement.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserGroup.cs" />
@@ -97,6 +96,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>OrderStatusResource.resx</DependentUpon>
     </Compile>
+    <Compile Include="MachinePathParser.cs" />
+    <Compile Include="ParserRunCompletedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\PCDatabaseConnection.cs" />
@@ -110,9 +111,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="icon2.ico" />
   </ItemGroup>

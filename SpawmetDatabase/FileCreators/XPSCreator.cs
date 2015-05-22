@@ -16,7 +16,7 @@ namespace SpawmetDatabase.FileCreators
             Create(machine.AsEnumerable(), savePath);
         }
 
-        // Creates a PDF by converting it from temporary created docx file.
+        // Creates a XPS by converting it from temporary created docx file.
         public override void Create(IEnumerable<Machine> machines, string savePath)
         {
             base.Create(machines, @".\temp.docx");
@@ -89,7 +89,7 @@ namespace SpawmetDatabase.FileCreators
                 // Quit Word and release the ApplicationClass object:
                 if (wordApplication != null)
                 {
-                    wordApplication.NormalTemplate.Save();
+                    //wordApplication.NormalTemplate.Save();
                     wordApplication.NormalTemplate.Saved = true;
                     wordApplication.Quit(ref paramMissing, ref paramMissing, ref paramMissing);
                     wordApplication = null;

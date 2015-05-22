@@ -20,9 +20,6 @@ using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
 {
-    /// <summary>
-    /// Interaction logic for ClientsWindow.xaml
-    /// </summary>
     public partial class ClientsWindow : Window
     {
         public ObservableCollection<Client> DataGridItemsSource
@@ -41,22 +38,23 @@ namespace SpawmetDatabaseWPF
         }
 
         private SpawmetDBContext _dbContext;
-        //private object _dbContextLock;
 
+        // BackgroundWorker objects which load data into detailed info item sources.
         private BackgroundWorker _ordersBackgroundWorker;
 
         public ClientsWindow()
             : this(0, 0)
         {
-            
         }
 
+        // Constructor which creates window at specific x and y coordinates.
         public ClientsWindow(double x, double y)
             : this(null, x, y)
-        {
-            
+        {   
         }
 
+        // Constructor which creates window at specific x and y coordinates.
+        // Additionaly it selects specific Client item.
         public ClientsWindow(Client selectedClient, double x, double y)
         {
             InitializeComponent();
@@ -81,6 +79,8 @@ namespace SpawmetDatabaseWPF
                 }
             };
 
+            // If there's selectedDelivery item in database, select this item.
+            // On window loaded.
             this.Loaded += (sender, e) =>
             {
                 Client client;
@@ -118,15 +118,16 @@ namespace SpawmetDatabaseWPF
             this.Top = y;
         }
 
+        // Creates SpawmetDBContext object, fills MainDataGrid with data and initializes BackgroundWorker classes.
         private void Initialize()
         {
+            // In case when connection was lost and window wasn't closed, there's big chance that _dbContext wasn't disposed.
             if (_dbContext != null)
             {
                 _dbContext.Dispose();
             }
 
             _dbContext = new SpawmetDBContext();
-            //_dbContextLock = new object();
 
             LoadDataIntoSource();
 
@@ -214,6 +215,7 @@ namespace SpawmetDatabaseWPF
         /*** BEGIN                                                                       ***/
         /***********************************************************************************/
 
+        /*** Add new Client. ***/
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             if (DataGridItemsSource == null)
@@ -224,6 +226,7 @@ namespace SpawmetDatabaseWPF
             new AddClientWindow(this, _dbContext).Show();
         }
 
+        /*** Delete selected Client items. ***/
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var selected = MainDataGrid.SelectedItems;
@@ -236,49 +239,14 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (InvalidCastException exc)
                 {
+                    // Ignore objects that can't be casted to Client type.
                     continue;
                 }
             }
             new DeleteClientWindow(this, _dbContext, toDelete).Show();
-
-            //if (DataGridItemsSource == null)
-            //{
-            //    return;
-            //}
-
-            //var selected = MainDataGrid.SelectedItems;
-            //var toDelete = new List<Client>();
-            //foreach (var item in selected)
-            //{
-            //    Client client = null;
-            //    try
-            //    {
-            //        client = (Client) item;
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        continue;
-            //    }
-            //    toDelete.Add(client);
-            //}
-            //try
-            //{
-            //    foreach (var client in toDelete)
-            //    {
-            //        foreach (var order in client.Orders.ToList())
-            //        {
-            //            Delete(order);
-            //        }
-
-            //        Delete(client);
-            //    }
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected("Kod błędu: 05.");
-            //}
         }
 
+        /*** Save database state. ***/
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -291,12 +259,18 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Refresh window. ***/
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Refresh();
+        }
+
+        public void Refresh()
         {
             Client selectedClient;
             try
             {
-                selectedClient = (Client) MainDataGrid.SelectedItem;
+                selectedClient = (Client)MainDataGrid.SelectedItem;
             }
             catch (InvalidCastException exc)
             {
@@ -388,30 +362,6 @@ namespace SpawmetDatabaseWPF
         /*** Top ContextMenu event OnClick handlers.                                     ***/
         /*** END                                                                         ***/
         /***********************************************************************************/
-
-        private void Delete(Order order)
-        {
-            foreach (var additionalPartSetElement in order.AdditionalPartSet.ToList())
-            {
-                _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
-                _dbContext.SaveChanges();
-            }
-
-            order.Client = null;
-            order.Machine = null;
-
-            //lock (_dbContextLock)
-            //{
-            _dbContext.Orders.Remove(order);
-            _dbContext.SaveChanges();
-            //}
-        }
-
-        private void Delete(Client client)
-        {
-            _dbContext.Clients.Remove(client);
-            _dbContext.SaveChanges();
-        }
 
         private void Disconnected(string message)
         {

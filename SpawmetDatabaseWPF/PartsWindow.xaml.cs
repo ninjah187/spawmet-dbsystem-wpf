@@ -22,9 +22,6 @@ using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
 {
-    /// <summary>
-    /// Interaction logic for PartsWindow.xaml
-    /// </summary>
     public partial class PartsWindow : Window
     {
         public ObservableCollection<Part> DataGridItemsSource
@@ -44,6 +41,7 @@ namespace SpawmetDatabaseWPF
 
         private SpawmetDBContext _dbContext;
 
+        // BackgroundWorker objects which load data into detailed info item sources.
         private BackgroundWorker _machinesBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
         private BackgroundWorker _deliveriesBackgroundWorker;
@@ -53,11 +51,14 @@ namespace SpawmetDatabaseWPF
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
         public PartsWindow(double x, double y)
             : this(null, x, y)
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
+        // Additionaly it selects specific Part item.
         public PartsWindow(Part selectedPart, double x, double y)
         {
             InitializeComponent();
@@ -121,6 +122,7 @@ namespace SpawmetDatabaseWPF
             Top = y;
         }
 
+        // Creates SpawmetDBContext object, fills MainDataGrid with data and initializes BackgroundWorker classes.
         private void Initialize()
         {
             if (_dbContext != null)
@@ -212,6 +214,22 @@ namespace SpawmetDatabaseWPF
             };
         }
 
+        private void LoadDataIntoSource()
+        {
+            try
+            {
+                _dbContext.Parts.Load();
+                ConnectMenuItem.IsEnabled = false;
+
+                MachinesMenuItem.IsEnabled = true;
+                OrdersMenuItem.IsEnabled = true;
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
+        }
+
         public void FillDetailedInfo(Part part)
         {
             if (part == null)
@@ -255,32 +273,25 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void LoadDataIntoSource()
-        {
-            try
-            {
-                _dbContext.Parts.Load();
-                ConnectMenuItem.IsEnabled = false;
+        /***********************************************************************************/
+        /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
+        /*** BEGIN                                                                       ***/
+        /***********************************************************************************/
 
-                MachinesMenuItem.IsEnabled = true;
-                OrdersMenuItem.IsEnabled = true;
-            }
-            catch (EntityException exc)
-            {
-                Disconnected();
-            }
-        }
-
-        private void AddPartMenuItem_OnClick(object sender, RoutedEventArgs e)
+        /*** Add new Part. ***/
+        private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            if (DataGridItemsSource == null)
+            {
+                return;
+            }
+
             new AddPartWindow(this, _dbContext).Show();
         }
 
-        private void DeletePartMenuItem_OnClick(object sender, RoutedEventArgs e)
+        /*** Delete selected Part items. ***/
+        private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            //var selected = (Part) MainDataGrid.SelectedItem;
-            //new DeletingPartWindow(this, _dbContext, selected).Show();
-
             var selected = MainDataGrid.SelectedItems;
             var toDelete = new List<Part>();
             foreach (var item in selected)
@@ -295,50 +306,58 @@ namespace SpawmetDatabaseWPF
                 }
             }
             new DeletingPartWindow(this, _dbContext, toDelete).Show();
-
-            //var selected = MainDataGrid.SelectedItems;
-            //var toDelete = new List<Part>();
-            //foreach (var item in selected)
-            //{
-            //    try
-            //    {
-            //        toDelete.Add((Part) item);
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        continue;
-            //    }
-            //}
-            //try
-            //{
-            //    foreach (var part in toDelete)
-            //    {
-            //        foreach (var standardPartSetElement in part.StandardPartSets.ToList())
-            //        {
-            //            _dbContext.StandardPartSets.Remove(standardPartSetElement);
-            //            _dbContext.SaveChanges();
-            //        }
-            //        foreach (var additionalPartSetElement in part.AdditionalPartSets.ToList())
-            //        {
-            //            _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
-            //            _dbContext.SaveChanges();
-            //        }
-            //        foreach (var deliveryPartSetElement in part.DeliveryPartSets.ToList())
-            //        {
-            //            _dbContext.DeliveryPartSets.Remove(deliveryPartSetElement);
-            //            _dbContext.SaveChanges();
-            //        }
-            //        _dbContext.Parts.Remove(part);
-            //        _dbContext.SaveChanges();
-            //    }
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected();
-            //}
-
-            //FillDetailedInfo(null);
         }
+
+        /*** Save database state. ***/
+        private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _dbContext.SaveChanges();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected();
+            }
+        }
+
+        /*** Refresh window. ***/
+        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Refresh();
+        }
+
+        public void Refresh()
+        {
+            Part selectedPart = null;
+            try
+            {
+                selectedPart = (Part)MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedPart = null;
+            }
+            try
+            {
+                new PartsWindow(selectedPart, Left, Top).Show();
+                this.Close();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01a.");
+            }
+        }
+
+        /***********************************************************************************/
+        /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
+        /*** END                                                                         ***/
+        /***********************************************************************************/
+
+        /***********************************************************************************/
+        /*** Top ContextMenu event OnClick handlers.                                     ***/
+        /*** BEGIN                                                                       ***/
+        /***********************************************************************************/
 
         private void MachinesMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
@@ -351,7 +370,6 @@ namespace SpawmetDatabaseWPF
                 Disconnected();
                 return;
             }
-            //this.Close();
         }
 
         private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -365,7 +383,6 @@ namespace SpawmetDatabaseWPF
                 Disconnected("Kod błędu: 06a.");
                 return;
             }
-            //this.Close();
         }
 
         private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -392,40 +409,6 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                _dbContext.SaveChanges();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected();
-            }
-        }
-
-        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            Part selectedPart = null;
-            try
-            {
-                selectedPart = (Part) MainDataGrid.SelectedItem;
-            }
-            catch (InvalidCastException exc)
-            {
-                selectedPart = null;
-            }
-            try
-            {
-                new PartsWindow(selectedPart, Left, Top).Show();
-                this.Close();
-            }
-            catch (ProviderIncompatibleException exc)
-            {
-                Disconnected("Kod błędu: 01a.");
-            }
-        }
-
         private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -438,6 +421,11 @@ namespace SpawmetDatabaseWPF
                 Disconnected();
             }
         }
+
+        /***********************************************************************************/
+        /*** Top ContextMenu event OnClick handlers.                                     ***/
+        /*** END                                                                         ***/
+        /***********************************************************************************/
 
         private void Disconnected()
         {

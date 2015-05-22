@@ -22,9 +22,6 @@ using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
 {
-    /// <summary>
-    /// Interaction logic for OrdersWindow.xaml
-    /// </summary>
     public partial class OrdersWindow : Window
     {
         public ObservableCollection<Order> DataGridItemsSource
@@ -45,20 +42,22 @@ namespace SpawmetDatabaseWPF
         private SpawmetDBContext _dbContext;
         private object _dbContextLock;
 
+        // BackgroundWorker objects which load data into detailed info item sources.
         private BackgroundWorker _partsBackgroundWorker;
 
         public OrdersWindow()
             : this(0, 0)
         {
-            
         }
 
+        // Constructor which creates window at specific x and y coordinates.
         public OrdersWindow(double x, double y)
             : this(null, x, y)
         {
-            
         }
 
+        // Constructor which creates window at specific x and y coordinates.
+        // Additionaly it selects specific Order item.
         public OrdersWindow(Order selectedOrder, double x, double y)
         {
             InitializeComponent();
@@ -120,6 +119,7 @@ namespace SpawmetDatabaseWPF
             this.Top = y;
         }
 
+        // Creates SpawmetDBContext object, fills MainDataGrid with data and initializes BackgroundWorker classes.
         private void Initialize()
         {
             if (_dbContext != null)
@@ -135,9 +135,7 @@ namespace SpawmetDatabaseWPF
             MainDataGrid.Items.Refresh();
 
             ClientComboBoxColumn.ItemsSource = _dbContext.Clients.ToList();
-            //ClientComboBoxColumn.SelectedItemBinding = new Binding("Client");
             MachineComboBoxColumn.ItemsSource = _dbContext.Machines.ToList();
-            //MachineComboBoxColumn.SelectedItemBinding = new Binding("Machine");
 
             if (_partsBackgroundWorker != null)
             {
@@ -181,12 +179,10 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                //_dbContext.Orders.Load();
                 _dbContext.Orders
                     .Include(o => o.Client)
                     .Include(o => o.Machine)
                     .Load();
-                //include client and machine ???
                 ConnectMenuItem.IsEnabled = false;
 
                 MachinesMenuItem.IsEnabled = true;
@@ -217,12 +213,6 @@ namespace SpawmetDatabaseWPF
             }
 
             string statusName = order.Status.Value.GetDescription();
-            /*switch (order.Status)
-            {
-                case OrderStatus.Start:
-                    statusName = "Nowe";
-                    break;
-            }*/
 
             string clientName = order.Client != null ? order.Client.Name : "";
             string machineName = order.Machine != null ? order.Machine.Name : "";
@@ -250,6 +240,7 @@ namespace SpawmetDatabaseWPF
         /*** BEGIN                                                                       ***/
         /***********************************************************************************/
 
+        /*** Add new Order. ***/
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             if (DataGridItemsSource == null)
@@ -260,6 +251,7 @@ namespace SpawmetDatabaseWPF
             new AddOrderWindow(this, _dbContext).Show();
         }
 
+        /*** Delete selected Order items. ***/
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var selected = MainDataGrid.SelectedItems;
@@ -272,63 +264,14 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (InvalidCastException exc)
                 {
+                    // Ignore objects that can't be casted to Order type.
                     continue;
                 }
             }
             new DeleteOrderWindow(this, _dbContext, toDelete).Show();
-
-            //if (DataGridItemsSource == null)
-            //{
-            //    return;
-            //}
-
-            //var selected = MainDataGrid.SelectedItems;
-            //var toDelete = new List<Order>();
-            //foreach (var item in selected)
-            //{
-            //    Order order = null;
-            //    try
-            //    {
-            //        order = (Order) item;
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        continue;
-            //    }
-            //    toDelete.Add(order);
-            //}
-            //try
-            //{
-            //    foreach (var order in toDelete)
-            //    {
-            //        Delete(order);
-            //    }
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected("Kod błędu: 05.");
-            //    //throw exc;
-            //}
         }
 
-        private void Delete(Order order)
-        {
-            foreach (var additionalPartSetElement in order.AdditionalPartSet.ToList())
-            {
-                _dbContext.AdditionalPartSets.Remove(additionalPartSetElement);
-                _dbContext.SaveChanges();
-            }
-
-            order.Client = null;
-            order.Machine = null;
-
-            lock (_dbContextLock)
-            {
-                _dbContext.Orders.Remove(order);
-                _dbContext.SaveChanges();
-            }
-        }
-
+        /*** Save database state. ***/
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -341,6 +284,7 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Refresh window. ***/
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Refresh();
@@ -368,6 +312,76 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Takes care about adding or deleting parts after OrderStatus was changed. ***/
+        private void StatusComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            OrderStatus previousSelection;
+            OrderStatus newSelection;
+
+            if (e.RemovedItems.Count != 0)
+            {
+                previousSelection = (OrderStatus) e.RemovedItems[0];
+            }
+            else
+            {
+                return;
+            }
+
+            newSelection = (OrderStatus) e.AddedItems[0];
+
+            switch (previousSelection)
+            {
+                case OrderStatus.New:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.InProgress:
+                            ApplyPartSets((Order)MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.Done:
+                            ApplyPartSets((Order)MainDataGrid.SelectedItem);
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.InProgress:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.New:
+                            UndoApplyPartSets((Order)MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.Done:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.Done:
+                    switch (newSelection)
+                    {
+                        case OrderStatus.New:
+                            UndoApplyPartSets((Order)MainDataGrid.SelectedItem);
+                            break;
+
+                        case OrderStatus.InProgress:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
         /***********************************************************************************/
         /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
         /*** END                                                                         ***/
@@ -378,6 +392,7 @@ namespace SpawmetDatabaseWPF
         /*** BEGIN                                                                       ***/
         /***********************************************************************************/
 
+        /*** Add new AdditionalPartSetElement with selected Order and existing Part. ***/
         private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
         {
             Order order = null;
@@ -398,6 +413,7 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Delete selected AdditionalPartSetElement. ***/
         private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
         {
             var dataGrid = AdditionalPartSetDataGrid;
@@ -421,6 +437,26 @@ namespace SpawmetDatabaseWPF
             }
 
             AdditionalPartSetDataGrid.ItemsSource = order.AdditionalPartSet;
+        }
+
+        /*** Adds specified Amount from AdditionalPartSetElement to Amount from Part. ***/
+        private void CraftPartButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            AdditionalPartSetElement selectedElement = null;
+            try
+            {
+                selectedElement = (AdditionalPartSetElement)AdditionalPartSetDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                selectedElement = null;
+                return;
+            }
+
+            var part = selectedElement.Part;
+            part.Amount += selectedElement.Amount;
+
+            _dbContext.SaveChanges();
         }
 
         /***********************************************************************************/
@@ -510,94 +546,6 @@ namespace SpawmetDatabaseWPF
             MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
 
-        private void CraftPartButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            AdditionalPartSetElement selectedElement = null;
-            try
-            {
-                selectedElement = (AdditionalPartSetElement) AdditionalPartSetDataGrid.SelectedItem;
-            }
-            catch (InvalidCastException exc)
-            {
-                selectedElement = null;
-                return;
-            }
-
-            var part = selectedElement.Part;
-            part.Amount += selectedElement.Amount;
-
-            _dbContext.SaveChanges();
-        }
-
-        private void StatusComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            OrderStatus previousSelection;
-            OrderStatus newSelection;
-
-            if (e.RemovedItems.Count != 0)
-            {
-                previousSelection = (OrderStatus) e.RemovedItems[0];
-            }
-            else
-            {
-                return;
-            }
-
-            newSelection = (OrderStatus) e.AddedItems[0];
-
-            switch (previousSelection)
-            {
-                case OrderStatus.New:
-                    switch (newSelection)
-                    {
-                        case OrderStatus.InProgress:
-                            ApplyPartSets((Order) MainDataGrid.SelectedItem);
-                            break;
-
-                        case OrderStatus.Done:
-                            ApplyPartSets((Order) MainDataGrid.SelectedItem);
-                            break;
-
-                        default:
-                            throw new InvalidOperationException();
-                    }
-                    break;
-
-                case OrderStatus.InProgress:
-                    switch (newSelection)
-                    {
-                        case OrderStatus.New:
-                            UndoApplyPartSets((Order) MainDataGrid.SelectedItem);
-                            break;
-
-                        case OrderStatus.Done:
-                            break;
-
-                        default:
-                            throw new InvalidOperationException();
-                    }
-                    break;
-
-                case OrderStatus.Done:
-                    switch (newSelection)
-                    {
-                        case OrderStatus.New:
-                            UndoApplyPartSets((Order) MainDataGrid.SelectedItem);
-                            break;
-
-                        case OrderStatus.InProgress:
-                            break;
-
-                        default:
-                            throw new InvalidOperationException();
-                    }
-                    break;
-
-                default:
-                    throw new InvalidOperationException();
-            }
-        }
-
         private void ApplyPartSets(Order order)
         {
             foreach (var element in order.Machine.StandardPartSet)
@@ -631,5 +579,6 @@ namespace SpawmetDatabaseWPF
             }
             _dbContext.SaveChanges();
         }
+
     }
 }

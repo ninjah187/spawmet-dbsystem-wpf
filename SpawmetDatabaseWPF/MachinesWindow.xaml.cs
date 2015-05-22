@@ -27,9 +27,15 @@ using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
 {
-    /// <summary>
-    /// Interaction logic for MachinesWindow.xaml
-    /// </summary>
+    /***********************************************************************************/
+    /*** Main rule for loading data to UI from another threads:                      ***/
+    /***   - readonly data (like OrdersListBox in MachinesWindow) can be loaded from ***/
+    /***     another context (with using Include() to load all related data, in      ***/
+    /***     order to display Signature).                                            ***/
+    /***   - read/write data (like StandardPartSetGrid in MachinesWindow) MUST be    ***/
+    /***     loaded from main _dbContext (with using lock and Include).              ***/
+    /***********************************************************************************/
+
     public partial class MachinesWindow : Window
     {
         public ObservableCollection<Machine> DataGridItemsSource 
@@ -42,32 +48,32 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (ProviderIncompatibleException exc)
                 {
-                    //throw new ProviderIncompatibleException("in DataGridItemsSource");
                     Disconnected("Kod błędu: MWxDGIS.");
                     return null;
                 }
             }
         }
 
-        //public ObservableCollection<PartSetElement> PartSetDataGridSource { get; set; }
-
         private SpawmetDBContext _dbContext;
         private object _dbContextLock;
 
+        // BackgroundWorker objects which load data into detailed info item sources.
         private BackgroundWorker _partsBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
 
-        // TIDY UP THAT MESS IN CONSTRUCTORS !!!!!!!!!
         public MachinesWindow()
             : this(0, 0)
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
         public MachinesWindow(double x, double y)
             : this(null, x, y)
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
+        // Additionaly it selects specific Machine item.
         public MachinesWindow(Machine selectedMachine, double x, double y)
         {
             InitializeComponent();
@@ -127,13 +133,14 @@ namespace SpawmetDatabaseWPF
             }
             catch (ProviderIncompatibleException e)
             {
-                Disconnected("Kod błędu 00.");
+                Disconnected("Kod błędu: 00.");
             }
 
             Left = x;
             Top = y;
         }
 
+        // Creates SpawmetDBContext object, fills MainDataGrid with data and initializes BackgroundWorker classes.
         private void Initialize()
         {
             if (_dbContext != null)
@@ -159,95 +166,72 @@ namespace SpawmetDatabaseWPF
 
             _partsBackgroundWorker = new BackgroundWorker();
             _ordersBackgroundWorker = new BackgroundWorker();
-            _partsBackgroundWorker.DoWork += _backgroundWorker_DoWorkStandardParts;
-            _partsBackgroundWorker.RunWorkerCompleted += _backgroundWorker_StandardPartsCompleted;
-            _ordersBackgroundWorker.DoWork += _backgroundWorker_DoWorkOrders;
-            _ordersBackgroundWorker.RunWorkerCompleted += _backgroundWorker_OrdersCompleted;
-        }
-
-        /***********************************************************************************/
-        /*** Main rule about loading data to UI from another threads:                    ***/
-        /***   - readonly data (like OrdersListBox in MachinesWindow) can be loaded from ***/
-        /***     another context (with using Include() to load all related data, in      ***/
-        /***     order to display Signature).                                            ***/
-        /***   - read/write data (like StandardPartSetGrid in MachinesWindow) MUST be    ***/
-        /***     loaded from main _dbContext (with using lock and Include).              ***/
-        /***********************************************************************************/
-
-        private void _backgroundWorker_DoWorkStandardParts(object sender, DoWorkEventArgs e)
-        {
-            //var machine = (Machine) e.Argument;
-            //e.Result = machine.StandardPartSet;
-
-            var machineId = (int) e.Argument;
-            //var context = new SpawmetDBContext();
-            List<StandardPartSetElement> result;
-            lock (_dbContextLock)
+            _partsBackgroundWorker.DoWork += (sender, e) =>
             {
-                result = _dbContext.StandardPartSets
-                    .Where(el => el.Machine.Id == machineId)
-                    .Include(el => el.Part)
-                    .OrderBy(el => el.Part.Name)
+                var machineId = (int)e.Argument;
+                List<StandardPartSetElement> result;
+                lock (_dbContextLock)
+                {
+                    result = _dbContext.StandardPartSets
+                        .Where(el => el.Machine.Id == machineId)
+                        .Include(el => el.Part)
+                        .OrderBy(el => el.Part.Name)
+                        .ToList();
+                }
+                e.Result = result;
+            };
+            _partsBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                var source = (ICollection<StandardPartSetElement>)e.Result;
+                StandardPartSetDataGrid.ItemsSource = source;
+
+                StandardPartSetProgressBar.IsIndeterminate = false;
+            };
+            _ordersBackgroundWorker.DoWork += (sender, e) =>
+            {
+                var machineId = (int)e.Argument;
+                var context = new SpawmetDBContext();
+                var result = context.Orders
+                    .Where(m => m.Machine.Id == machineId)
+                    .Include(o => o.Client)
+                    .Include(o => o.Machine)
+                    .OrderBy(o => o.Id)
                     .ToList();
-            }
-            //result.ForEach(el =>
-            //{
-            //    //el.PropertyChanged += (s, args) =>
-            //    //{
-            //    //    StandardPartSetDataGrid.Items.Refresh();
-            //    //};
-            //});
-            e.Result = result;
-            //context.Dispose();
+                e.Result = result;
+                context.Dispose();
+            };
+            _ordersBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            {
+                ICollection<Order> source = null;
+                try
+                {
+                    source = (ICollection<Order>)e.Result;
+                }
+                catch (TargetInvocationException exc)
+                {
+                    Disconnected("Kod błędu: MWxOBW_OC.");
+                    return;
+                }
+                OrdersListBox.ItemsSource = source;
+
+                OrdersProgressBar.IsIndeterminate = false;
+            };
         }
 
-        private void _backgroundWorker_StandardPartsCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void LoadDataIntoSource()
         {
-            var source = (ICollection<StandardPartSetElement>) e.Result;
-            StandardPartSetDataGrid.ItemsSource = source;
-
-            StandardPartSetProgressBar.IsIndeterminate = false;
-        }
-
-        private void _backgroundWorker_DoWorkOrders(object sender, DoWorkEventArgs e)
-        {
-            var machineId = (int) e.Argument;
-            var context = new SpawmetDBContext();
-            var result = context.Orders
-                .Where(m => m.Machine.Id == machineId)
-                .Include(o => o.Client)
-                .Include(o => o.Machine)
-                .OrderBy(o => o.Id)
-                .ToList();
-            //List<Order> result;
-            //lock (_dbContextLock)
-            //{
-            //    result = _dbContext.Machines
-            //        .Single(m => m.Id == machineId)
-            //        .Orders
-            //        .OrderBy(o => o.Id)
-            //        .ToList();
-            //}
-            e.Result = result;
-            context.Dispose();
-        }
-
-        private void _backgroundWorker_OrdersCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //InvokationTargetException gdy nie ma połączenia
-            ICollection<Order> source = null;
             try
             {
-                source = (ICollection<Order>) e.Result;
-            }
-            catch (TargetInvocationException exc)
-            {
-                Disconnected("Kod błędu: MWxOBW_OC.");
-                return;
-            }
-            OrdersListBox.ItemsSource = source;
+                _dbContext.Machines.Load();
+                ConnectMenuItem.IsEnabled = false;
 
-            OrdersProgressBar.IsIndeterminate = false;
+                PartsMenuItem.IsEnabled = true;
+                OrdersMenuItem.IsEnabled = true;
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: MWxLDIS.");
+            }
         }
 
         public void FillDetailedInfo(Machine machine)
@@ -281,80 +265,14 @@ namespace SpawmetDatabaseWPF
                 _partsBackgroundWorker.RunWorkerAsync(machine.Id);
                 _ordersBackgroundWorker.RunWorkerAsync(machine.Id);
             }
-
-            //try
-            //{
-            //    StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet.OrderBy(element => element.Part.Id);
-            //    OrdersListBox.ItemsSource = machine.Orders.OrderBy(order => order.Id);
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected("Kod błędu: 02.");
-            //}
         }
 
-        private void LoadDataIntoSource()
-        {
-            try
-            {
-                _dbContext.Machines.Load();
-                ConnectMenuItem.IsEnabled = false;
+        /***********************************************************************************/
+        /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
+        /*** BEGIN                                                                       ***/
+        /***********************************************************************************/
 
-                PartsMenuItem.IsEnabled = true;
-                OrdersMenuItem.IsEnabled = true;
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: MWxLDIS.");
-            }
-        }
-
-        private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            Machine machine = null;
-            try
-            {
-                machine = (Machine) MainDataGrid.SelectedItem;
-            }
-            catch (InvalidCastException exc)
-            {
-                return;
-            }
-            finally
-            {
-                if (machine != null)
-                {
-                    new AddPartToMachine(this, _dbContext, machine).Show();
-                }
-            }
-        }
-
-        private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            var dataGrid = StandardPartSetDataGrid;
-            var machine = (Machine) MainDataGrid.SelectedItem;
-            var partSetElement = (StandardPartSetElement) dataGrid.SelectedItem;
-
-            if (partSetElement == null)
-            {
-                return;
-            }
-
-            //machine.StandardPartSet.Remove(partSetElement);
-            try
-            {
-                //_dbContext.StandardPartSets.Attach(partSetElement); //because it was loaded by other context
-                _dbContext.StandardPartSets.Remove(partSetElement);
-                _dbContext.SaveChanges();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 04.");
-            }
-
-            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet; //.OrderBy(element => element.Part.Id);
-        }
-
+        /*** Add new Machine. ***/
         private void AddContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             if (DataGridItemsSource == null)
@@ -365,6 +283,7 @@ namespace SpawmetDatabaseWPF
             new AddMachineWindow(this, _dbContext).Show();
         }
 
+        /*** Delete selected Machine items. ***/
         private void DeleteContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var selected = MainDataGrid.SelectedItems;
@@ -373,7 +292,7 @@ namespace SpawmetDatabaseWPF
             {
                 try
                 {
-                    toDelete.Add((Machine) item);
+                    toDelete.Add((Machine)item);
                 }
                 catch (InvalidCastException exc)
                 {
@@ -383,60 +302,7 @@ namespace SpawmetDatabaseWPF
             new DeleteMachineWindow(this, _dbContext, toDelete).Show();
         }
 
-        private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                new PartsWindow(this.Left + 40, this.Top + 40).Show();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 06.");
-                return;
-            }
-            //this.Close();
-        }
-
-        private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                new OrdersWindow(this.Left + 40, this.Top + 40).Show();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu: 06a.");
-                return;
-            }
-            //this.Close();
-        }
-
-        private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                new ClientsWindow(this.Left + 40, this.Top + 40).Show();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu 06b.");
-                return;
-            }
-        }
-
-        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
-            }
-            catch (EntityException exc)
-            {
-                Disconnected("Kod błędu 06b.");
-                return;
-            }
-        }
-
+        /*** Save database state. ***/
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -447,6 +313,12 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected("Kod błędu: 07.");
             }
+        }
+
+        /*** Refresh window. ***/
+        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Refresh();
         }
 
         public void Refresh()
@@ -471,51 +343,13 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            Refresh();
-        }
-
-        private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                new MachinesWindow(this.Left, this.Top).Show();
-                this.Close();
-            }
-            catch (ProviderIncompatibleException exc)
-            {
-                Disconnected("Kod błędu: 01.");
-            }
-        }
-
-        private void Disconnected()
-        {
-            Disconnected("");
-        }
-
-        private void Disconnected(string message)
-        {
-            MainDataGrid.IsEnabled = false;
-            DetailsStackPanel.IsEnabled = false;
-            PartsMenuItem.IsEnabled = false;
-            OrdersMenuItem.IsEnabled = false;
-            ClientsMenuItem.IsEnabled = false;
-            DeliveriesMenuItem.IsEnabled = false;
-            FillDetailedInfo(null);
-            ConnectMenuItem.IsEnabled = true;
-            MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
-        }
-
+        /*** Adds specified Amount from StandardPartSetElement to Amount from Part. ***/
         private void CraftPartButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //var button = (Part) sender;
-            //var partSetElement = (StandardPartSetElement) StandardPartSetDataGrid.SelectedItem;
-
             StandardPartSetElement selectedElement = null;
             try
             {
-                selectedElement = (StandardPartSetElement) StandardPartSetDataGrid.SelectedItem;
+                selectedElement = (StandardPartSetElement)StandardPartSetDataGrid.SelectedItem;
             }
             catch (InvalidCastException exc)
             {
@@ -528,6 +362,7 @@ namespace SpawmetDatabaseWPF
             _dbContext.SaveChanges();
         }
 
+        /*** Creates temp .xps file from selected Machine items and then shows print dialog. ***/
         private void PrintContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var selected = MainDataGrid.SelectedItems;
@@ -565,22 +400,10 @@ namespace SpawmetDatabaseWPF
 
                 var printWindow = new PrintWindow(machines, printDialog, this);
                 printWindow.Show();
-                // Create stream to get full path of .\temp.xps (it's needed in XpsDocument constructor).
-                //var stream = File.Open(@".\temp.xps", FileMode.Create);
-                //string xpsPath = stream.Name;
-                //stream.Close();
-                //stream.Dispose();
-                //var xpsCreator = new XPSCreator();
-                //xpsCreator.Create(machines, xpsPath);
-
-                //var xpsDocument = new XpsDocument(xpsPath, FileAccess.ReadWrite);
-                //var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
-                //printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
-
-                //File.Delete(xpsPath);
             }
         }
 
+        /*** Prepares selected Machine items and shows save file dialog. ***/
         private void SaveToFileContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             var selected = MainDataGrid.SelectedItems;
@@ -597,7 +420,7 @@ namespace SpawmetDatabaseWPF
             {
                 try
                 {
-                    machines.Add((Machine) item);
+                    machines.Add((Machine)item);
                 }
                 catch (InvalidCastException exc)
                 {
@@ -616,6 +439,159 @@ namespace SpawmetDatabaseWPF
             {
                 new SaveFileWindow(machines, saveFileDialog.FileName, this).Show();
             }
+        }
+
+        /***********************************************************************************/
+        /*** MainDataGrid ContextMenu event OnClick handlers.                            ***/
+        /*** END                                                                         ***/
+        /***********************************************************************************/
+
+        /***********************************************************************************/
+        /*** StandardPartSetDataGrid ContextMenu event OnClick handlers.                 ***/
+        /*** BEGIN                                                                       ***/
+        /***********************************************************************************/
+
+        /*** Add new StandardPartSetElement with selected Order and existing Part. ***/
+        private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            Machine machine = null;
+            try
+            {
+                machine = (Machine)MainDataGrid.SelectedItem;
+            }
+            catch (InvalidCastException exc)
+            {
+                return;
+            }
+            finally
+            {
+                if (machine != null)
+                {
+                    new AddPartToMachine(this, _dbContext, machine).Show();
+                }
+            }
+        }
+
+        /*** Delete selected StandardPartSetElement. ***/
+        private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var dataGrid = StandardPartSetDataGrid;
+            var machine = (Machine)MainDataGrid.SelectedItem;
+            var partSetElement = (StandardPartSetElement)dataGrid.SelectedItem;
+
+            if (partSetElement == null)
+            {
+                return;
+            }
+
+            try
+            {
+                _dbContext.StandardPartSets.Remove(partSetElement);
+                _dbContext.SaveChanges();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 04.");
+            }
+
+            StandardPartSetDataGrid.ItemsSource = machine.StandardPartSet; //.OrderBy(element => element.Part.Id);
+        }
+
+        /***********************************************************************************/
+        /*** StandardPartSetDataGrid ContextMenu event OnClick handlers.                 ***/
+        /*** END                                                                         ***/
+        /***********************************************************************************/
+
+        /***********************************************************************************/
+        /*** Top ContextMenu event OnClick handlers.                                     ***/
+        /*** BEGIN                                                                       ***/
+        /***********************************************************************************/
+
+        private void PartsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new PartsWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06.");
+                return;
+            }
+        }
+
+        private void OrdersMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new OrdersWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu: 06a.");
+                return;
+            }
+        }
+
+        private void ClientsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new ClientsWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu 06b.");
+                return;
+            }
+        }
+
+        private void DeliveriesMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new DeliveriesWindow(this.Left + 40, this.Top + 40).Show();
+            }
+            catch (EntityException exc)
+            {
+                Disconnected("Kod błędu 06b.");
+                return;
+            }
+        }
+
+        private void ConnectMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                new MachinesWindow(this.Left, this.Top).Show();
+            }
+            catch (ProviderIncompatibleException exc)
+            {
+                Disconnected("Kod błędu: 01.");
+            }
+        }
+
+        /***********************************************************************************/
+        /*** Top ContextMenu event OnClick handlers.                                     ***/
+        /*** END                                                                         ***/
+        /***********************************************************************************/
+
+        private void Disconnected()
+        {
+            Disconnected("");
+        }
+
+        private void Disconnected(string message)
+        {
+            MainDataGrid.IsEnabled = false;
+            DetailsStackPanel.IsEnabled = false;
+            PartsMenuItem.IsEnabled = false;
+            OrdersMenuItem.IsEnabled = false;
+            ClientsMenuItem.IsEnabled = false;
+            DeliveriesMenuItem.IsEnabled = false;
+            FillDetailedInfo(null);
+            ConnectMenuItem.IsEnabled = true;
+            MessageBox.Show("Brak połączenia z serwerem.\n" + message, "Błąd");
         }
 
     }

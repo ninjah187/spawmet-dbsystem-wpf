@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SpawmetDatabase.Model;
 
 namespace SpawmetDatabase
 {
@@ -13,6 +8,7 @@ namespace SpawmetDatabase
         private static readonly Random random = new Random();
         private const int dbSize = 10;
 
+        // dunno why but Seed() doesn't work; initialize in Main() method of this project.
         protected override void Seed(SpawmetDBContext context)
         {
             //if (context.Users.Count() == 0)

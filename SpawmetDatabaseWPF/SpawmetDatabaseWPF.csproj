@@ -137,10 +137,6 @@
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EnumToFriendlyNameConverter.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="InitialWindow.xaml.cs">
-      <DependentUpon>InitialWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
     </Compile>
@@ -223,27 +219,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InitialWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MachinesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Compile Include="AddPartWindow.xaml.cs">
       <DependentUpon>AddPartWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="OrdersWindow.xaml">
@@ -329,10 +313,7 @@
   <ItemGroup>
     <Resource Include="icon2.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="InputWindows\" />
-    <Folder Include="MainWindows\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -54,7 +54,7 @@ namespace SpawmetDatabaseWPF
 
                 _backgroundWorker.RunWorkerAsync();
             };
-
+            
             _backgroundWorker = new BackgroundWorker();
             _backgroundWorker.WorkerReportsProgress = true;
             _backgroundWorker.DoWork += (sender, e) =>

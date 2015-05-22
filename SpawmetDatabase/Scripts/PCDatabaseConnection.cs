@@ -11,6 +11,20 @@ namespace SpawmetDatabase.Scripts
 {
     public static class PCDatabaseConnection
     {
+        // path - directory of machine
+        public static void AddMachineBetter(string path)
+        {
+            var sw = new Stopwatch();
+            var startTime = DateTime.Now;
+            sw.Start();
+
+            string[] s = Directory.GetDirectories(path);
+            foreach (string x in s)
+            {
+                Console.WriteLine(x);
+            }
+        }
+
         public static void AddMachine(string path)
         {
             /*** Show current time and start Stopwatch. ***/

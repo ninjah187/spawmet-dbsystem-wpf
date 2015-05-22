@@ -20,9 +20,6 @@ using SpawmetDatabase.Model;
 
 namespace SpawmetDatabaseWPF
 {
-    /// <summary>
-    /// Interaction logic for DeliveriesWindow.xaml
-    /// </summary>
     public partial class DeliveriesWindow : Window
     {
         public ObservableCollection<Delivery> DataGridItemsSource
@@ -43,6 +40,7 @@ namespace SpawmetDatabaseWPF
         private SpawmetDBContext _dbContext;
         private object _dbContextLock;
 
+        // BackgroundWorker objects which load data into detailed info item sources.
         private BackgroundWorker _partsBackgroundWorker;
 
         public DeliveriesWindow()
@@ -50,11 +48,14 @@ namespace SpawmetDatabaseWPF
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
         public DeliveriesWindow(double x, double y)
             : this(null, x, y)
         {
         }
 
+        // Constructor which creates window at specific x and y coordinates.
+        // Additionaly it selects specific Delivery item.
         public DeliveriesWindow(Delivery selectedDelivery, double x, double y)
         {
             InitializeComponent();
@@ -81,6 +82,8 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
+                // If there's selectedDelivery item in database, select this item.
+                // On window loaded.
                 Delivery delivery;
                 try
                 {
@@ -103,6 +106,7 @@ namespace SpawmetDatabaseWPF
                 _partsBackgroundWorker.Dispose();
             };
 
+
             try
             {
                 Initialize();
@@ -116,8 +120,10 @@ namespace SpawmetDatabaseWPF
             this.Top = y;
         }
 
+        // Creates SpawmetDBContext object, fills MainDataGrid with data and initializes BackgroundWorker classes.
         private void Initialize()
         {
+            // In case when connection was lost and window wasn't closed, there's big chance that _dbContext wasn't disposed.
             if (_dbContext != null)
             {
                 _dbContext.Dispose();
@@ -232,61 +238,14 @@ namespace SpawmetDatabaseWPF
                 }
                 catch (InvalidCastException exc)
                 {
+                    // Ignore objects that can't be casted to Delivery type.
                     continue;
                 }
             }
             new DeleteDeliveryWindow(this, _dbContext, toDelete).Show();
-
-            //if (DataGridItemsSource == null)
-            //{
-            //    return;
-            //}
-
-            //var selected = MainDataGrid.SelectedItems;
-            //var toDelete = new List<Delivery>();
-            //foreach (var item in selected)
-            //{
-            //    Delivery delivery = null;
-            //    try
-            //    {
-            //        delivery = (Delivery) delivery;
-            //    }
-            //    catch (InvalidCastException exc)
-            //    {
-            //        continue;
-            //    }
-            //    toDelete.Add(delivery);
-            //}
-            //try
-            //{
-            //    foreach (var delivery in toDelete)
-            //    {
-            //        Delete(delivery);
-            //    }
-            //}
-            //catch (EntityException exc)
-            //{
-            //    Disconnected("Kod błędu: 05.");
-            //}
         }
 
-        /*** Delete from database specific Delivery element and all related ***/
-        /*** DeliveryPartSetElement elements. ***/
-        private void Delete(Delivery delivery)
-        {
-            foreach (var deliveryPartSetElement in delivery.DeliveryPartSet.ToList())
-            {
-                _dbContext.DeliveryPartSets.Remove(deliveryPartSetElement);
-                _dbContext.SaveChanges();
-            }
-
-            lock (_dbContextLock)
-            {
-                _dbContext.Deliveries.Remove(delivery);
-                _dbContext.SaveChanges();
-            }
-        }
-
+        /*** Save database state. ***/
         private void SaveContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -299,6 +258,7 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Refresh window. ***/
         private void RefreshContextMenuItem_OnClick(object sender, RoutedEventArgs e)
         {
             Refresh();
@@ -336,6 +296,7 @@ namespace SpawmetDatabaseWPF
         /*** BEGIN                                                                       ***/
         /***********************************************************************************/
 
+        /*** Add new DeliveryPartSetElement with selected Delivery and existing Part. ***/
         private void AddPartItem_OnClick(object sender, RoutedEventArgs e)
         {
             Delivery delivery = null;
@@ -356,6 +317,7 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        /*** Delete selected DeliveryPartElement. ***/
         private void DeletePartItem_OnClick(object sender, RoutedEventArgs e)
         {
             var dataGrid = PartsDataGrid;

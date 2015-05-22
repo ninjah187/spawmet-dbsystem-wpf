@@ -43,8 +43,8 @@
 
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Click="AddPartMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Click="DeletePartMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
                     <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
                 </ContextMenu>

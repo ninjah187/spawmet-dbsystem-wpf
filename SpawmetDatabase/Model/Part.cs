@@ -13,7 +13,20 @@ namespace SpawmetDatabase.Model
             this.AdditionalPartSets = new HashSet<AdditionalPartSetElement>();
         }
 
-        public int Id { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id != value)
+                {
+                    _id = value;
+                    NotifyPropertyChanged("Id");
+                }
+            }
+        }
 
         public string Name
         {
@@ -23,7 +36,7 @@ namespace SpawmetDatabase.Model
                 if (_name != value)
                 {
                     _name = value;
-                    //NotifyPropertyChanged("Name");
+                    NotifyPropertyChanged("Name");
                 }
             }
         }
@@ -36,7 +49,7 @@ namespace SpawmetDatabase.Model
                 if (_amount != value)
                 {
                     _amount = value;
-                    //NotifyPropertyChanged("Amount");
+                    NotifyPropertyChanged("Amount");
                 }
             }
         }
@@ -49,7 +62,7 @@ namespace SpawmetDatabase.Model
                 if (_origin != value)
                 {
                     _origin = value;
-                    //NotifyPropertyChanged("Origin");
+                    NotifyPropertyChanged("Origin");
                 }
             }
         }
@@ -64,7 +77,7 @@ namespace SpawmetDatabase.Model
                 if (_deliveryPartSets != value)
                 {
                     _deliveryPartSets = value;
-                    //NotifyPropertyChanged("Deliveries");
+                    NotifyPropertyChanged("Deliveries");
                 }
             }
         }
@@ -80,7 +93,7 @@ namespace SpawmetDatabase.Model
                 if (_standardPartSets != value)
                 {
                     _standardPartSets = value;
-                    //NotifyPropertyChanged("StandardPartSets");
+                    NotifyPropertyChanged("StandardPartSets");
                 }
             }
         }
@@ -96,11 +109,12 @@ namespace SpawmetDatabase.Model
                 if (_additionalPartSets != value)
                 {
                     _additionalPartSets = value;
-                    //NotifyPropertyChanged("AdditionalPartSets");
+                    NotifyPropertyChanged("AdditionalPartSets");
                 }
             }
         }
 
+        private int _id;
         private string _name;
         private int _amount;
         private Origin? _origin;
@@ -108,5 +122,13 @@ namespace SpawmetDatabase.Model
         private ICollection<DeliveryPartSetElement> _deliveryPartSets;
         private ICollection<StandardPartSetElement> _standardPartSets;
         private ICollection<AdditionalPartSetElement> _additionalPartSets;
+
+        protected void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }
