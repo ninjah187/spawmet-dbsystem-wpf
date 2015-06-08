@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="MachinePathParser.cs" />
     <Compile Include="ParserRunCompletedEventArgs.cs" />
+    <Compile Include="ParserRunFailedEventArgs.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scripts\PCDatabaseConnection.cs" />

@@ -16,6 +16,7 @@ namespace SpawmetDatabase
         public event EventHandler<DatabaseItemAddedEventArgs> PartAdded;
         public event EventHandler<DatabaseItemAddedEventArgs> StandardPartSetElementAdded;
         public event EventHandler<ParserRunCompletedEventArgs> ParserRunCompleted;
+        //public event EventHandler<ParserRunFailedEventArgs> ParserRunFailed;
 
         public string Path { get; private set; }
         public Machine Machine { get; private set; }
@@ -37,6 +38,8 @@ namespace SpawmetDatabase
             _crawler = new DirectoryCrawler();
             
             _stopwatch = new Stopwatch();
+
+            //Console.WriteLine(_machineName);
         }
 
         public void Dispose()
@@ -137,7 +140,7 @@ namespace SpawmetDatabase
             //partNameWords.Reverse();
             foreach (var word in partNameWords)
             {
-                if (word == partNameWords.First())
+                if ((object)word == (object)partNameWords.First())
                 {
                     partName += word;
                 }
@@ -152,7 +155,7 @@ namespace SpawmetDatabase
             //machineVariantNameWords.Reverse();
             foreach (var word in machineVariantNameWords)
             {
-                if (word == partNameWords.First())
+                if ((object)word == (object)machineVariantNameWords.First())
                 {
                     machineName += word;
                 }
@@ -168,6 +171,14 @@ namespace SpawmetDatabase
             foreach (var word in machineNameSplit)
             {
                 string s = word.Trim(TrimChars);
+
+                //Console.WriteLine(machineNameSplit.First());
+
+                if (s == " ")
+                {
+                    continue;
+                }
+
                 if ((object)word == (object)machineNameSplit.First()) // (object) to compare references, not values
                 {
                     machineName += s;
@@ -177,15 +188,31 @@ namespace SpawmetDatabase
                     machineName += " " + s;
                 }
             }
+            // wtf? why does machine name always have got " " on its beginning?
+            //machineName = machineName.Substring(1, machineName.Length - 1);
 
             string[] partNameSplit = partName.Split(' ');
             partName = "";
             foreach (var word in partNameSplit)
             {
                 string s = word.Trim(TrimChars);
+
+                if (s == " ")
+                {
+                    continue;
+                }
+
                 if (s.StartsWith("x"))
                 {
-                    partAmount = int.Parse(s.Substring(1, s.Length - 1));
+                    try
+                    {
+                        partAmount = int.Parse(s.Substring(1, s.Length - 1));
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Błąd parsowania elementu: " + partPath);
+                        return;
+                    }
                     continue;
                 }
                 

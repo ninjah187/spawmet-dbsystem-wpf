@@ -32,7 +32,7 @@ namespace SpawmetDatabase
             var crawler = new DirectoryCrawler(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem");
 
             // włóka łąkowa
-            using (var parser = new MachinePathParser(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Obciążnik"))
+            using (var parser = new MachinePathParser(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem"))
             {
                 parser.MachineAdded += (sender, e) =>
                 {
@@ -61,7 +61,7 @@ namespace SpawmetDatabase
                 /// D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Szuflokrokodyle\....S\szuflokrokodyl HD\odkręcane boczki\1,0m; 4 zębów\Do wypalania 1,0 sob
                 /// /////////////////////////////////////////////////
 
-                parser.ParseAsync();
+                parser.Parse();
             }
 
             //var sw = new Stopwatch();
