@@ -163,7 +163,10 @@
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\ClientsWindowViewModel.cs" />
+    <Compile Include="ViewModel\DeliveriesWindowViewModel.cs" />
     <Compile Include="ViewModel\MachinesWindowViewModel.cs" />
+    <Compile Include="ViewModel\OrdersWindowViewModel.cs" />
     <Compile Include="ViewModel\PartsWindowViewModel.cs" />
     <Compile Include="ViewModel\SpawmetWindowViewModel.cs" />
     <Page Include="AddClientWindow.xaml">

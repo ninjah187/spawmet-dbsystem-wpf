@@ -23,17 +23,17 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartToOrderWindow : Window
     {
+        public event EventHandler<AdditionalPartSetElement> PartAdded;
+
         //public ObservableCollection<Part> ListBoxItemsSource { get; set; }
 
-        private readonly OrdersWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
         private readonly Order _order;
 
-        public AddPartToOrderWindow(OrdersWindow parentWindow, SpawmetDBContext dbContext, Order order)
+        public AddPartToOrderWindow(SpawmetDBContext dbContext, Order order)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
             _order = order;
 
@@ -46,11 +46,9 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
             };
 
             AmountTextBox.GotFocus += TextBox_GotFocus;
@@ -92,9 +90,7 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            _parentWindow.AdditionalPartSetDataGrid.ItemsSource = _order.AdditionalPartSet
-                .OrderBy(el => el.Part.Name)
-                .ToList();
+            OnPartAdded(partSetElement);
 
             this.Close();
         }
@@ -106,12 +102,15 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.PartsMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnPartAdded(AdditionalPartSetElement partSetElement)
+        {
+            if (PartAdded != null)
+            {
+                PartAdded(this, partSetElement);
+            }
         }
     }
 }

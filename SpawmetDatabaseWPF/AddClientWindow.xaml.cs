@@ -22,7 +22,8 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddClientWindow : Window
     {
-        private ClientsWindow _parentWindow;
+        public event EventHandler<Client> ClientAdded;
+
         private SpawmetDBContext _dbContext;
 
         public AddClientWindow()
@@ -30,20 +31,17 @@ namespace SpawmetDatabaseWPF
             InitializeComponent();
         }
 
-        public AddClientWindow(ClientsWindow parentWindow, SpawmetDBContext dbContext)
+        public AddClientWindow(SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
             };
 
             NameTextBox.GotFocus += TextBox_GotFocus;
@@ -86,6 +84,9 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected();
             }
+
+            OnClientAdded(client);
+
             this.Close();
         }
 
@@ -96,12 +97,15 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.MachinesMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnClientAdded(Client client)
+        {
+            if (ClientAdded != null)
+            {
+                ClientAdded(this, client);
+            }
         }
     }
 }

@@ -123,11 +123,11 @@ namespace SpawmetDatabaseWPF
             _initWorker.RunWorkerAsync();
         }
 
-        private void OnMachinesDeleted(IEnumerable<Machine> machine)
+        private void OnMachinesDeleted(IEnumerable<Machine> machines)
         {
             if (MachinesDeleted != null)
             {
-                MachinesDeleted(this, machine);
+                MachinesDeleted(this, machines);
             }
         }
 

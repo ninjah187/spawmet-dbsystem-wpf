@@ -8,29 +8,30 @@
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tabele">
-                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick" IsEnabled="False"></MenuItem>
-                    <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="PartsMenuItem" Header="Części" Command="{Binding NewPartsWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
                     <MenuItem Header="Klienci" IsEnabled="False"></MenuItem>
-                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
-                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
         <DockPanel></DockPanel>
         <!-- END NAVBAR -->
 
-        <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
+        <DataGrid x:Name="MainDataGrid"
+                  ItemsSource="{Binding Clients, Mode=TwoWay}" SelectedItem="{Binding SelectedClient}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Command="{Binding AddClientCommand}"></MenuItem>
+                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Command="{Binding DeleteClientsCommand}"></MenuItem>
+                    <MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>
+                    <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
 
@@ -77,7 +78,8 @@
                     </ScrollViewer>
                 </StackPanel>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
-                <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature" Height="280"></ListBox>
+                <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature" Height="280"
+                         ItemsSource="{Binding Orders}"></ListBox>
                 <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
             </StackPanel>
         </StackPanel>

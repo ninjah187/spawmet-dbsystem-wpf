@@ -22,7 +22,8 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddDeliveryWindow : Window
     {
-        private DeliveriesWindow _parentWindow;
+        public event EventHandler<Delivery> DeliveryAdded;
+
         private SpawmetDBContext _dbContext;
 
         public AddDeliveryWindow()
@@ -30,20 +31,17 @@ namespace SpawmetDatabaseWPF
             InitializeComponent();
         }
 
-        public AddDeliveryWindow(DeliveriesWindow parentWindow, SpawmetDBContext dbContext)
+        public AddDeliveryWindow(SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
             };
 
             NameTextBox.GotFocus += TextBox_GotFocus;
@@ -74,6 +72,8 @@ namespace SpawmetDatabaseWPF
                 Disconnected();
             }
 
+            OnDeliveryAdded(delivery);
+
             this.Close();
         }
 
@@ -84,12 +84,15 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.MachinesMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnDeliveryAdded(Delivery delivery)
+        {
+            if (DeliveryAdded != null)
+            {
+                DeliveryAdded(this, delivery);
+            }
         }
     }
 }

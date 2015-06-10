@@ -109,8 +109,6 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand AddMachineCommand { get; private set; }
 
-        public ICommand CraftPartCommand { get; private set; }
-
         public ICommand DeleteMachinesCommand { get; private set; }
 
         public ICommand PrintDialogCommand { get; private set; }
@@ -120,6 +118,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand SaveToFileCommand { get; private set; }
 
         public ICommand AddPartToMachineCommand { get; private set; }
+
+        public ICommand CraftPartCommand { get; private set; }
 
         public ICommand DeletePartFromMachineCommand { get; private set; }
 
@@ -268,7 +268,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 bool? print = printDialog.ShowDialog();
                 if (print == true)
                 {
-                    string description = selected.Count() == 1
+                    string description = selected.Count == 1
                         ? selected.First().Name
                         : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
 
@@ -298,7 +298,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 var saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "Plik Word 2007 (*.docx)|*.docx|Plik PDF (*.pdf)|*.pdf";
                 saveFileDialog.AddExtension = true;
-                saveFileDialog.FileName = selected.Count() == 1
+                saveFileDialog.FileName = selected.Count == 1
                     ? selected.First().Name
                     : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
 
@@ -310,17 +310,30 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             AddPartToMachineCommand = new Command(() =>
             {
-                var win = new AddPartToMachine(DbContext, SelectedMachine);
-                win.PartAdded += (sender, part) =>
+                var machine = SelectedMachine;
+
+                if (machine == null)
                 {
-                    StandardPartSet.Add(part);
+                    return;
+                }
+
+                var win = new AddPartToMachine(DbContext, machine);
+                win.PartAdded += (sender, partSetElement) =>
+                {
+                    StandardPartSet.Add(partSetElement);
                 };
                 win.Show();
             });
 
             DeletePartFromMachineCommand = new Command(() =>
             {
-                var element = DbContext.StandardPartSets.Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
+                if (SelectedPartSetElement == null)
+                {
+                    return;
+                }
+
+                var element = DbContext.StandardPartSets
+                    .Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
                                                                       && el.Machine.Id == SelectedPartSetElement.Machine.Id);
                 DbContext.StandardPartSets.Remove(element);
                 DbContext.SaveChanges();

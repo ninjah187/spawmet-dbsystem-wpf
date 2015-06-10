@@ -133,11 +133,23 @@ namespace SpawmetDatabase.Model
 
         public string Signature
         {
+            //get
+            //{
+            //    string clientName = Client != null ? Client.Name : "";
+            //    string machineName = Machine != null ? Machine.Name : "";
+            //    return clientName + ", " + machineName + ", " + StartDate.Value.ToShortDateString();
+            //}
             get
             {
                 string clientName = Client != null ? Client.Name : "";
                 string machineName = Machine != null ? Machine.Name : "";
-                return clientName + ", " + machineName + ", " + StartDate.Value.ToShortDateString();
+                string startDate = StartDate != null ? StartDate.Value.ToString("yyyy-MM-dd") : "";
+
+                string signature = "Klient: " + clientName
+                                   + "\nMaszyna: " + machineName
+                                   + "\nData przyjęcia: " + startDate;
+
+                return signature;
             }
         }
 

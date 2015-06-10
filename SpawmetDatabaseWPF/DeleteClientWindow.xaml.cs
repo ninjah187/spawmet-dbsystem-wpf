@@ -22,7 +22,9 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class DeleteClientWindow : Window
     {
-        private readonly ClientsWindow _parentWindow;
+        public event EventHandler<IEnumerable<Client>> ClientsDeleted;
+        public event EventHandler WorkCompleted;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Client> _clients;
 
@@ -32,11 +34,10 @@ namespace SpawmetDatabaseWPF
         private int _deletedCount = 0;
         private int _totalCount = 0;
 
-        public DeleteClientWindow(ClientsWindow parentWindow, SpawmetDBContext dbContext, IEnumerable<Client> clients)
+        public DeleteClientWindow(SpawmetDBContext dbContext, IEnumerable<Client> clients)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
             _clients = clients;
 
@@ -101,6 +102,8 @@ namespace SpawmetDatabaseWPF
 
                 _dbContext.Clients.RemoveRange(_clients);
                 _dbContext.SaveChanges();
+
+                OnClientsDeleted(clients);
                 //using (var context = new SpawmetDBContext())
                 //{
                 //    var toDelete = new List<Client>();
@@ -117,6 +120,8 @@ namespace SpawmetDatabaseWPF
 
                 //parentWindow.Refresh();
 
+                OnWorkCompleted();
+
                 this.Close();
             };
 
@@ -127,6 +132,22 @@ namespace SpawmetDatabaseWPF
             };
 
             _initWorker.RunWorkerAsync();
+        }
+
+        private void OnClientsDeleted(IEnumerable<Client> clients)
+        {
+            if (ClientsDeleted != null)
+            {
+                ClientsDeleted(this, clients);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
+            }
         }
     }
 }

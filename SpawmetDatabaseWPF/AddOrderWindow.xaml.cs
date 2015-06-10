@@ -22,7 +22,8 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddOrderWindow : Window
     {
-        private OrdersWindow _parentWindow;
+        public event EventHandler<Order> OrderAdded;
+
         private SpawmetDBContext _dbContext;
 
         public AddOrderWindow()
@@ -30,11 +31,10 @@ namespace SpawmetDatabaseWPF
             InitializeComponent();
         }
 
-        public AddOrderWindow(OrdersWindow parentWindow, SpawmetDBContext dbContext)
+        public AddOrderWindow(SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
 
             ClientComboBox.ItemsSource = _dbContext.Clients.OrderBy(c => c.Name).ToList();
@@ -42,11 +42,11 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
+
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
+
             };
 
             RemarksTextBox.GotFocus += TextBox_GotFocus;
@@ -89,6 +89,8 @@ namespace SpawmetDatabaseWPF
                 Disconnected();
             }
 
+            OnOrderAdded(order);
+
             this.Close();
         }
 
@@ -116,12 +118,15 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.MachinesMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnOrderAdded(Order order)
+        {
+            if (OrderAdded != null)
+            {
+                OrderAdded(this, order);
+            }
         }
     }
 }

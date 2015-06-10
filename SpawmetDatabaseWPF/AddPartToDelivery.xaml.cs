@@ -22,15 +22,15 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartToDelivery : Window
     {
-        private readonly DeliveriesWindow _parentWindow;
+        public event EventHandler<DeliveryPartSetElement> PartAdded;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly Delivery _delivery;
 
-        public AddPartToDelivery(DeliveriesWindow parentWindow, SpawmetDBContext dbContext, Delivery delivery)
+        public AddPartToDelivery(SpawmetDBContext dbContext, Delivery delivery)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
             _delivery = delivery;
 
@@ -43,11 +43,9 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
             };
 
             AmountTextBox.GotFocus += TextBox_GotFocus;
@@ -89,9 +87,7 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            _parentWindow.PartsDataGrid.ItemsSource = _delivery.DeliveryPartSet
-                .OrderBy(el => el.Part.Name)
-                .ToList();
+            OnPartAdded(partSetElement);
 
             this.Close();
         }
@@ -103,12 +99,15 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.PartsMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnPartAdded(DeliveryPartSetElement element)
+        {
+            if (PartAdded != null)
+            {
+                PartAdded(this, element);
+            }
         }
     }
 }

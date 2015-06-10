@@ -22,7 +22,9 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class DeleteOrderWindow : Window
     {
-        private readonly OrdersWindow _parentWindow;
+        public event EventHandler<IEnumerable<Order>> OrdersDeleted;
+        public event EventHandler WorkCompleted;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Order> _orders;
 
@@ -32,11 +34,10 @@ namespace SpawmetDatabaseWPF
         private int _deletedCount = 0;
         private int _totalCount = 0;
 
-        public DeleteOrderWindow(OrdersWindow parentWindow, SpawmetDBContext dbContext, IEnumerable<Order> orders)
+        public DeleteOrderWindow(SpawmetDBContext dbContext, IEnumerable<Order> orders)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
             _orders = orders;
 
@@ -84,24 +85,17 @@ namespace SpawmetDatabaseWPF
             {
                 _deletedCount += _orders.Count();
 
-                //_dbContext.Orders.RemoveRange(_orders);
-                //_dbContext.SaveChanges();
-                using (var context = new SpawmetDBContext())
-                {
-                    var toDelete = new List<Order>();
-                    foreach (var order in _orders)
-                    {
-                        toDelete.Add(context.Orders.Single(o => o.Id == order.Id));
-                    }
-                    context.Orders.RemoveRange(toDelete);
-                    context.SaveChanges();
-                }
+                _dbContext.Orders.RemoveRange(_orders);
+                _dbContext.SaveChanges();
+
+                OnOrdersDeleted(_orders);
 
                 DeleteProgressBar.Value += _deletedCount;
                 CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
 
-                parentWindow.Refresh();
                 //parentWindow.FillDetailedInfo(null);
+                
+                OnWorkCompleted();
 
                 this.Close();
             };
@@ -114,6 +108,22 @@ namespace SpawmetDatabaseWPF
 
             _initWorker.RunWorkerAsync();
             
+        }
+
+        private void OnOrdersDeleted(IEnumerable<Order> orders)
+        {
+            if (OrdersDeleted != null)
+            {
+                OrdersDeleted(this, orders);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
+            }
         }
     }
 }
