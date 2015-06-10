@@ -23,23 +23,25 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartWindow : Window
     {
-        private PartsWindow _parentWindow;
+        public event EventHandler<Part> PartAdded;
+
+        //private PartsWindow _parentWindow;
         private SpawmetDBContext _dbContext;
 
-        public AddPartWindow(PartsWindow parentWindow, SpawmetDBContext dbContext)
+        public AddPartWindow(/*PartsWindow parentWindow, */SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
+            //_parentWindow = parentWindow;
             _dbContext = dbContext;
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
+                //_parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
+                //_parentWindow.IsEnabled = true;
             };
 
             NameTextBox.GotFocus += TextBox_GotFocus;
@@ -84,6 +86,9 @@ namespace SpawmetDatabaseWPF
             {
                 Disconnected();
             }
+
+            OnPartAdded(part);
+
             this.Close();
         }
 
@@ -94,12 +99,20 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.MachinesMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
+            //_parentWindow.MainDataGrid.IsEnabled = false;
+            //_parentWindow.DetailsStackPanel.IsEnabled = false;
+            //_parentWindow.MachinesMenuItem.IsEnabled = false;
+            //_parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+            //_parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnPartAdded(Part part)
+        {
+            if (PartAdded != null)
+            {
+                PartAdded(this, part);
+            }
         }
     }
 }

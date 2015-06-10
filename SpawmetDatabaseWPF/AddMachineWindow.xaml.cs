@@ -22,23 +22,25 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddMachineWindow : Window
     {
-        private MachinesWindow _parentWindow;
+        public event EventHandler<Machine> MachineAdded;
+
+        //private MachinesWindow _parentWindow;
         private SpawmetDBContext _dbContext;
 
-        public AddMachineWindow(MachinesWindow parentWindow, SpawmetDBContext dbContext)
+        public AddMachineWindow(/*MachinesWindow parentWindow, */SpawmetDBContext dbContext)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
+            //_parentWindow = parentWindow;
             _dbContext = dbContext;
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
+                //_parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
+                //_parentWindow.IsEnabled = true;
             };
 
             NameTextBox.GotFocus += TextBox_GotFocus;
@@ -80,7 +82,11 @@ namespace SpawmetDatabaseWPF
             catch (System.Data.Entity.Core.EntityException exc)
             {
                 Disconnected();
+                this.Close();
+                return;
             }
+
+            OnMachineAdded(machine);
 
             this.Close();
         }
@@ -92,12 +98,20 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.PartsMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
+            //_parentWindow.MainDataGrid.IsEnabled = false;
+            //_parentWindow.DetailsStackPanel.IsEnabled = false;
+            //_parentWindow.PartsMenuItem.IsEnabled = false;
+            //_parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+            //_parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnMachineAdded(Machine machine)
+        {
+            if (MachineAdded != null)
+            {
+                MachineAdded(this, machine);
+            }
         }
     }
 }

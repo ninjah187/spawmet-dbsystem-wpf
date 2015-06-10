@@ -22,7 +22,9 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class DeletingPartWindow : Window
     {
-        private readonly PartsWindow _parentWindow;
+        public event EventHandler<IEnumerable<Part>> PartsDeleted;
+        public event EventHandler WorkCompleted;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Part> _parts;
 
@@ -32,11 +34,10 @@ namespace SpawmetDatabaseWPF
         private int _deletedCount = 0;
         private int _totalCount = 0;
 
-        public DeletingPartWindow(PartsWindow parentWindow, SpawmetDBContext dbContext, IEnumerable<Part> parts)
+        public DeletingPartWindow(SpawmetDBContext dbContext, IEnumerable<Part> parts)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
             _dbContext = dbContext;
             _parts = parts;
 
@@ -102,10 +103,12 @@ namespace SpawmetDatabaseWPF
                 _dbContext.Parts.RemoveRange(_parts);
                 _dbContext.SaveChanges();
 
+                OnPartsDeleted(_parts);
+
                 DeleteProgressBar.Value += _deletedCount;
                 CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
 
-                parentWindow.FillDetailedInfo(null);
+                OnWorkCompleted();
 
                 this.Close();
             };
@@ -117,6 +120,22 @@ namespace SpawmetDatabaseWPF
             };
 
             _initWorker.RunWorkerAsync();
+        }
+
+        private void OnPartsDeleted(IEnumerable<Part> parts)
+        {
+            if (PartsDeleted != null)
+            {
+                PartsDeleted(this, parts);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
+            }
         }
     }
 }

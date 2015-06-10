@@ -25,7 +25,7 @@ namespace SpawmetDatabaseWPF
     {
         private BackgroundWorker _backgroundWorker;
 
-        public SaveFileWindow(IEnumerable<Machine> machines, string path, Window parentWindow)
+        public SaveFileWindow(IEnumerable<Machine> machines, string path)
         {
             InitializeComponent();
 
@@ -52,16 +52,6 @@ namespace SpawmetDatabaseWPF
             _backgroundWorker.RunWorkerCompleted += (sender, e) =>
             {
                 this.Close();
-            };
-
-            this.Loaded += (sender, e) =>
-            {
-                parentWindow.IsEnabled = false;
-            };
-            this.Closed += (sender, e) =>
-            {
-                _backgroundWorker.Dispose();
-                parentWindow.IsEnabled = true;
             };
 
             _backgroundWorker.RunWorkerAsync();

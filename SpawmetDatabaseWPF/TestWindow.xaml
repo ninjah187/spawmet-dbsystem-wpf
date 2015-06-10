@@ -1,0 +1,15 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.TestWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SpawmetDatabaseWPF.ViewModel"
+        Title="TestWindow" Height="300" Width="300">
+    
+    <Window.DataContext>
+        <vm:MachinesWindowViewModel />
+    </Window.DataContext>
+    
+    <StackPanel>
+        <TextBlock Text="Text"></TextBlock>
+        <ListBox ItemsSource="{Binding Machines}" DisplayMemberPath="Name" />
+    </StackPanel>
+</Window>

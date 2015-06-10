@@ -3,48 +3,55 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:vm="clr-namespace:SpawmetDatabaseWPF.ViewModel"
         Title="Maszyny" Height="480" Width="800" ResizeMode="CanMinimize"
         Icon="icon.ico">
+    
+    <!--<Window.DataContext>
+        <vm:MachinesWindowViewModel />    
+    </Window.DataContext>-->
+    
     <DockPanel>
-
+        
         <!-- NAVBAR -->
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tabele">
                     <MenuItem Header="Maszyny" IsEnabled="False"></MenuItem>
-                    <MenuItem x:Name="PartsMenuItem" Header="Części" Click="PartsMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Części" Command="{Binding NewPartsWindowCommand}"></MenuItem>
+                    <MenuItem Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
+                    <MenuItem Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
+                    <MenuItem Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
-                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
         <DockPanel></DockPanel>
         <!-- END NAVBAR -->
-        
-        <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
+
+        <DataGrid x:Name="MainDataGrid" 
+                  ItemsSource="{Binding Machines, Mode=TwoWay}" SelectedItem="{Binding SelectedMachine}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Command="{Binding AddMachineCommand}"></MenuItem>
+                    <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Command="{Binding DeleteMachinesCommand}"></MenuItem>
                     <MenuItem Header="Zapisz">
-                        <MenuItem Header="Stan bazy" Click="SaveContextMenuItem_OnClick"></MenuItem>
-                        <MenuItem Header="Do pliku" Click="SaveToFileContextMenuItem_OnClick"></MenuItem>
+                        <MenuItem Header="Stan bazy" Command="{Binding SaveDbStateCommand}"></MenuItem>
+                        <MenuItem Header="Do pliku" Command="{Binding SaveToFileCommand}"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="PrintContextMenuItem" Header="Drukuj" Click="PrintContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
+                    <MenuItem Header="Drukuj" Command="{Binding PrintDialogCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" IsReadOnly="True" Width="SizeToCells" />
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
-                <DataGridTextColumn Header="Cena" Binding="{Binding Price}" Width="SizeToCells" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Cena" Binding="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -85,13 +92,13 @@
                         </DockPanel>
                     </ScrollViewer>
                 </DockPanel>-->
-                <TextBlock x:Name="StandardPartsTextBlock"  Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
+                <TextBlock x:Name="StandardPartsTextBlock" Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
                     <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False"
-                              CanUserAddRows="False">
+                              ItemsSource="{Binding StandardPartSet}" SelectedItem="{Binding SelectedPartSetElement}" CanUserAddRows="False">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Dodaj" Click="AddPartItem_OnClick"></MenuItem>
-                                <MenuItem Header="Usuń" Click="DeletePartItem_OnClick"></MenuItem>
+                                <MenuItem Header="Dodaj" Command="{Binding AddPartToMachineCommand}"></MenuItem>
+                                <MenuItem Header="Usuń" Command="{Binding DeletePartFromMachineCommand}"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         
@@ -101,7 +108,8 @@
                             <DataGridTemplateColumn Header="Wypalanie">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Click="CraftPartButton_OnClick">Wypal</Button>
+                                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                            AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -110,7 +118,7 @@
                     <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
                     <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
-                             Height="115"></ListBox>
+                             ItemsSource="{Binding Orders}" Height="115"></ListBox>
                     <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
                 </StackPanel>
             <!--</ScrollViewer>-->

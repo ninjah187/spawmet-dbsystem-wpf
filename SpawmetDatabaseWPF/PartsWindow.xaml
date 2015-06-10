@@ -12,21 +12,22 @@
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tabele">
-                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Click="MachinesMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"></MenuItem>
                     <MenuItem Header="Części" IsEnabled="False"></MenuItem>
-                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Click="OrdersMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Click="ClientsMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Click="DeliveriesMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
-                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz" Click="ConnectMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
         <DockPanel></DockPanel>
         <!-- END NAVBAR -->
         
-        <DataGrid x:Name="MainDataGrid" ItemsSource="{Binding DataGridItemsSource}"
+        <DataGrid x:Name="MainDataGrid"
+                  ItemsSource="{Binding Parts, Mode=TwoWay}" SelectedItem="{Binding SelectedPart}"
                   Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
                   AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
@@ -43,10 +44,10 @@
 
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Click="AddContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Click="DeleteContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Zapisz" Click="SaveContextMenuItem_OnClick"></MenuItem>
-                    <MenuItem Header="Odśwież" Click="RefreshContextMenuItem_OnClick"></MenuItem>
+                    <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Command="{Binding AddPartCommand}"></MenuItem>
+                    <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Command="{Binding DeletePartsCommand}"></MenuItem>
+                    <MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>
+                    <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
             
@@ -125,15 +126,15 @@
                     </StackPanel>
                 </DockPanel>-->
                 <TextBlock Text="Maszyny:" FontWeight="DemiBold"></TextBlock>
-                <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name"
+                <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name" ItemsSource="{Binding Machines}"
                          Height="90"></ListBox>
                 <ProgressBar x:Name="MachinesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
-                <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
+                <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Orders}"
                          Height="90"></ListBox>
                 <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Dostawy:" FontWeight="DemiBold"></TextBlock>
-                <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature"
+                <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Deliveries}"
                          Height="90"></ListBox>
                 <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
             </StackPanel>

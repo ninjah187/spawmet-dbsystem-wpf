@@ -29,8 +29,8 @@ namespace SpawmetDatabaseWPF
 
         private readonly string _xpsPath;
 
-        public PrintWindow(IEnumerable<Machine> machines, PrintDialog printDialog,
-            Window parentWindow)
+        public PrintWindow(IEnumerable<Machine> machines, PrintDialog printDialog/*,
+            Window parentWindow*/)
         {
             InitializeComponent();
 
@@ -68,12 +68,12 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                parentWindow.IsEnabled = false;
+                //parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
                 _backgroundWorker.Dispose();
-                parentWindow.IsEnabled = true;
+                //parentWindow.IsEnabled = true;
             };
 
             _backgroundWorker.RunWorkerAsync();

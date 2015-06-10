@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -12,7 +13,10 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class DeleteMachineWindow : Window
     {
-        private readonly MachinesWindow _parentWindow;
+        public event EventHandler<IEnumerable<Machine>> MachinesDeleted;
+        public event EventHandler WorkCompleted;
+
+        //private readonly MachinesWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Machine> _machines;
 
@@ -22,11 +26,11 @@ namespace SpawmetDatabaseWPF
         private int _deletedCount = 0;
         private int _totalCount = 0;
 
-        public DeleteMachineWindow(MachinesWindow parentWindow, SpawmetDBContext dbContext, IEnumerable<Machine> machines)
+        public DeleteMachineWindow(/*MachinesWindow parentWindow, */SpawmetDBContext dbContext, IEnumerable<Machine> machines)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
+            //_parentWindow = parentWindow;
             _dbContext = dbContext;
             _machines = machines;
 
@@ -95,23 +99,17 @@ namespace SpawmetDatabaseWPF
             {
                 _deletedCount += _machines.Count();
 
-                //_dbContext.Machines.RemoveRange(_machines);
-                //_dbContext.SaveChanges();
-                using (var context = new SpawmetDBContext())
-                {
-                    var toDelete = new List<Machine>();
-                    foreach (var machine in _machines)
-                    {
-                        toDelete.Add(context.Machines.Single(m => m.Id == machine.Id));
-                    }
-                    context.Machines.RemoveRange(toDelete);
-                    context.SaveChanges();
-                }
+                _dbContext.Machines.RemoveRange(_machines);
+                _dbContext.SaveChanges();
+
+                OnMachinesDeleted(_machines);
 
                 DeleteProgressBar.Value += _deletedCount;
                 CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
 
-                parentWindow.Refresh();
+                //parentWindow.Refresh();
+
+                OnWorkCompleted();
 
                 this.Close();
             };
@@ -123,6 +121,22 @@ namespace SpawmetDatabaseWPF
             };
 
             _initWorker.RunWorkerAsync();
+        }
+
+        private void OnMachinesDeleted(IEnumerable<Machine> machine)
+        {
+            if (MachinesDeleted != null)
+            {
+                MachinesDeleted(this, machine);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
+            }
         }
     }
 }

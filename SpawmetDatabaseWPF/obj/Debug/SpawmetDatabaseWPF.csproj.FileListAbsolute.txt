@@ -100,3 +100,5 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\TestWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\TestWindow.baml

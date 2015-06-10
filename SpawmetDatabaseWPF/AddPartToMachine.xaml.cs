@@ -22,17 +22,19 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddPartToMachine : Window
     {
+        public event EventHandler<StandardPartSetElement> PartAdded;
+
         public ObservableCollection<Part> ListBoxItemsSource { get; set; }
 
-        private readonly MachinesWindow _parentWindow;
+        //private readonly MachinesWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
         private readonly Machine _machine;
 
-        public AddPartToMachine(MachinesWindow parentWindow, SpawmetDBContext dbContext, Machine machine)
+        public AddPartToMachine(/*MachinesWindow parentWindow, */SpawmetDBContext dbContext, Machine machine)
         {
             InitializeComponent();
 
-            _parentWindow = parentWindow;
+            //_parentWindow = parentWindow;
             _dbContext = dbContext;
             _machine = machine;
 
@@ -71,11 +73,11 @@ namespace SpawmetDatabaseWPF
 
             this.Loaded += (sender, e) =>
             {
-                _parentWindow.IsEnabled = false;
+                //_parentWindow.IsEnabled = false;
             };
             this.Closed += (sender, e) =>
             {
-                _parentWindow.IsEnabled = true;
+                //_parentWindow.IsEnabled = true;
             };
 
             AmountTextBox.GotFocus += TextBox_GotFocus;
@@ -120,9 +122,11 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
-            _parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet
-                .OrderBy(el => el.Part.Name)
-                .ToList();
+            //_parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet
+            //    .OrderBy(el => el.Part.Name)
+            //    .ToList();
+
+            OnPartAdded(partSetElement);
 
             this.Close();
         }
@@ -134,12 +138,20 @@ namespace SpawmetDatabaseWPF
 
         private void Disconnected()
         {
-            _parentWindow.MainDataGrid.IsEnabled = false;
-            _parentWindow.DetailsStackPanel.IsEnabled = false;
-            _parentWindow.PartsMenuItem.IsEnabled = false;
-            _parentWindow.FillDetailedInfo(null);
+            //_parentWindow.MainDataGrid.IsEnabled = false;
+            //_parentWindow.DetailsStackPanel.IsEnabled = false;
+            //_parentWindow.PartsMenuItem.IsEnabled = false;
+            //_parentWindow.FillDetailedInfo(null);
             MessageBox.Show("Brak połączenia z serwerem.", "Błąd");
-            _parentWindow.ConnectMenuItem.IsEnabled = true;
+            //_parentWindow.ConnectMenuItem.IsEnabled = true;
+        }
+
+        private void OnPartAdded(StandardPartSetElement part)
+        {
+            if (PartAdded != null)
+            {
+                PartAdded(this, part);
+            }
         }
     }
 }

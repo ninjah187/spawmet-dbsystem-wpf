@@ -113,6 +113,8 @@
     <Compile Include="ClientsWindow.xaml.cs">
       <DependentUpon>ClientsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\SaveButtonCommand.cs" />
     <Compile Include="ConnectingWindow.xaml.cs">
       <DependentUpon>ConnectingWindow.xaml</DependentUpon>
     </Compile>
@@ -137,6 +139,9 @@
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EnumToFriendlyNameConverter.cs" />
+    <Compile Include="Events\ElementSelectedEventArgs.cs" />
+    <Compile Include="Events\ElementSelectedEventHandler.cs" />
+    <Compile Include="ISpawmetWindow.cs" />
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
     </Compile>
@@ -155,6 +160,12 @@
     <Compile Include="SaveFileWindow.xaml.cs">
       <DependentUpon>SaveFileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\MachinesWindowViewModel.cs" />
+    <Compile Include="ViewModel\PartsWindowViewModel.cs" />
+    <Compile Include="ViewModel\SpawmetWindowViewModel.cs" />
     <Page Include="AddClientWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -247,6 +258,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SaveFileWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

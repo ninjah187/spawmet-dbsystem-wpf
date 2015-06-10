@@ -301,7 +301,7 @@ namespace SpawmetDatabaseWPF
         {
             try
             {
-                new MachinesWindow(this.Left + 40, this.Top + 40).Show();
+                //new MachinesWindow(this.Left + 40, this.Top + 40).Show();
             }
             catch (EntityException exc)
             {
