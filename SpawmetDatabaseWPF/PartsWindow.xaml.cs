@@ -76,6 +76,27 @@ namespace SpawmetDatabaseWPF
                 DeliveriesProgressBar.IsIndeterminate = false;
             };
 
+            this.SizeChanged += delegate
+            {
+                var binding = MachinesListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = MachinesListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+
+                binding = OrdersListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = OrdersListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+
+                binding = DeliveriesListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = DeliveriesListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+            };
+
             this.Closed += delegate
             {
                 viewModel.Dispose();

@@ -56,29 +56,31 @@ namespace SpawmetDatabaseWPF.ViewModel
                 DbContext.SaveChanges();
             });
 
+            const int offset = 40;
+
             NewMachinesWindowCommand = new Command(() =>
             {
-                new MachinesWindow(_window.Left + 10, _window.Top + 10).Show();
+                new MachinesWindow(_window.Left + offset, _window.Top + offset).Show();
             });
 
             NewPartsWindowCommand = new Command(() =>
             {
-                new PartsWindow(_window.Left + 10, _window.Top + 10).Show();
+                new PartsWindow(_window.Left + offset, _window.Top + offset).Show();
             });
 
             NewOrdersWindowCommand = new Command(() =>
             {
-                new OrdersWindow(_window.Left + 10, _window.Top + 10).Show();
+                new OrdersWindow(_window.Left + offset, _window.Top + offset).Show();
             });
 
             NewClientsWindowCommand = new Command(() =>
             {
-                new ClientsWindow(_window.Left + 10, _window.Top + 10).Show();
+                new ClientsWindow(_window.Left + offset, _window.Top + offset).Show();
             });
 
             NewDeliveriesWindowCommand = new Command(() =>
             {
-                new DeliveriesWindow(_window.Left + 10, _window.Top + 10).Show();
+                new DeliveriesWindow(_window.Left + offset, _window.Top + offset).Show();
             });
         }
 

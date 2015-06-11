@@ -59,6 +59,15 @@ namespace SpawmetDatabaseWPF
                 OrdersProgressBar.IsIndeterminate = false;
             };
 
+            this.SizeChanged += delegate
+            {
+                var binding = OrdersListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = OrdersListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+            };
+
             this.Closed += delegate
             {
                 viewModel.Dispose();

@@ -4,16 +4,27 @@
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:vm="clr-namespace:SpawmetDatabaseWPF.ViewModel"
-        Title="Maszyny" Height="480" Width="800" ResizeMode="CanMinimize"
+        Title="Maszyny" Height="480" Width="800"
         Icon="icon.ico">
     
     <!--<Window.DataContext>
         <vm:MachinesWindowViewModel />    
     </Window.DataContext>-->
     
-    <DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0">
         <!-- NAVBAR -->
+        <DockPanel>
         <DockPanel DockPanel.Dock="Top">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tabele">
@@ -29,11 +40,14 @@
             </Menu>
         </DockPanel>
         <DockPanel></DockPanel>
+        </DockPanel>
+        </StackPanel>
         <!-- END NAVBAR -->
-
-        <DataGrid x:Name="MainDataGrid" 
+        
+        <DataGrid x:Name="MainDataGrid"
+                  Grid.Row="1" Grid.Column="0"
                   ItemsSource="{Binding Machines, Mode=TwoWay}" SelectedItem="{Binding SelectedMachine}"
-                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
+                  Margin="0,0,0,0" DockPanel.Dock="Left"
                   AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
@@ -47,7 +61,7 @@
                     <MenuItem Header="Drukuj" Command="{Binding PrintDialogCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
@@ -55,74 +69,90 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
-            <!--<ScrollViewer MinHeight="400" MaxHeight="400">-->
-                <StackPanel Margin="0" x:Name="DetailsStackPanel">
-                    <StackPanel Height="50">
-                        <ScrollViewer MaxHeight="50">
-                            <StackPanel>
-                                <DockPanel>
-                                    <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                    <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
-                                </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Cena: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
-                            </DockPanel>
-                        </StackPanel>
-                        </ScrollViewer>
-                    </StackPanel>
-                    <!--<DockPanel>
-                        <ScrollViewer>
-                            <DockPanel>
-                        <StackPanel DockPanel.Dock="Left">
-                            <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
-                            <TextBlock Text="Nazwa: " FontWeight="DemiBold"></TextBlock>
-                            <TextBlock Text="Cena: " FontWeight="DemiBold"></TextBlock>
-                        </StackPanel>
-                        <StackPanel DockPanel.Dock="Right" Margin="0,0,10,0">
-                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                            <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" x:Name="DetailsGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" MaxHeight="50" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Height="50" Grid.Row="0">
+                <ScrollViewer MaxHeight="50">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
                         </DockPanel>
-                    </ScrollViewer>
-                </DockPanel>-->
-                <TextBlock x:Name="StandardPartsTextBlock" Text="Standardowe części:" FontWeight="DemiBold"></TextBlock>
-                    <DataGrid x:Name="StandardPartSetDataGrid" MinHeight="195" MaxHeight="195" AutoGenerateColumns="False"
-                              ItemsSource="{Binding StandardPartSet}" SelectedItem="{Binding SelectedPartSetElement}" CanUserAddRows="False">
-                        <DataGrid.ContextMenu>
-                            <ContextMenu>
-                                <MenuItem Header="Dodaj" Command="{Binding AddPartToMachineCommand}"></MenuItem>
-                                <MenuItem Header="Usuń" Command="{Binding DeletePartFromMachineCommand}"></MenuItem>
-                            </ContextMenu>
-                        </DataGrid.ContextMenu>
-                        
-                        <DataGrid.Columns>
-                            <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells" />
-                            <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
-                            <DataGridTemplateColumn Header="Wypalanie">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                            AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>
-                <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
-                    <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
-                             ItemsSource="{Binding Orders}" Height="115"></ListBox>
-                    <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
-                </StackPanel>
-            <!--</ScrollViewer>-->
-        </StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Cena: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="PriceTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" />
+                        </DockPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
 
-    </DockPanel>
+            <StackPanel Grid.Row="1">
+                <TextBlock x:Name="StandardPartsTextBlock" Text="Standardowe części:" FontWeight="DemiBold"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="2">
+                <DataGrid x:Name="StandardPartSetDataGrid" AutoGenerateColumns="False"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor,
+                                              AncestorType={x:Type Grid}}, Path=RowDefinitions[2].ActualHeight, UpdateSourceTrigger=Explicit}"
+                          Width="{Binding RelativeSource={RelativeSource FindAncestor,
+                                              AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth, UpdateSourceTrigger=Explicit}"
+                                  ItemsSource="{Binding StandardPartSet}" SelectedItem="{Binding SelectedPartSetElement}" CanUserAddRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Dodaj" Command="{Binding AddPartToMachineCommand}"></MenuItem>
+                            <MenuItem Header="Usuń" Command="{Binding DeletePartFromMachineCommand}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn x:Name="StandardPartSetPartNameColumn" Header="Część" Binding="{Binding Part.Name}" IsReadOnly="True" Width="SizeToCells" />
+                        <DataGridTextColumn x:Name="StandardPartSetAmountColumn" Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
+                        <DataGridTemplateColumn Header="Wypalanie">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3">
+                <ProgressBar x:Name="StandardPartSetProgressBar" Height="5"></ProgressBar>
+                <TextBlock Text="Zamówienia:" FontWeight="DemiBold" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="4">
+                <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
+                             ItemsSource="{Binding Orders}"
+                         Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
+                                  Path=RowDefinitions[4].ActualHeight}"
+                         Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
+                                  Path=ColumnDefinitions[0].ActualWidth}"
+                         />
+            </StackPanel>
+            
+            <StackPanel Grid.Row="5">
+                <ProgressBar x:Name="OrdersProgressBar" Height="5"></ProgressBar>
+            </StackPanel>
+            
+        </Grid>
+    </Grid>
+    
+        
+
 </Window>

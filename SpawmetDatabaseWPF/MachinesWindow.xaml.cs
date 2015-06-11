@@ -85,6 +85,21 @@ namespace SpawmetDatabaseWPF
             {
                 viewModel.Dispose();
             };
+
+            this.SizeChanged += delegate
+            {
+                var standardPartSetGridHeightBinding = StandardPartSetDataGrid.GetBindingExpression(DataGrid.HeightProperty);
+                standardPartSetGridHeightBinding.UpdateTarget();
+
+                var standardPartSetGridWidthBinding = StandardPartSetDataGrid.GetBindingExpression(DataGrid.WidthProperty);
+                standardPartSetGridWidthBinding.UpdateTarget();
+
+                var ordersListBoxHeightBinding = OrdersListBox.GetBindingExpression(HeightProperty);
+                ordersListBoxHeightBinding.UpdateTarget();
+
+                var ordersListBoxWidthBinding = OrdersListBox.GetBindingExpression(WidthProperty);
+                ordersListBoxWidthBinding.UpdateTarget();
+            };
         }
     }
 }

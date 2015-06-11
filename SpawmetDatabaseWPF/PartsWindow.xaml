@@ -4,31 +4,43 @@
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:spawmetDatabaseWpf="clr-namespace:SpawmetDatabaseWPF"
-        Title="Części" Height="480" Width="800" ResizeMode="CanMinimize"
+        Title="Części" Height="480" Width="800"
         Icon="icon.ico">
-    <DockPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
         
-        <!-- NAVBAR -->
-        <DockPanel DockPanel.Dock="Top">
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="Tabele">
-                    <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"></MenuItem>
-                    <MenuItem Header="Części" IsEnabled="False"></MenuItem>
-                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
-                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
-                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
-                </MenuItem>
-                <MenuItem Header="Opcje">
-                    <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
-                </MenuItem>
-            </Menu>
+        <DockPanel Grid.Row="0" Grid.Column="0">
+            <!-- NAVBAR -->
+            <DockPanel DockPanel.Dock="Top">
+                <Menu DockPanel.Dock="Top">
+                    <MenuItem Header="Tabele">
+                        <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"></MenuItem>
+                        <MenuItem Header="Części" IsEnabled="False"></MenuItem>
+                        <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
+                        <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
+                        <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
+                    </MenuItem>
+                    <MenuItem Header="Opcje">
+                        <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
+            <DockPanel></DockPanel>
+            <!-- END NAVBAR -->
         </DockPanel>
-        <DockPanel></DockPanel>
-        <!-- END NAVBAR -->
-        
+
         <DataGrid x:Name="MainDataGrid"
+                  Grid.Row="1" Grid.Column="0"
                   ItemsSource="{Binding Parts, Mode=TwoWay}" SelectedItem="{Binding SelectedPart}"
-                  Margin="0,0,10,0" DockPanel.Dock="Left" MaxWidth="510" MinWidth="510"
+                  Margin="0,0,0,0" DockPanel.Dock="Left"
                   AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Resources>
                 <ObjectDataProvider x:Key="originEnum"
@@ -38,7 +50,7 @@
                         <x:Type TypeName="custns:Origin"></x:Type>
                     </ObjectDataProvider.MethodParameters>
                 </ObjectDataProvider>
-                
+
                 <spawmetDatabaseWpf:OriginToStringConverter x:Key="enumItemsConverter" />
             </DataGrid.Resources>
 
@@ -50,14 +62,14 @@
                     <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
                 <!--<DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
                                                     ItemsSource="{Binding Source={StaticResource originEnum}}" />-->
-                
+
                 <DataGridTemplateColumn Header="Pochodzenie" SortMemberPath="Origin">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -78,69 +90,91 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                
+
             </DataGrid.Columns>
         </DataGrid>
+        
+        <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" x:Name="DetailsGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="65" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel DockPanel.Dock="Right" Margin="0,10,10,10" Width="250">
-            <!--<ScrollViewer MinHeight="400" MaxHeight="400">-->
-            <StackPanel Margin="0" x:Name="DetailsStackPanel">
-                <StackPanel Height="65">
-                    <ScrollViewer MaxHeight="65">
-                        <StackPanel>
-                            <DockPanel>
-                                <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+            <StackPanel Height="65" Grid.Row="0">
+                <ScrollViewer MaxHeight="65">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
                                            Margin="10,0"/>
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
                                            Margin="10,0"/>
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Pochodzenie: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Pochodzenie: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
                                            Margin="10,0"/>
-                            </DockPanel>
-                            <DockPanel>
-                                <TextBlock Text="Ilość: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                                <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Ilość: " FontWeight="DemiBold" DockPanel.Dock="Left" />
+                            <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
                                            Margin="10,0"/>
-                            </DockPanel>
-                        </StackPanel>
-                    </ScrollViewer>
-                </StackPanel>
-                <!--<DockPanel>
-                    <StackPanel DockPanel.Dock="Left">
-                        <TextBlock Text="ID: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Nazwa: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Pochodzenie: " FontWeight="DemiBold"></TextBlock>
-                        <TextBlock Text="Ilość: " FontWeight="DemiBold"></TextBlock>
+                        </DockPanel>
                     </StackPanel>
-                    <StackPanel DockPanel.Dock="Right">
-                        <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                        <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
-                    </StackPanel>
-                </DockPanel>-->
+                </ScrollViewer>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="1">
                 <TextBlock Text="Maszyny:" FontWeight="DemiBold"></TextBlock>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="2">
                 <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name" ItemsSource="{Binding Machines}"
-                         Height="90"></ListBox>
+                         Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[2].ActualHeight,
+                                  UpdateSourceTrigger=Explicit}"
+                         Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
+                                 UpdateSourceTrigger=Explicit}" />
+            </StackPanel>
+            
+            <StackPanel Grid.Row="3">
                 <ProgressBar x:Name="MachinesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Zamówienia:" FontWeight="DemiBold"></TextBlock>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="4">
                 <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Orders}"
-                         Height="90"></ListBox>
+                         Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[4].ActualHeight,
+                                  UpdateSourceTrigger=Explicit}"
+                         Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
+                                 UpdateSourceTrigger=Explicit}" />
+            </StackPanel>
+            
+            <StackPanel Grid.Row="5">
                 <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
                 <TextBlock Text="Dostawy:" FontWeight="DemiBold"></TextBlock>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="6">
                 <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Deliveries}"
-                         Height="90"></ListBox>
+                         Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[6].ActualHeight,
+                                  UpdateSourceTrigger=Explicit}" 
+                         Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
+                                 UpdateSourceTrigger=Explicit}" />
+            </StackPanel>
+            
+            <StackPanel Grid.Row="8">
                 <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
             </StackPanel>
-            <!--</ScrollViewer>-->
-                
-        </StackPanel>
-
-    </DockPanel>
+            
+        </Grid>
+    </Grid>
 </Window>

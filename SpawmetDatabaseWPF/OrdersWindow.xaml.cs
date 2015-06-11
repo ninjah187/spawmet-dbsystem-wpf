@@ -78,6 +78,15 @@ namespace SpawmetDatabaseWPF
                 AdditionalPartSetProgressBar.IsIndeterminate = false;
             };
 
+            this.SizeChanged += delegate
+            {
+                var binding = AdditionalPartSetDataGrid.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = AdditionalPartSetDataGrid.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+            };
+
             this.Closed += delegate
             {
                 viewModel.Dispose();

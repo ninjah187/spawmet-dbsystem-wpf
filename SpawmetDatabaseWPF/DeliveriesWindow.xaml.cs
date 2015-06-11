@@ -60,6 +60,15 @@ namespace SpawmetDatabaseWPF
                 PartsProgressBar.IsIndeterminate = false;
             };
 
+            this.SizeChanged += delegate
+            {
+                var binding = PartsDataGrid.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = PartsDataGrid.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+            };
+
             this.Closed += delegate
             {
                 viewModel.Dispose();
