@@ -41,6 +41,8 @@ namespace SpawmetDatabaseWPF
             _dbContext = dbContext;
             _orders = orders;
 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             _initWorker = new BackgroundWorker();
             _initWorker.DoWork += (sender, e) =>
             {

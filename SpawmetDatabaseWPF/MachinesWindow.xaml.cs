@@ -24,6 +24,7 @@ using Microsoft.Win32;
 using SpawmetDatabase;
 using SpawmetDatabase.FileCreators;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.ViewModel;
 
 namespace SpawmetDatabaseWPF
@@ -39,24 +40,32 @@ namespace SpawmetDatabaseWPF
 
     public partial class MachinesWindow : Window, ISpawmetWindow
     {
+        public DataGrid DataGrid { get { return MainDataGrid; } }
+
         public MachinesWindow()
             : this(40, 40)
         {
         }
 
         public MachinesWindow(double x, double y)
+            : this(new WindowConfig()
+            {
+                Left = x,
+                Top = y,
+            })
+        {
+        }
+
+        public MachinesWindow(WindowConfig config)
         {
             InitializeComponent();
 
-            Left = x;
-            Top = y;
-
-            var viewModel = new MachinesWindowViewModel(this);
+            var viewModel = new MachinesWindowViewModel(this, config);
             DataContext = viewModel;
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var machine = (Machine) e.Element;
+                var machine = (Machine)e.Element;
 
                 IdTextBlock.Text = machine.Id.ToString();
                 NameTextBlock.Text = machine.Name;
@@ -100,6 +109,14 @@ namespace SpawmetDatabaseWPF
                 var ordersListBoxWidthBinding = OrdersListBox.GetBindingExpression(WidthProperty);
                 ordersListBoxWidthBinding.UpdateTarget();
             };
+
+            viewModel.Load();
+        }
+
+        public void CommitEdit()
+        {
+            MainDataGrid.CommitEdit();
+            StandardPartSetDataGrid.CommitEdit();
         }
     }
 }

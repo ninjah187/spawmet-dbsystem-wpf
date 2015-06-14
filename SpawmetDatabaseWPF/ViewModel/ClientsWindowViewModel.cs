@@ -10,6 +10,8 @@ using System.Windows.Input;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Config;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -74,7 +76,12 @@ namespace SpawmetDatabaseWPF.ViewModel
         public override ICommand RefreshCommand { get; protected set; }
 
         public ClientsWindowViewModel(ClientsWindow window)
-            : base(window)
+            : this(window, null)
+        {
+        }
+
+        public ClientsWindowViewModel(ClientsWindow window, WindowConfig config)
+            : base(window, config)
         {
             _window = window;
 
@@ -149,24 +156,36 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new DeleteClientWindow(DbContext, selected);
-                win.ClientsDeleted += (sender, clients) =>
+                string msg = selected.Count == 1
+                    ? "Czy chcesz usunąć zaznaczoną część?"
+                    : "Czy chcesz usunąć zaznaczone części?";
+
+                var confirmWin = new ConfirmWindow(_window, msg);
+                confirmWin.Confirmed += delegate
                 {
-                    foreach (var client in clients)
+                    var win = new DeleteClientWindow(DbContext, selected);
+                    win.ClientsDeleted += (sender, clients) =>
                     {
-                        Clients.Remove(client);
-                    }
+                        foreach (var client in clients)
+                        {
+                            Clients.Remove(client);
+                        }
+                    };
+                    win.WorkCompleted += delegate
+                    {
+                        Orders = null;
+                    };
+                    win.Show();
                 };
-                win.WorkCompleted += delegate
-                {
-                    Orders = null;
-                };
-                win.Show();
+                confirmWin.Show();
             });
 
             RefreshCommand = new Command(() =>
             {
-                var win = new ClientsWindow(_window.Left, _window.Top);
+                SaveDbStateCommand.Execute(null);
+
+                var config = GetWindowConfig();
+                var win = new ClientsWindow(config);
                 win.Loaded += delegate
                 {
                     _window.Close();

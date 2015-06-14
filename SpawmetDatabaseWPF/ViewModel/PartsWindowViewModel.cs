@@ -4,12 +4,17 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Config;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -110,15 +115,20 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override ICommand RefreshCommand { get; protected set; }
 
+        public ICommand CraftPartCommand { get; protected set; }
+
         public PartsWindowViewModel(PartsWindow window)
-            : base(window)
+            : this(window, null)
+        {
+        }
+
+        public PartsWindowViewModel(PartsWindow window, WindowConfig config)
+            : base(window, config)
         {
             _window = window;
 
             InitializeCommands();
             InitializeBackgroundWorkers();
-
-            Load();
         }
 
         public void Dispose()
@@ -241,29 +251,59 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new DeletingPartWindow(DbContext, selected);
-                win.PartsDeleted += (sender, parts) =>
+                string msg = selected.Count == 1
+                    ? "Czy chcesz usunąć zaznaczoną część?"
+                    : "Czy chcesz usunąć zaznaczone części?";
+
+                var confirmWin = new ConfirmWindow(_window, msg);
+                confirmWin.Confirmed += delegate
                 {
-                    foreach (var part in parts)
+                    var win = new DeletingPartWindow(DbContext, selected);
+                    win.PartsDeleted += (sender, parts) =>
                     {
-                        Parts.Remove(part);
-                    }
+                        foreach (var part in parts)
+                        {
+                            Parts.Remove(part);
+                        }
+                    };
+                    win.WorkCompleted += delegate
+                    {
+                        Machines = null;
+                        Orders = null;
+                        Deliveries = null;
+                    };
+                    win.Show();
                 };
-                win.WorkCompleted += delegate
-                {
-                    Machines = null;
-                    Orders = null;
-                    Deliveries = null;
-                };
-                win.Show();
+                confirmWin.Show();
             });
 
             RefreshCommand = new Command(() =>
             {
-                var win = new PartsWindow(_window.Left, _window.Top);
+                SaveDbStateCommand.Execute(null);
+
+                var config = GetWindowConfig();
+                var win = new PartsWindow(config);
                 win.Loaded += delegate
                 {
                     _window.Close();
+                };
+                win.Show();
+            });
+
+            CraftPartCommand = new Command(() =>
+            {
+                if (SelectedPart == null)
+                {
+                    return;
+                }
+
+                var win = new CraftPartWindow(DbContext, SelectedPart);
+                win.PartCrafted += (sender, e) =>
+                {
+                    LoadParts(); // to update MainDataGrid
+
+                    string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
+                    MessageWindow.Show(txt, "Wypalono część", _window);
                 };
                 win.Show();
             });
@@ -272,6 +312,16 @@ namespace SpawmetDatabaseWPF.ViewModel
         public override void Load()
         {
             LoadParts();
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                var part = Parts.Single(p => p.Id == WindowConfig.SelectedElement.Id);
+
+                SelectedPart = part;
+
+                _window.DataGrid.SelectedItem = SelectedPart;
+                _window.DataGrid.ScrollIntoView(SelectedPart);
+            }
         }
 
         private void LoadParts()
@@ -331,6 +381,14 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        protected override WindowConfig GetWindowConfig()
+        {
+            var config = base.GetWindowConfig();
+            config.SelectedElement = SelectedPart;
+
+            return config;
         }
 
         //private IEnumerable<Part> GetSelectedParts()

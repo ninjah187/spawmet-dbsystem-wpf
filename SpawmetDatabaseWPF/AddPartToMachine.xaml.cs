@@ -82,6 +82,8 @@ namespace SpawmetDatabaseWPF
 
             AmountTextBox.GotFocus += TextBox_GotFocus;
 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             MainListBox.SelectedIndex = 0;
             MainListBox.Focus();
         }

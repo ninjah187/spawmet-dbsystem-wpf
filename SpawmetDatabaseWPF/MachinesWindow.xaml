@@ -4,6 +4,7 @@
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:vm="clr-namespace:SpawmetDatabaseWPF.ViewModel"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="Maszyny" Height="480" Width="800"
         Icon="icon.ico">
     
@@ -37,6 +38,9 @@
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
+                <MenuItem Header="Narzędzia">
+                    <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"></MenuItem>
+                </MenuItem>
             </Menu>
         </DockPanel>
         <DockPanel></DockPanel>
@@ -49,6 +53,13 @@
                   ItemsSource="{Binding Machines, Mode=TwoWay}" SelectedItem="{Binding SelectedMachine}"
                   Margin="0,0,0,0" DockPanel.Dock="Left"
                   AutoGenerateColumns="False" CanUserAddRows="False">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                     AncestorType={x:Type Window}}, Path=DataContext.CellEditEndingCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+                
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Command="{Binding AddMachineCommand}"></MenuItem>

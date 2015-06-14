@@ -4,6 +4,7 @@
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:spawmetDatabaseWpf="clr-namespace:SpawmetDatabaseWPF"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         Title="Zamówienia" Height="480" Width="800"
         Icon="icon.ico">
     <Grid>
@@ -42,6 +43,13 @@
                   ItemsSource="{Binding Orders, Mode=TwoWay}" SelectedItem="{Binding SelectedOrder}"
                   Margin="0,0,0,0" DockPanel.Dock="Left"
                   AutoGenerateColumns="False" CanUserAddRows="False">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                     AncestorType={x:Type Window}}, Path=DataContext.CellEditEndingCommand}"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+            
             <DataGrid.Resources>
                 <ObjectDataProvider x:Key="statusEnum"
                                     MethodName="GetValues"
@@ -107,7 +115,14 @@
                 <DataGridTemplateColumn Header="Data przyjęcia" SortMemberPath="StartDate" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" ></DatePicker>
+                            <DatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectedDateChanged">
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                         AncestorType={x:Type Window}}, Path=DataContext.SaveDbStateCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -115,7 +130,14 @@
                 <DataGridTemplateColumn Header="Data wysyłki" SortMemberPath="SendDate" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding SendDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0"></DatePicker>
+                            <DatePicker SelectedDate="{Binding SendDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectedDateChanged">
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                         AncestorType={x:Type Window}}, Path=DataContext.SaveDbStateCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -137,6 +159,16 @@
                                                          Converter={StaticResource enumItemsConverter}}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                         AncestorType={x:Type Window}}, Path=DataContext.SaveDbStateCommand}"/>
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                         AncestorType={x:Type Window}}, Path=DataContext.ChangeStatusCommand}"
+                                                               CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                                                  AncestorType={x:Type Window}}, Path=DataContext.SelectedOrder}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>

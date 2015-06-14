@@ -44,6 +44,8 @@ namespace SpawmetDatabaseWPF
             {
             };
 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             NameTextBox.GotFocus += TextBox_GotFocus;
 
             StartDatePicker.SelectedDate = DateTime.Today;

@@ -17,25 +17,34 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.ViewModel;
 
 namespace SpawmetDatabaseWPF
 {
     public partial class ClientsWindow : Window, ISpawmetWindow
     {
+        public DataGrid DataGrid { get { return MainDataGrid; } }
+
         public ClientsWindow()
             : this(40, 40)
         {
         }
 
         public ClientsWindow(double x, double y)
+            : this(new WindowConfig()
+            {
+                Left = x,
+                Top = y
+            })
+        {
+        }
+
+        public ClientsWindow(WindowConfig config)
         {
             InitializeComponent();
 
-            Left = x;
-            Top = y;
-
-            var viewModel = new ClientsWindowViewModel(this);
+            var viewModel = new ClientsWindowViewModel(this, config);
             DataContext = viewModel;
 
             viewModel.ElementSelected += (sender, e) =>
@@ -72,6 +81,11 @@ namespace SpawmetDatabaseWPF
             {
                 viewModel.Dispose();
             };
+        }
+
+        public void CommitEdit()
+        {
+            MainDataGrid.CommitEdit();
         }
     }
 }

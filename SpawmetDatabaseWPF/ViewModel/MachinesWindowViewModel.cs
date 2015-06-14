@@ -14,6 +14,8 @@ using Microsoft.Win32;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Events;
 
 namespace SpawmetDatabaseWPF.ViewModel
@@ -123,15 +125,20 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand DeletePartFromMachineCommand { get; private set; }
 
+        public ICommand AddMachinesFromDirectoryCommand { get; private set; }
+
         public MachinesWindowViewModel(MachinesWindow window)
-            : base(window)
+            : this(window, null)
+        {
+        }
+
+        public MachinesWindowViewModel(MachinesWindow window, WindowConfig config)
+            : base(window, config)
         {
             _window = window;
 
             InitializeCommands();
             InitializeBackgroundWorkers();
-
-            Load();
         }
 
         public override void Dispose()
@@ -236,20 +243,29 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new DeleteMachineWindow(DbContext, selected);
-                win.MachinesDeleted += (sender, machines) =>
+                string msg = selected.Count == 1
+                    ? "Czy na pewno chcesz usunąć zaznaczoną maszynę?"
+                    : "Czy na pewno chcesz usunąć zaznaczone maszyny?";
+
+                var confirmWin = new ConfirmWindow(_window, msg);
+                confirmWin.Confirmed += delegate
                 {
-                    foreach (var machine in machines)
+                    var win = new DeleteMachineWindow(DbContext, selected);
+                    win.MachinesDeleted += (sender, machines) =>
                     {
-                        Machines.Remove(machine);
-                    }
+                        foreach (var machine in machines)
+                        {
+                            Machines.Remove(machine);
+                        }
+                    };
+                    win.WorkCompleted += delegate
+                    {
+                        StandardPartSet = null;
+                        Orders = null;
+                    };
+                    win.Show();
                 };
-                win.WorkCompleted += delegate
-                {
-                    StandardPartSet = null;
-                    Orders = null;
-                };
-                win.Show();
+                confirmWin.Show();
             });
 
             PrintDialogCommand = new Command(() =>
@@ -279,7 +295,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             RefreshCommand = new Command(() =>
             {
-                var win = new MachinesWindow(_window.Left, _window.Top);
+                SaveDbStateCommand.Execute(null);
+
+                var config = GetWindowConfig();
+                var win = new MachinesWindow(config);
                 win.Loaded += delegate
                 {
                     _window.Close();
@@ -340,11 +359,53 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 LoadStandardPartSet();
             });
+
+            AddMachinesFromDirectoryCommand = new Command(() =>
+            {
+                var dialog = new System.Windows.Forms.FolderBrowserDialog();
+
+                var result = dialog.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var win = new AddMachinesFromDirectory(dialog.SelectedPath);
+                    win.MachineAdded += (sender, machine) =>
+                    {
+                        Machines.Add(machine);
+                    };
+                    win.PartSetElementAdded += (sender, element) =>
+                    {
+                        if (SelectedMachine == null)
+                        {
+                            return;
+                        }
+
+                        if (SelectedMachine.Id == element.Machine.Id)
+                        {
+                            StandardPartSet.Add(element);
+                        }
+                    };
+                    win.Show();
+                }
+
+                dialog.Dispose();
+            });
         }
 
         public override void Load()
         {
             LoadMachines();
+
+            // if some element were previously selected; needed in refreshing window
+            if (WindowConfig.SelectedElement != null)
+            {
+                var machine = Machines.Single(m => m.Id == WindowConfig.SelectedElement.Id);
+
+                SelectedMachine = machine;
+
+                _window.DataGrid.SelectedItem = SelectedMachine;
+                _window.DataGrid.ScrollIntoView(SelectedMachine);
+            }
         }
 
         private void LoadMachines()
@@ -378,7 +439,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private List<Machine> GetSelectedMachines()
+        private List<Machine> GetSelectedMachines() // bind instead of GetSelectedMachines()
         {
             if (_window.MainDataGrid.SelectedItems.Count == 0)
             {
@@ -392,6 +453,14 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        protected override WindowConfig GetWindowConfig()
+        {
+            var config = base.GetWindowConfig();
+            config.SelectedElement = SelectedMachine;
+
+            return config;
         }
 
         //private IEnumerable<Machine> GetSelectedMachines()

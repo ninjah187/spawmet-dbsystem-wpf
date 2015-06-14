@@ -12,6 +12,9 @@ namespace SpawmetDatabase
 {
     public class DirectoryCrawler : IDisposable
     {
+        public event EventHandler<string> DirectoryReached;
+        public event EventHandler<string> FileReached;
+
         public string Path { get; set; }
 
         private FileStream _file;
@@ -187,8 +190,11 @@ namespace SpawmetDatabase
         /// <returns></returns>
         public IEnumerable<string> EnumerateFilesFromDirectories(string directory)
         {
+            OnDirectoryReached(directory);
+
             foreach (var file in Directory.GetFiles(directory))
             {
+                OnFileReached(file);
                 yield return file;
             }
 
@@ -217,8 +223,11 @@ namespace SpawmetDatabase
         /// <returns></returns>
         public IEnumerable<string> EnumerateFilesFromDirectories(string directory, string word)
         {
+            OnDirectoryReached(directory);
+
             foreach (var file in Directory.GetFiles(directory))
             {
+                OnFileReached(file);
                 if (Regex.IsMatch(file, word, RegexOptions.IgnoreCase))
                 {
                     yield return file;
@@ -266,6 +275,22 @@ namespace SpawmetDatabase
             foreach (var dir in directories)
             {
                 AddFilesFromDirectoriesToList(dir, files);
+            }
+        }
+
+        private void OnDirectoryReached(string dir)
+        {
+            if (DirectoryReached != null)
+            {
+                DirectoryReached(this, dir);
+            }
+        }
+
+        private void OnFileReached(string file)
+        {
+            if (FileReached != null)
+            {
+                FileReached(this, file);
             }
         }
 

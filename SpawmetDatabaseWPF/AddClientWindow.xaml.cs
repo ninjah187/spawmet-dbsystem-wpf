@@ -44,6 +44,8 @@ namespace SpawmetDatabaseWPF
             {
             };
 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             NameTextBox.GotFocus += TextBox_GotFocus;
             PhoneTextBox.GotFocus += TextBox_GotFocus;
             EmailTextBox.GotFocus += TextBox_GotFocus;

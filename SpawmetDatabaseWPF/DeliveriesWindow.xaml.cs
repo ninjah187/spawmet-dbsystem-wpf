@@ -17,30 +17,39 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.ViewModel;
 
 namespace SpawmetDatabaseWPF
 {
     public partial class DeliveriesWindow : Window, ISpawmetWindow
     {
+        public DataGrid DataGrid { get { return MainDataGrid; } }
+
         public DeliveriesWindow()
             : this(40, 40)
         {
         }
 
         public DeliveriesWindow(double x, double y)
+            : this(new WindowConfig()
+            {
+                Left = x,
+                Top = y
+            })
+        {
+        }
+
+        public DeliveriesWindow(WindowConfig config)
         {
             InitializeComponent();
 
-            Left = x;
-            Top = y;
-
-            var viewModel = new DeliveriesWindowViewModel(this);
+            var viewModel = new DeliveriesWindowViewModel(this, config);
             DataContext = viewModel;
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var delivery = (Delivery) e.Element;
+                var delivery = (Delivery)e.Element;
 
                 IdTextBlock.Text = delivery.Id.ToString();
                 NameTextBlock.Text = delivery.Name;
@@ -73,6 +82,14 @@ namespace SpawmetDatabaseWPF
             {
                 viewModel.Dispose();
             };
+
+            viewModel.Load();
+        }
+
+        public void CommitEdit()
+        {
+            MainDataGrid.CommitEdit();
+            PartsDataGrid.CommitEdit();
         }
     }
 }

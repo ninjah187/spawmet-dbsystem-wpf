@@ -8,8 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Config;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -111,8 +114,9 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand AddOrderCommand { get; private set; }
 
-
         public ICommand DeleteOrdersCommand { get; private set; }
+
+        public ICommand ChangeStatusCommand { get; private set; }
 
         public override ICommand RefreshCommand { get; protected set; }
 
@@ -123,14 +127,17 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand DeletePartFromOrderCommand { get; private set; }
 
         public OrdersWindowViewModel(OrdersWindow window)
-            : base(window)
+            : this(window, null)
+        {
+        }
+
+        public OrdersWindowViewModel(OrdersWindow window, WindowConfig config)
+            : base(window, config)
         {
             _window = window;
 
             InitializeBackgroundWorkers();
             InitializeCommands();
-
-            Load();
         }
 
         public override void Dispose()
@@ -189,6 +196,68 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Show();
             });
 
+            ChangeStatusCommand = new ParamCommand<Order>((order) =>
+            {
+                OrderStatus? oldStatus;
+                OrderStatus? newStatus;
+
+                oldStatus = order.Status;
+                SaveDbStateCommand.Execute(null);
+                newStatus = order.Status;
+
+                switch (oldStatus)
+                {
+                    case OrderStatus.New:
+                        switch (newStatus)
+                        {
+                            case OrderStatus.InProgress:
+                                ApplyPartSets(SelectedOrder);
+                                break;
+
+                            case OrderStatus.Done:
+                                ApplyPartSets(SelectedOrder);
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
+                        break;
+
+                    case OrderStatus.InProgress:
+                        switch (newStatus)
+                        {
+                            case OrderStatus.New:
+                                UndoApplyPartSets(SelectedOrder);
+                                break;
+
+                            case OrderStatus.Done:
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
+                        break;
+
+                    case OrderStatus.Done:
+                        switch (newStatus)
+                        {
+                            case OrderStatus.New:
+                                UndoApplyPartSets(SelectedOrder);
+                                break;
+
+                            case OrderStatus.InProgress:
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
+                        break;
+
+                    default:
+                        throw new InvalidOperationException();
+                }
+            });
+
             DeleteOrdersCommand = new Command(() =>
             {
                 var selected = GetSelectedOrders();
@@ -197,24 +266,36 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new DeleteOrderWindow(DbContext, selected);
-                win.OrdersDeleted += (sender, orders) =>
+                string msg = selected.Count == 1
+                    ? "Czy chcesz usunąć zaznaczone zamówienie?"
+                    : "Czy chcesz usunąć zaznaczone zamówienia?";
+
+                var confirmWin = new ConfirmWindow(_window, msg);
+                confirmWin.Confirmed += delegate
                 {
-                    foreach (var order in orders)
+                    var win = new DeleteOrderWindow(DbContext, selected);
+                    win.OrdersDeleted += (sender, orders) =>
                     {
-                        Orders.Remove(order);
-                    }
+                        foreach (var order in orders)
+                        {
+                            Orders.Remove(order);
+                        }
+                    };
+                    win.WorkCompleted += delegate
+                    {
+                        AdditionalPartSet = null;
+                    };
+                    win.Show();
                 };
-                win.WorkCompleted += delegate
-                {
-                    AdditionalPartSet = null;
-                };
-                win.Show();
+                confirmWin.Show();
             });
 
             RefreshCommand = new Command(() =>
             {
-                var win = new OrdersWindow(_window.Left, _window.Top);
+                SaveDbStateCommand.Execute(null);
+
+                var config = GetWindowConfig();
+                var win = new OrdersWindow(config);
                 win.Loaded += delegate
                 {
                     _window.Close();
@@ -274,6 +355,16 @@ namespace SpawmetDatabaseWPF.ViewModel
             LoadOrders();
             LoadClients();
             LoadMachines();
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                var order = Orders.Single(o => o.Id == WindowConfig.SelectedElement.Id);
+
+                SelectedOrder = order;
+
+                _window.DataGrid.SelectedItem = SelectedOrder;
+                _window.DataGrid.ScrollIntoView(SelectedOrder);
+            }
         }
 
         private void LoadOrders()
@@ -322,6 +413,48 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        private void ApplyPartSets(Order order)
+        {
+            foreach (var element in order.Machine.StandardPartSet)
+            {
+                var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount -= element.Amount;
+            }
+            foreach (var element in order.AdditionalPartSet)
+            {
+                var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount -= element.Amount;
+            }
+            DbContext.SaveChanges();
+        }
+
+        private void UndoApplyPartSets(Order order)
+        {
+            foreach (var element in order.Machine.StandardPartSet)
+            {
+                var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount += element.Amount;
+            }
+            foreach (var element in order.AdditionalPartSet)
+            {
+                var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                part.Amount += element.Amount;
+            }
+            DbContext.SaveChanges();
+        }
+
+        protected override WindowConfig GetWindowConfig()
+        {
+            var config = base.GetWindowConfig();
+            config.SelectedElement = SelectedOrder;
+
+            return config;
         }
 
         #region Event invokers.

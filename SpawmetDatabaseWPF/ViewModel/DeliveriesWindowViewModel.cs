@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Config;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -90,14 +92,17 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand DeletePartFromDeliveryCommand { get; private set; }
 
         public DeliveriesWindowViewModel(DeliveriesWindow window)
-            : base(window)
+            : this(window, null)
+        {
+        }
+
+        public DeliveriesWindowViewModel(DeliveriesWindow window, WindowConfig config)
+            : base(window, config)
         {
             _window = window;
 
             InitializeCommands();
             InitializeBackgroundWorkers();
-
-            Load();
         }
 
         public override void Dispose()
@@ -164,24 +169,36 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new DeleteDeliveryWindow(DbContext, selected);
-                win.DeliveriesDeleted += (sender, deliveries) =>
+                string msg = selected.Count == 1
+                    ? "Czy chcesz usunąć zaznaczoną dostawę?"
+                    : "Czy chcesz usunąć zaznaczone dostawy?";
+
+                var confirmWin = new ConfirmWindow(_window, msg);
+                confirmWin.Confirmed += delegate
                 {
-                    foreach (var delivery in deliveries)
+                    var win = new DeleteDeliveryWindow(DbContext, selected);
+                    win.DeliveriesDeleted += (sender, deliveries) =>
                     {
-                        Deliveries.Remove(delivery);
-                    }
+                        foreach (var delivery in deliveries)
+                        {
+                            Deliveries.Remove(delivery);
+                        }
+                    };
+                    win.WorkCompleted += delegate
+                    {
+                        DeliveryPartSet = null;
+                    };
+                    win.Show();
                 };
-                win.WorkCompleted += delegate
-                {
-                    DeliveryPartSet = null;
-                };
-                win.Show();
+                confirmWin.Show();
             });
 
             RefreshCommand = new Command(() =>
             {
-                var win = new DeliveriesWindow(_window.Left, _window.Top);
+                SaveDbStateCommand.Execute(null);
+
+                var config = GetWindowConfig();
+                var win = new DeliveriesWindow(config);
                 win.Loaded += delegate
                 {
                     _window.Close();
@@ -224,6 +241,16 @@ namespace SpawmetDatabaseWPF.ViewModel
         public override void Load()
         {
             LoadDeliveries();
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                var delivery = Deliveries.Single(d => d.Id == WindowConfig.SelectedElement.Id);
+
+                SelectedDelivery = delivery;
+
+                _window.DataGrid.SelectedItem = SelectedDelivery;
+                _window.DataGrid.ScrollIntoView(SelectedDelivery);
+            }
         }
 
         private void LoadDeliveries()
@@ -259,6 +286,14 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        protected override WindowConfig GetWindowConfig()
+        {
+            var config = base.GetWindowConfig();
+            config.SelectedElement = SelectedDelivery;
+
+            return config;
         }
 
         #region Event invokers.

@@ -11,15 +11,15 @@ namespace SpawmetDatabaseWPF.Commands
     {
         public event EventHandler CanExecuteChanged;
 
-        private Action _whatExecute;
-        private Func<bool> _whenExecute;
+        private ExecuteCommand _whatExecute;
+        private CanExecuteCommand _whenExecute;
 
-        public Command(Action what)
+        public Command(ExecuteCommand what)
             : this(what, null)
         {
         }
 
-        public Command(Action what, Func<bool> when)
+        public Command(ExecuteCommand what, CanExecuteCommand when)
         {
             _whatExecute = what;
             _whenExecute = when;

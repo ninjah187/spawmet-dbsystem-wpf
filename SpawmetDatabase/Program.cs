@@ -37,17 +37,18 @@ namespace SpawmetDatabase
                 parser.MachineAdded += (sender, e) =>
                 {
                     Console.Clear();
-                    Console.WriteLine("Dodano maszynę:\n" + e.ItemName);
+                    Console.WriteLine("Dodano maszynę:\n" + e.Name);
                     Console.WriteLine();
                 };
                 parser.PartAdded += (sender, e) =>
                 {
-                    Console.WriteLine("\tDodano część:\n\t" + e.ItemName);
+                    Console.WriteLine("\tDodano część:\n\t" + e.Name);
                     Console.WriteLine();
                 };
                 parser.StandardPartSetElementAdded += (sender, e) =>
                 {
-                    Console.WriteLine("\t\tDodano zestaw:\n\t\t" + e.ItemName);
+                    string txt = e.Machine.Name + " <- " + e.Part.Name;
+                    Console.WriteLine("\t\tDodano zestaw:\n\t\t" + txt);
                     Console.WriteLine();
                 };
                 parser.ParserRunCompleted += (sender, e) =>

@@ -1,0 +1,81 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.AddMachinesFromDirectory"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Dodaj maszyny" Height="400" Width="600" WindowState="Maximized"
+        Icon="icon2.ico">
+    <Grid>
+       <Grid.RowDefinitions>
+           <RowDefinition />
+           <RowDefinition Height="Auto"/>
+       </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Nowe maszyny:" Grid.Row="0" Grid.Column="0"
+                       FontWeight="DemiBold" Margin="5,5,0,5" />
+
+            <TextBlock Text="Nowe części:" Grid.Row="0" Grid.Column="1"
+                       FontWeight="DemiBold" Margin="5,5,0,5" />
+
+            <TextBlock Text="Nowe połączenia maszyna-część:" Grid.Row="0" Grid.Column="2"
+                       FontWeight="DemiBold" Margin="5,5,0,5" />
+
+            <ListBox x:Name="MachinesListBox" Grid.Row="1" Grid.Column="0"
+                     DisplayMemberPath="Name" Margin="10,0,10,0"
+                     ItemsSource="{Binding Machines}" />
+            
+            <ListBox x:Name="PartsListBox" Grid.Row="1" Grid.Column="1"
+                     DisplayMemberPath="Name" Margin="10,0,10,0"
+                     ItemsSource="{Binding Parts}" />
+            
+            <DataGrid x:Name="PartSetsDataGrid" Grid.Row="1" Grid.Column="2"
+                      AutoGenerateColumns="False" Margin="10,0,0,0" IsReadOnly="True"
+                      ItemsSource="{Binding PartSets}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine.Name}" />
+                    <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock x:Name="MachinesCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="0" 
+                       Margin="5,5,0,5" />
+            
+            <TextBlock x:Name="PartsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="1" 
+                       Margin="5,5,0,5" />
+
+            <TextBlock x:Name="PartSetsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="2" 
+                       Margin="5,5,0,5" />
+
+        </Grid>
+
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Folder:" FontWeight="DemiBold"
+                       Margin="10,10,10,0" />
+            <TextBlock x:Name="DirectoryTextBlock" Text="directory path" TextWrapping="Wrap"
+                       Margin="10,0,10,10"/>
+            <TextBlock Text="Plik: " FontWeight="DemiBold"
+                       Margin="10,0" />
+            <TextBlock x:Name="FileTextBlock" Text="file path" TextWrapping="Wrap" 
+                       Margin="10,0,10,10"/>
+            <TextBlock Text="Czas: " FontWeight="DemiBold"
+                       Margin="10,0" />
+            <TextBlock x:Name="TimeTextBlock" Text="time elapsed" TextWrapping="Wrap"
+                       Margin="10,0,10,10"/>
+            <ProgressBar x:Name="ParserProgressBar"
+                     Height="5" IsIndeterminate="True" />
+        </StackPanel>
+
+    </Grid>
+</Window>

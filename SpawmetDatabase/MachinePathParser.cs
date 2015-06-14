@@ -12,9 +12,14 @@ namespace SpawmetDatabase
 {
     public class MachinePathParser : IDisposable
     {
-        public event EventHandler<DatabaseItemAddedEventArgs> MachineAdded;
-        public event EventHandler<DatabaseItemAddedEventArgs> PartAdded;
-        public event EventHandler<DatabaseItemAddedEventArgs> StandardPartSetElementAdded;
+        private static readonly char[] TrimChars = { '.', ' ' };
+
+        public event EventHandler<string> DirectoryReached;
+        public event EventHandler<string> FileReached;
+
+        public event EventHandler<Machine> MachineAdded;
+        public event EventHandler<Part> PartAdded;
+        public event EventHandler<StandardPartSetElement> StandardPartSetElementAdded;
         public event EventHandler<ParserRunCompletedEventArgs> ParserRunCompleted;
         //public event EventHandler<ParserRunFailedEventArgs> ParserRunFailed;
 
@@ -25,9 +30,9 @@ namespace SpawmetDatabase
         private DirectoryCrawler _crawler;
         private string _machineName;
 
-        private static readonly char[] TrimChars = { '.', ' ' };
-
         private Stopwatch _stopwatch;
+
+        private Thread _thread;
 
         public MachinePathParser(string path)
         {
@@ -36,7 +41,16 @@ namespace SpawmetDatabase
 
             _machineName = path.Split('\\').Last();
             _crawler = new DirectoryCrawler();
-            
+
+            _crawler.DirectoryReached += (sender, dir) =>
+            {
+                OnDirectoryReached(dir);
+            };
+            _crawler.FileReached += (sender, file) =>
+            {
+                OnFileReached(file);
+            };
+
             _stopwatch = new Stopwatch();
 
             //Console.WriteLine(_machineName);
@@ -49,8 +63,16 @@ namespace SpawmetDatabase
 
         public void ParseAsync()
         {
-            var thread = new Thread(Parse);
-            thread.Start();
+            _thread = new Thread(Parse);
+            _thread.Start();
+        }
+
+        public void Abort()
+        {
+            if (_thread != null && _thread.IsAlive)
+            {
+                _thread.Abort();
+            }
         }
 
         public void Parse()
@@ -60,7 +82,6 @@ namespace SpawmetDatabase
 
             foreach (var file in _crawler.EnumerateFilesFromDirectories(Path, "dxf"))
             {
-                //Console.WriteLine(file);
                 AddElements(file);
             }
 
@@ -238,7 +259,7 @@ namespace SpawmetDatabase
                         Name = machineName,
                         Price = 0,
                     });
-                    OnMachineAdded(machine.Name);
+                    OnMachineAdded(machine);
                 }
                 else
                 {
@@ -254,7 +275,7 @@ namespace SpawmetDatabase
                         Amount = 0,
                         Origin = Origin.Production,
                     });
-                    OnPartAdded(part.Name);
+                    OnPartAdded(part);
                 }
                 else
                 {
@@ -274,8 +295,7 @@ namespace SpawmetDatabase
                         Part = part,
                         Amount = partAmount,
                     });
-                    OnStandardPartSetElementAdded(element.Machine.Name + "\n \t\t-> " + element.Part.Name
-                        + "\n \t\t-> x" + partAmount);
+                    OnStandardPartSetElementAdded(element);
                 }
                 context.SaveChanges();
             }
@@ -325,27 +345,27 @@ namespace SpawmetDatabase
             return part;
         }
 
-        private void OnMachineAdded(string itemName)
+        private void OnMachineAdded(Machine machine)
         {
             if (MachineAdded != null)
             {
-                MachineAdded(this, new DatabaseItemAddedEventArgs(itemName));
+                MachineAdded(this, machine);
             }
         }
 
-        private void OnPartAdded(string itemName)
+        private void OnPartAdded(Part part)
         {
             if (PartAdded != null)
             {
-                PartAdded(this, new DatabaseItemAddedEventArgs(itemName));
+                PartAdded(this, part);
             }
         }
 
-        private void OnStandardPartSetElementAdded(string itemName)
+        private void OnStandardPartSetElementAdded(StandardPartSetElement element)
         {
             if (StandardPartSetElementAdded != null)
             {
-                StandardPartSetElementAdded(this, new DatabaseItemAddedEventArgs(itemName));
+                StandardPartSetElementAdded(this, element);
             }
         }
 
@@ -354,6 +374,22 @@ namespace SpawmetDatabase
             if (ParserRunCompleted != null)
             {
                 ParserRunCompleted(this, new ParserRunCompletedEventArgs(timeElapsed));
+            }
+        }
+
+        private void OnDirectoryReached(string dir)
+        {
+            if (DirectoryReached != null)
+            {
+                DirectoryReached(this, dir);
+            }
+        }
+
+        private void OnFileReached(string file)
+        {
+            if (FileReached != null)
+            {
+                FileReached(this, file);
             }
         }
     }

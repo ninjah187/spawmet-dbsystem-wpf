@@ -64,7 +64,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeleteOrderWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeletingPartWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeliveriesWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddClientWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddDeliveryWindow.g.cs
@@ -86,7 +85,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\MachinesWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\OrdersWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PartsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.g.cs
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\RemoveWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\TestWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\App.g.cs
@@ -102,3 +100,15 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.Pro
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.pdb
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddMachinesFromDirectory.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddMachinesFromDirectory.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\Microsoft.Expression.Interactions.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\System.Windows.Interactivity.dll
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\Microsoft.Expression.Interactions.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Debug\System.Windows.Interactivity.xml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CraftPartWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CraftPartWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CommonWindows\MessageWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CommonWindows\MessageWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CommonWindows\ConfirmWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\CommonWindows\ConfirmWindow.g.cs

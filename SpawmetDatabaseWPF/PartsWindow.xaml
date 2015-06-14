@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:custns="clr-namespace:SpawmetDatabase.Model;assembly=SpawmetDatabase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:spawmetDatabaseWpf="clr-namespace:SpawmetDatabaseWPF"
         Title="Części" Height="480" Width="800"
         Icon="icon.ico">
@@ -54,6 +55,13 @@
                 <spawmetDatabaseWpf:OriginToStringConverter x:Key="enumItemsConverter" />
             </DataGrid.Resources>
 
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="CellEditEnding">
+                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                     AncestorType={x:Type Window}}, Path=DataContext.CellEditEndingCommand}"></i:InvokeCommandAction>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Command="{Binding AddPartCommand}"></MenuItem>
@@ -91,6 +99,14 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                              AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         

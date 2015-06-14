@@ -43,6 +43,8 @@ namespace SpawmetDatabaseWPF
                 //_parentWindow.IsEnabled = true;
             };
 
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             NameTextBox.GotFocus += TextBox_GotFocus;
             PriceTextBox.GotFocus += TextBox_GotFocus;
 
