@@ -191,6 +191,21 @@
     <Compile Include="ViewModel\OrdersWindowViewModel.cs" />
     <Compile Include="ViewModel\PartsWindowViewModel.cs" />
     <Compile Include="ViewModel\SpawmetWindowViewModel.cs" />
+    <Compile Include="Windows\Searching\SearchClientsWindow.xaml.cs">
+      <DependentUpon>SearchClientsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Searching\SearchDeliveriesWindow.xaml.cs">
+      <DependentUpon>SearchDeliveriesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Searching\SearchMachinesByName.xaml.cs">
+      <DependentUpon>SearchMachinesByName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Searching\SearchOrdersWindow.xaml.cs">
+      <DependentUpon>SearchOrdersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Searching\SearchPartsWindow.xaml.cs">
+      <DependentUpon>SearchPartsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddClientWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -299,6 +314,26 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Searching\SearchClientsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Searching\SearchDeliveriesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Searching\SearchMachinesByName.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Searching\SearchOrdersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Searching\SearchPartsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

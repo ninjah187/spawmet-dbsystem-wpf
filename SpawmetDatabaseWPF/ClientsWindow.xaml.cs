@@ -49,14 +49,30 @@ namespace SpawmetDatabaseWPF
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var client = (Client) e.Element;
+                string id = "";
+                string name = "";
+                string address = "";
+                string phone = "";
+                string email = "";
+                string nip = "";
 
-                IdTextBlock.Text = client.Id.ToString();
-                NameTextBlock.Text = client.Name;
-                AddressTextBlock.Text = client.Address;
-                PhoneTextBlock.Text = client.Phone;
-                EmailTextBlock.Text = client.Email;
-                NipTextBlock.Text = client.Nip;
+                if (e.Element != null)
+                {
+                    var client = (Client)e.Element;
+                    id = client.Id.ToString();
+                    name = client.Name;
+                    address = client.Address;
+                    phone = client.Phone;
+                    email = client.Email;
+                    nip = client.Nip;
+                }
+
+                IdTextBlock.Text = id;
+                NameTextBlock.Text = name;
+                AddressTextBlock.Text = address;
+                PhoneTextBlock.Text = phone;
+                EmailTextBlock.Text = email;
+                NipTextBlock.Text = nip;
             };
 
             viewModel.OrdersStartLoading += delegate

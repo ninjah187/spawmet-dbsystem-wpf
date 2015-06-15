@@ -11,6 +11,7 @@ using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Windows.Searching;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -90,6 +91,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand AddPartToDeliveryCommand { get; private set; }
 
         public ICommand DeletePartFromDeliveryCommand { get; private set; }
+
+        public override ICommand NewSearchWindowCommand { get; protected set; }
 
         public DeliveriesWindowViewModel(DeliveriesWindow window)
             : this(window, null)
@@ -187,6 +190,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                     win.WorkCompleted += delegate
                     {
                         DeliveryPartSet = null;
+
+                        OnElementSelected(null);
                     };
                     win.Show();
                 };
@@ -235,6 +240,24 @@ namespace SpawmetDatabaseWPF.ViewModel
                 DbContext.SaveChanges();
 
                 LoadDeliveryPartSet();
+            });
+
+            NewSearchWindowCommand = new Command(() =>
+            {
+                var win = new SearchDeliveriesWindow(_window, DbContext);
+                win.WorkCompleted += (sender, deliveries) =>
+                {
+                    Deliveries = new ObservableCollection<Delivery>(deliveries);
+
+                    DeliveryPartSet = null;
+
+                    OnElementSelected(null);
+
+                    SearchExpression = win.RegExpr;
+
+                    MessageWindow.Show("Zakończono wyszukiwanie", win);
+                };
+                win.Show();
             });
         }
 

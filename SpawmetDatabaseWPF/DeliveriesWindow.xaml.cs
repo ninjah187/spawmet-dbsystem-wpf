@@ -49,14 +49,20 @@ namespace SpawmetDatabaseWPF
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var delivery = (Delivery)e.Element;
-
-                IdTextBlock.Text = delivery.Id.ToString();
-                NameTextBlock.Text = delivery.Name;
-
+                string id = "";
+                string name = "";
                 string date = "";
-                date = delivery.Date.ToString("yyyy-MM-dd");
 
+                if (e.Element != null)
+                {
+                    var delivery = (Delivery)e.Element;
+                    id = delivery.Id.ToString();
+                    name = delivery.Name;
+                    date = delivery.Date.ToString("yyyy-MM-dd");
+                }
+
+                IdTextBlock.Text = id;
+                NameTextBlock.Text = name;
                 DateTextBlock.Text = date;
             };
 

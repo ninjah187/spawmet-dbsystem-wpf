@@ -1,0 +1,19 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.Windows.Searching.SearchOrdersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wyszukiwanie zamówień" SizeToContent="Height" Width="300" ResizeMode="NoResize"
+        Icon="../../icon2.ico">
+    <StackPanel>
+        <TextBlock x:Name="MessageTextBlock" DockPanel.Dock="Top" Text="Szukana fraza:" Margin="10,10,10,5" TextAlignment="Center"
+                   TextWrapping="Wrap" />
+
+        <DockPanel Margin="10,0,10,10">
+            <TextBox x:Name="RegexTextBox"></TextBox>
+        </DockPanel>
+
+        <Button x:Name="SearchButton" Width="60" Height="25" Margin="10,0,10,10"
+                Click="SearchButton_OnClick">Szukaj</Button>
+
+        <ProgressBar x:Name="ProgressBar" Height="5"></ProgressBar>
+    </StackPanel>
+</Window>

@@ -17,6 +17,7 @@ using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Events;
+using SpawmetDatabaseWPF.Windows.Searching;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -126,6 +127,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand DeletePartFromMachineCommand { get; private set; }
 
         public ICommand AddMachinesFromDirectoryCommand { get; private set; }
+
+        public override ICommand NewSearchWindowCommand { get; protected set; }
 
         public MachinesWindowViewModel(MachinesWindow window)
             : this(window, null)
@@ -262,6 +265,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                     {
                         StandardPartSet = null;
                         Orders = null;
+
+                        OnElementSelected(null);
                     };
                     win.Show();
                 };
@@ -389,6 +394,25 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
 
                 dialog.Dispose();
+            });
+
+            NewSearchWindowCommand = new Command(() =>
+            {
+                var win = new SearchMachinesByName(_window, DbContext);
+                win.WorkCompleted += (sender, machines) =>
+                {
+                    Machines = new ObservableCollection<Machine>(machines);
+                    
+                    StandardPartSet = null;
+                    Orders = null;
+
+                    OnElementSelected(null);
+
+                    SearchExpression = win.RegExpr;
+
+                    MessageWindow.Show("Zakończono wyszukiwanie", win);
+                };
+                win.Show();
             });
         }
 

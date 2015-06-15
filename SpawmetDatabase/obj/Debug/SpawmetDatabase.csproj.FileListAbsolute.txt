@@ -15,4 +15,3 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.OrderStat
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.pdb
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Debug\SpawmetDatabase.csprojResolveAssemblyReference.cache

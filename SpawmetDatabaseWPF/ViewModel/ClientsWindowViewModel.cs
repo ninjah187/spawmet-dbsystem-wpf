@@ -12,6 +12,7 @@ using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Windows.Searching;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -74,6 +75,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand DeleteClientsCommand { get; private set; }
         
         public override ICommand RefreshCommand { get; protected set; }
+
+        public override ICommand NewSearchWindowCommand { get; protected set; }
 
         public ClientsWindowViewModel(ClientsWindow window)
             : this(window, null)
@@ -174,6 +177,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                     win.WorkCompleted += delegate
                     {
                         Orders = null;
+
+                        OnElementSelected(null);
                     };
                     win.Show();
                 };
@@ -189,6 +194,24 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Loaded += delegate
                 {
                     _window.Close();
+                };
+                win.Show();
+            });
+
+            NewSearchWindowCommand = new Command(() =>
+            {
+                var win = new SearchClientsWindow(_window, DbContext);
+                win.WorkCompleted += (sender, clients) =>
+                {
+                    Clients = new ObservableCollection<Client>(clients);
+
+                    Orders = null;
+
+                    OnElementSelected(null);
+
+                    SearchExpression = win.RegExpr;
+
+                    MessageWindow.Show("Zakończono wyszukiwanie", win);
                 };
                 win.Show();
             });

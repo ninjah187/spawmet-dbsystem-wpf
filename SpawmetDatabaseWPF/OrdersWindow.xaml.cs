@@ -51,31 +51,43 @@ namespace SpawmetDatabaseWPF
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var order = (Order)e.Element;
-
-                IdTextBlock.Text = order.Id.ToString();
-                ClientTextBlock.Text = order.Client.Name;
-                MachineTextBlock.Text = order.Machine.Name;
-
+                string id = "";
+                string client = "";
+                string machine = "";
                 string startDate = "";
-                startDate = order.StartDate != null
+                string sendDate = "";
+                string status = "";
+                string remarks = "";
+
+                if (e.Element != null)
+                {
+                    var order = (Order) e.Element;
+                    id = order.Id.ToString();
+                    client = order.Client.Name;
+                    machine = order.Machine.Name;
+
+                    startDate = order.StartDate != null
                     ? order.StartDate.Value.ToString("yyyy-MM-dd")
                     : "";
-                StartDateTextBlock.Text = startDate;
 
-                string sendDate = "";
-                sendDate = order.SendDate != null
+                    sendDate = order.SendDate != null
                     ? order.SendDate.Value.ToString("yyyy-MM-dd")
                     : "";
-                SendDateTextBlock.Text = sendDate;
 
-                string status = "";
-                status = order.Status != null
+                    status = order.Status != null
                     ? order.Status.Value.GetDescription()
                     : "";
-                StatusTextBlock.Text = status;
 
-                RemarksTextBlock.Text = order.Remarks;
+                    remarks = order.Remarks;
+                }
+
+                IdTextBlock.Text = id;
+                ClientTextBlock.Text = client;
+                MachineTextBlock.Text = machine;
+                StartDateTextBlock.Text = startDate;
+                SendDateTextBlock.Text = sendDate;
+                StatusTextBlock.Text = status;
+                RemarksTextBlock.Text = remarks;
             };
 
             viewModel.PartSetStartLoading += delegate

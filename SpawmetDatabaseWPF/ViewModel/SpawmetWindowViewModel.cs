@@ -21,13 +21,27 @@ namespace SpawmetDatabaseWPF.ViewModel
     {
         public event ElementSelectedEventHandler<IModelElement> ElementSelected;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private ISpawmetWindow _window;
         protected WindowConfig WindowConfig { get; private set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         protected SpawmetDBContext DbContext = new SpawmetDBContext();
         protected object DbContextLock = new object();
+
+        private string _searchExpression;
+        public string SearchExpression
+        {
+            get { return _searchExpression; }
+            set
+            {
+                if (_searchExpression != value)
+                {
+                    _searchExpression = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public ICommand SaveDbStateCommand { get; protected set; }
 
@@ -42,6 +56,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand NewDeliveriesWindowCommand { get; protected set; }
 
         public abstract ICommand RefreshCommand { get; protected set; }
+
+        public virtual ICommand NewSearchWindowCommand { get; protected set; }
 
         private ICommand _cellEditEndingCommand;
         public ICommand CellEditEndingCommand
@@ -78,6 +94,8 @@ namespace SpawmetDatabaseWPF.ViewModel
             _window.WindowState = config.WindowState;
 
             WindowConfig = config;
+
+            SearchExpression = "";
 
             _window.DataGrid.CellEditEnding += CellEditEndingHandler;
             _window.DataGrid.RowEditEnding += RowEditEndingHandler;
@@ -136,6 +154,11 @@ namespace SpawmetDatabaseWPF.ViewModel
                 SaveDbStateCommand.Execute(null);
 
                 CellEditEndingCommand = command;
+            });
+
+            NewSearchWindowCommand = new Command(() =>
+            {
+                throw new NotImplementedException();
             });
         }
 

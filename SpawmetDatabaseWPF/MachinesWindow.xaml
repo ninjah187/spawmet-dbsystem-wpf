@@ -12,6 +12,11 @@
         <vm:MachinesWindowViewModel />    
     </Window.DataContext>-->
     
+    <Window.InputBindings>
+        <!--<KeyBinding Gesture="CTRL+D" Command="{Binding AddMachinesFromDirectory}"></KeyBinding>-->
+        <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+    </Window.InputBindings>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -39,7 +44,10 @@
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Narzędzia">
-                    <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"></MenuItem>
+                    <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"
+                              InputGestureText="Ctrl+D"></MenuItem>
+                    <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
+                              InputGestureText="Ctrl+F"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -48,11 +56,16 @@
         </StackPanel>
         <!-- END NAVBAR -->
         
+        <DockPanel Grid.Row="0" Grid.Column="1" Margin="10,0">
+            <TextBlock DockPanel.Dock="Left" Text="Filtr: " TextAlignment="Left" />
+            <TextBlock DockPanel.Dock="Right" Text="{Binding SearchExpression}" TextAlignment="Right" TextWrapping="Wrap" />
+        </DockPanel>
+        
         <DataGrid x:Name="MainDataGrid"
                   Grid.Row="1" Grid.Column="0"
                   ItemsSource="{Binding Machines, Mode=TwoWay}" SelectedItem="{Binding SelectedMachine}"
                   Margin="0,0,0,0" DockPanel.Dock="Left"
-                  AutoGenerateColumns="False" CanUserAddRows="False">
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="CellEditEnding">
                     <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,

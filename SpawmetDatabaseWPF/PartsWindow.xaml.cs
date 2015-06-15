@@ -51,11 +51,21 @@ namespace SpawmetDatabaseWPF
 
             viewModel.ElementSelected += (sender, e) =>
             {
-                var part = (Part)e.Element;
+                string id = "";
+                string name = "";
+                string amount = "";
 
-                IdTextBlock.Text = part.Id.ToString();
-                NameTextBlock.Text = part.Name;
-                AmountTextBlock.Text = part.Amount.ToString();
+                if (e.Element != null)
+                {
+                    var part = (Part)e.Element;
+                    id = part.Id.ToString();
+                    name = part.Name;
+                    amount = part.Amount.ToString();
+                }
+
+                IdTextBlock.Text = id;
+                NameTextBlock.Text = name;
+                AmountTextBlock.Text = amount;
             };
 
             viewModel.MachinesStartLoading += delegate
