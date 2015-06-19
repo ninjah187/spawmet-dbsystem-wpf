@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.ViewModel;
 
@@ -67,6 +68,15 @@ namespace SpawmetDatabaseWPF
                 NameTextBlock.Text = name;
                 AmountTextBlock.Text = amount;
             };
+
+            //viewModel.ConnectionChanged += delegate
+            //{
+            //    //if (viewModel.IsConnected == false)
+            //    //{
+            //    //    //MessageWindow.Show("Brak połączenia.", "Błąd", null);
+            //    //    this.Close();
+            //    //}
+            //};
 
             viewModel.MachinesStartLoading += delegate
             {

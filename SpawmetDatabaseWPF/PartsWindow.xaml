@@ -5,6 +5,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:spawmetDatabaseWpf="clr-namespace:SpawmetDatabaseWPF"
+        xmlns:converters="clr-namespace:SpawmetDatabaseWPF.Converters"
         Title="Części" Height="480" Width="800"
         Icon="icon.ico">
     
@@ -48,6 +49,14 @@
         </DockPanel>
 
         <DockPanel Grid.Row="0" Grid.Column="1" Margin="10,0">
+            <DockPanel.Resources>
+                <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+            </DockPanel.Resources>
+
+            <Ellipse DockPanel.Dock="Left" Width="10" Height="10" Fill="{Binding IsConnected,
+                                                                         Converter={StaticResource BoolToBrushConverter}}"
+                     Margin="0,0,10,0"/>
+
             <TextBlock DockPanel.Dock="Left" Text="Filtr: " TextAlignment="Left" />
             <TextBlock DockPanel.Dock="Right" Text="{Binding SearchExpression}" TextAlignment="Right" TextWrapping="Wrap" />
         </DockPanel>
@@ -56,7 +65,7 @@
                   Grid.Row="1" Grid.Column="0"
                   ItemsSource="{Binding Parts, Mode=TwoWay}" SelectedItem="{Binding SelectedPart}"
                   Margin="0,0,0,0" DockPanel.Dock="Left"
-                  AutoGenerateColumns="False" CanUserAddRows="False">
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Resources>
                 <ObjectDataProvider x:Key="originEnum"
                                                 MethodName="GetValues"
@@ -69,13 +78,17 @@
                 <spawmetDatabaseWpf:OriginToStringConverter x:Key="enumItemsConverter" />
             </DataGrid.Resources>
 
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="CellEditEnding">
                     <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                      AncestorType={x:Type Window}}, Path=DataContext.CellEditEndingCommand}"></i:InvokeCommandAction>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
-            
+            </i:Interaction.Triggers>-->
+
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeletePartsCommand}"></KeyBinding>
+            </DataGrid.InputBindings>
+
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Command="{Binding AddPartCommand}"></MenuItem>

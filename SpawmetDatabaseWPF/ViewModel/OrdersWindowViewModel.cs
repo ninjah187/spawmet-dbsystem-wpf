@@ -141,6 +141,23 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             InitializeBackgroundWorkers();
             InitializeCommands();
+
+            ConnectionChanged += delegate
+            {
+                if (IsConnected == false)
+                {
+                    Orders = null;
+                    AdditionalPartSet = null;
+                    OnElementSelected(null);
+                }
+                else
+                {
+                    if (Orders == null)
+                    {
+                        Load();
+                    }
+                }
+            };
         }
 
         public override void Dispose()
@@ -290,6 +307,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                         OnElementSelected(null);
                     };
+                    win.ConnectionLost += (sender, exc) =>
+                    {
+                        IsConnected = false;
+                    };
                     win.Show();
                 };
                 confirmWin.Show();
@@ -378,6 +399,8 @@ namespace SpawmetDatabaseWPF.ViewModel
             LoadOrders();
             LoadClients();
             LoadMachines();
+
+            IsConnected = true;
 
             if (WindowConfig.SelectedElement != null)
             {

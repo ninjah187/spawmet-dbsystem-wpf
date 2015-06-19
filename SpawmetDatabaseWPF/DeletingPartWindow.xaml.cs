@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Exceptions;
 
 namespace SpawmetDatabaseWPF
 {
@@ -25,10 +27,12 @@ namespace SpawmetDatabaseWPF
         public event EventHandler<IEnumerable<Part>> PartsDeleted;
         public event EventHandler WorkCompleted;
 
+        public event EventHandler<Exception> ConnectionLost;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Part> _parts;
 
-        private readonly BackgroundWorker _backgroundWorker;
+        private readonly BackgroundWorker _mainWorker;
         private readonly BackgroundWorker _initWorker;
 
         private int _deletedCount = 0;
@@ -43,85 +47,188 @@ namespace SpawmetDatabaseWPF
 
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
+            this.ConnectionLost += ConnectionLostHandler;
+
             _initWorker = new BackgroundWorker();
-            _initWorker.DoWork += (sender, e) =>
+            _initWorker.WorkerSupportsCancellation = true;
+            _initWorker.DoWork += InitWorker_DoWork;
+            _initWorker.RunWorkerCompleted += InitWorker_RunWorkerCompleted;
+
+            _mainWorker = new BackgroundWorker();
+            _mainWorker.WorkerReportsProgress = true;
+            _mainWorker.WorkerSupportsCancellation = true;
+            _mainWorker.DoWork += MainWorker_DoWork;
+            _mainWorker.ProgressChanged += MainWorker_ProgressChanged;
+            _mainWorker.RunWorkerCompleted += MainWorker_RunWorkerCompleted;
+
+            this.Closed += (sender, e) =>
+            {
+                _initWorker.Dispose();
+                _mainWorker.Dispose();
+            };
+
+            _initWorker.RunWorkerAsync();
+        }
+
+        private void InitWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
             {
                 foreach (var part in _parts)
                 {
+                    if (_initWorker.CancellationPending)
+                    {
+                        return;
+                    }
+
                     _totalCount += part.AdditionalPartSets.Count + part.DeliveryPartSets.Count
                                    + part.StandardPartSets.Count;
                     _totalCount++;
                 }
-            };
-            _initWorker.RunWorkerCompleted += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                DeleteProgressBar.Minimum = 0;
-                DeleteProgressBar.Maximum = _totalCount;
-                DeleteProgressBar.Value = 0;
-                CounterTextBlock.Text = "0 z " + _totalCount;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnConnectionLost(exc);
+                });
+            }
+        }
 
-                TitleTextBlock.Text = "Usuwanie...";
+        private void InitWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            DeleteProgressBar.Minimum = 0;
+            DeleteProgressBar.Maximum = _totalCount;
+            DeleteProgressBar.Value = 0;
+            CounterTextBlock.Text = "0 z " + _totalCount;
 
-                _backgroundWorker.RunWorkerAsync();
-            };
+            TitleTextBlock.Text = "Usuwanie...";
 
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.WorkerReportsProgress = true;
-            _backgroundWorker.DoWork += (sender, e) =>
+            _mainWorker.RunWorkerAsync();
+        }
+
+        private void MainWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
             {
+                if (_mainWorker.CancellationPending)
+                {
+                    return;
+                }
+
                 foreach (var part in _parts)
                 {
                     int count = part.StandardPartSets.Count;
                     _dbContext.StandardPartSets.RemoveRange(part.StandardPartSets);
                     _dbContext.SaveChanges();
+                    //try
+                    //{
+                    //    _dbContext.SaveChanges();
+                    //}
+                    //catch (Exception exc)
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        OnConnectionLost(exc);
+                    //    });
+                    //    return;
+                    //}
 
                     _deletedCount += count;
-                    _backgroundWorker.ReportProgress(0);
+                    _mainWorker.ReportProgress(0);
 
                     count = part.AdditionalPartSets.Count;
                     _dbContext.AdditionalPartSets.RemoveRange(part.AdditionalPartSets);
                     _dbContext.SaveChanges();
+                    //try
+                    //{
+                    //    _dbContext.SaveChanges();
+                    //}
+                    //catch (Exception exc)
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        OnConnectionLost(exc);
+                    //    });
+                    //    return;
+                    //}
 
                     _deletedCount += count;
-                    _backgroundWorker.ReportProgress(0);
+                    _mainWorker.ReportProgress(0);
 
                     count = part.DeliveryPartSets.Count;
                     _dbContext.DeliveryPartSets.RemoveRange(part.DeliveryPartSets);
                     _dbContext.SaveChanges();
+                    //try
+                    //{
+                    //    _dbContext.SaveChanges();
+                    //}
+                    //catch (Exception exc)
+                    //{
+                    //    Application.Current.Dispatcher.Invoke(() =>
+                    //    {
+                    //        OnConnectionLost(exc);
+                    //    });
+                    //    return;
+                    //}
 
                     _deletedCount += count;
-                    _backgroundWorker.ReportProgress(0);
+                    _mainWorker.ReportProgress(0);
                 }
-            };
-            _backgroundWorker.ProgressChanged += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                DeleteProgressBar.Value = _deletedCount;
-                CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
-            };
-            _backgroundWorker.RunWorkerCompleted += (sender, e) =>
-            {
-                _deletedCount += _parts.Count();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnConnectionLost(exc);
+                });
+            }
+        }
 
-                _dbContext.Parts.RemoveRange(_parts);
+        private void MainWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            DeleteProgressBar.Value = _deletedCount;
+            CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
+        }
+
+        private void MainWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _deletedCount += _parts.Count();
+
+            _dbContext.Parts.RemoveRange(_parts);
+            try
+            {
                 _dbContext.SaveChanges();
-
-                OnPartsDeleted(_parts);
-
-                DeleteProgressBar.Value += _deletedCount;
-                CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
-
-                OnWorkCompleted();
-
-                this.Close();
-            };
-
-            this.Closed += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                _initWorker.Dispose();
-                _backgroundWorker.Dispose();
-            };
+                OnConnectionLost(exc);
+                return;
+            }
 
-            _initWorker.RunWorkerAsync();
+            OnPartsDeleted(_parts);
+
+            DeleteProgressBar.Value += _deletedCount;
+            CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
+
+            OnWorkCompleted();
+
+            this.Close();
+        }
+
+        private void ConnectionLostHandler(object sender, Exception exc)
+        {
+            _initWorker.CancelAsync();
+            _mainWorker.CancelAsync();
+
+            _initWorker.RunWorkerCompleted -= InitWorker_RunWorkerCompleted;
+            _mainWorker.DoWork -= MainWorker_DoWork;
+            _mainWorker.ProgressChanged -= MainWorker_ProgressChanged;
+            _mainWorker.RunWorkerCompleted -= MainWorker_RunWorkerCompleted;
+
+            this.Close();
+
+            this.ConnectionLost -= ConnectionLostHandler;
         }
 
         private void OnPartsDeleted(IEnumerable<Part> parts)
@@ -137,6 +244,14 @@ namespace SpawmetDatabaseWPF
             if (WorkCompleted != null)
             {
                 WorkCompleted(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnConnectionLost(Exception exc)
+        {
+            if (ConnectionLost != null)
+            {
+                ConnectionLost(this, exc);
             }
         }
     }

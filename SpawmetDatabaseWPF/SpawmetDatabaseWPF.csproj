@@ -73,6 +73,7 @@
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Windows.Forms" />
@@ -138,6 +139,8 @@
     <Compile Include="ConnectingWindow.xaml.cs">
       <DependentUpon>ConnectingWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConnectionState.cs" />
+    <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\OrderStatusToStringConverter.cs" />
     <Compile Include="Converters\OriginToStringConverter.cs" />
     <Compile Include="CraftPartWindow.xaml.cs">
@@ -166,6 +169,7 @@
     <Compile Include="Events\ElementSelectedEventHandler.cs" />
     <Compile Include="Events\PartCraftedEventArgs.cs" />
     <Compile Include="Events\PartCraftedEventHandler.cs" />
+    <Compile Include="Exceptions\ConnectionLostException.cs" />
     <Compile Include="ISpawmetWindow.cs" />
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>

@@ -5,8 +5,9 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:vm="clr-namespace:SpawmetDatabaseWPF.ViewModel"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:converters="clr-namespace:SpawmetDatabaseWPF.Converters"
         Title="Maszyny" Height="480" Width="800"
-        Icon="icon.ico">
+        Icon="icon2.ico">
     
     <!--<Window.DataContext>
         <vm:MachinesWindowViewModel />    
@@ -14,7 +15,7 @@
     
     <Window.InputBindings>
         <!--<KeyBinding Gesture="CTRL+D" Command="{Binding AddMachinesFromDirectory}"></KeyBinding>-->
-        <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}" x:Name="SearchKeyBinding"></KeyBinding>
     </Window.InputBindings>
     
     <Grid>
@@ -35,19 +36,21 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Tabele">
                     <MenuItem Header="Maszyny" IsEnabled="False"></MenuItem>
-                    <MenuItem Header="Części" Command="{Binding NewPartsWindowCommand}"></MenuItem>
-                    <MenuItem Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
-                    <MenuItem Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
-                    <MenuItem Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="PartsMenuItem" Header="Części" Command="{Binding NewPartsWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
+                    <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Opcje">
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Narzędzia">
                     <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"
-                              InputGestureText="Ctrl+D"></MenuItem>
+                              InputGestureText="Ctrl+D"
+                              x:Name="AddMachinesFromDirectoryMenuItem"></MenuItem>
                     <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
-                              InputGestureText="Ctrl+F"></MenuItem>
+                              InputGestureText="Ctrl+F"
+                              x:Name="SearchMenuItem"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -57,6 +60,13 @@
         <!-- END NAVBAR -->
         
         <DockPanel Grid.Row="0" Grid.Column="1" Margin="10,0">
+            <DockPanel.Resources>
+                <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+            </DockPanel.Resources>
+            
+            <Ellipse DockPanel.Dock="Left" Width="10" Height="10" Fill="{Binding IsConnected,
+                                                                         Converter={StaticResource BoolToBrushConverter}}"
+                     Margin="0,0,10,0"/>
             <TextBlock DockPanel.Dock="Left" Text="Filtr: " TextAlignment="Left" />
             <TextBlock DockPanel.Dock="Right" Text="{Binding SearchExpression}" TextAlignment="Right" TextWrapping="Wrap" />
         </DockPanel>
@@ -73,6 +83,10 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>-->
                 
+            <DataGrid.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteMachinesCommand}"></KeyBinding>
+            </DataGrid.InputBindings>
+            
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Command="{Binding AddMachineCommand}"></MenuItem>

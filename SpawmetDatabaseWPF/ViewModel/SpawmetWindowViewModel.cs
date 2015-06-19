@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
+using System.Data.Common;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using MySql.Data.MySqlClient;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
@@ -23,11 +26,33 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public event EventHandler<ConnectionState> ConnectionChanged;
+
         private ISpawmetWindow _window;
         protected WindowConfig WindowConfig { get; private set; }
 
         protected SpawmetDBContext DbContext = new SpawmetDBContext();
+        private const string connectionStringName = "SpawmetDBContext";
         protected object DbContextLock = new object();
+
+        private Timer _connectionCheckTimer;
+
+        private bool _isConnected;
+        public virtual bool IsConnected
+        {
+            get { return _isConnected; }
+            protected set
+            {
+                if (_isConnected != value)
+                {
+                    _isConnected = value;
+                    OnPropertyChanged();
+
+                    var state = _isConnected ? ConnectionState.Ok : ConnectionState.Lost;
+                    OnConnectionChanged(state);
+                }
+            }
+        }
 
         private string _searchExpression;
         public string SearchExpression
@@ -99,11 +124,30 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             _window.DataGrid.CellEditEnding += CellEditEndingHandler;
             _window.DataGrid.RowEditEnding += RowEditEndingHandler;
+
+            _connectionCheckTimer = new Timer(1000);
+            _connectionCheckTimer.Elapsed += delegate
+            {
+                IsConnected = IsDatabaseServerAvailable();
+            };
+            _connectionCheckTimer.Start();
+
+            this.ConnectionChanged += delegate
+            {
+                if (IsConnected == false)
+                {
+                    SearchExpression = "";
+                }
+            };
         }
 
         public virtual void Dispose()
         {
             DbContext.Dispose();
+
+            _connectionCheckTimer.Stop();
+            _connectionCheckTimer.Close();
+            _connectionCheckTimer.Dispose();
         }
 
         protected virtual void InitializeCommands()
@@ -164,6 +208,23 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public abstract void Load();
 
+        public bool IsDatabaseServerAvailable()
+        {
+            using (var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings[connectionStringName]
+                .ConnectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    return true;
+                }
+                catch (MySqlException)
+                {
+                    return false;
+                }
+            }
+        }
+
         protected virtual WindowConfig GetWindowConfig()
         {
             var config = new WindowConfig()
@@ -192,6 +253,14 @@ namespace SpawmetDatabaseWPF.ViewModel
             if (ElementSelected != null)
             {
                 ElementSelected(this, new ElementSelectedEventArgs<IModelElement>(element));
+            }
+        }
+
+        protected void OnConnectionChanged(ConnectionState state)
+        {
+            if (ConnectionChanged != null)
+            {
+                ConnectionChanged(this, state);
             }
         }
 

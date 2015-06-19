@@ -132,6 +132,25 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             InitializeCommands();
             InitializeBackgroundWorkers();
+
+            ConnectionChanged += delegate
+            {
+                if (IsConnected == false)
+                {
+                    Parts = null;
+                    Machines = null;
+                    Orders = null;
+                    Deliveries = null;
+                    OnElementSelected(null);
+                }
+                else
+                {
+                    if (Parts == null)
+                    {
+                        Load();
+                    }
+                }
+            };
         }
 
         public void Dispose()
@@ -277,6 +296,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                         OnElementSelected(null);
                     };
+                    win.ConnectionLost += (sender, exc) =>
+                    {
+                        IsConnected = false;
+                    };
                     win.Show();
                 };
                 confirmWin.Show();
@@ -338,6 +361,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             LoadParts();
 
+            IsConnected = true;
+
             if (WindowConfig.SelectedElement != null)
             {
                 var part = Parts.Single(p => p.Id == WindowConfig.SelectedElement.Id);
@@ -351,9 +376,16 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         private void LoadParts()
         {
-            var parts = DbContext.Parts.ToList();
+            try
+            {
+                var parts = DbContext.Parts.ToList();
 
-            Parts = new ObservableCollection<Part>(parts);
+                Parts = new ObservableCollection<Part>(parts);
+            }
+            catch (Exception)
+            {
+                IsConnected = false;
+            }
         }
 
         private void LoadMachines()

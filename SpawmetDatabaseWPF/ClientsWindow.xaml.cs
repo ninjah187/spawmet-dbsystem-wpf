@@ -97,6 +97,8 @@ namespace SpawmetDatabaseWPF
             {
                 viewModel.Dispose();
             };
+
+            viewModel.Load();
         }
 
         public void CommitEdit()

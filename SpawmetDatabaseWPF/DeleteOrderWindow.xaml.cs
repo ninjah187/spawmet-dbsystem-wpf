@@ -25,10 +25,12 @@ namespace SpawmetDatabaseWPF
         public event EventHandler<IEnumerable<Order>> OrdersDeleted;
         public event EventHandler WorkCompleted;
 
+        public event EventHandler<Exception> ConnectionLost;
+
         private readonly SpawmetDBContext _dbContext;
         private readonly IEnumerable<Order> _orders;
 
-        private readonly BackgroundWorker _backgroundWorker;
+        private readonly BackgroundWorker _mainWorker;
         private readonly BackgroundWorker _initWorker;
 
         private int _deletedCount = 0;
@@ -43,73 +45,140 @@ namespace SpawmetDatabaseWPF
 
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
+            this.ConnectionLost += ConnectionLostHandler;
+
             _initWorker = new BackgroundWorker();
-            _initWorker.DoWork += (sender, e) =>
+            _initWorker.WorkerSupportsCancellation = true;
+            _initWorker.DoWork += InitWorker_DoWork;
+            _initWorker.RunWorkerCompleted += InitWorker_RunWorkerCompleted;
+
+            _mainWorker = new BackgroundWorker();
+            _mainWorker.WorkerReportsProgress = true;
+            _mainWorker.WorkerSupportsCancellation = true;
+            _mainWorker.DoWork += MainWorker_DoWork;
+            _mainWorker.ProgressChanged += MainWorker_ProgressChanged;
+            _mainWorker.RunWorkerCompleted += MainWorker_RunWorkerCompleted;
+
+            this.Closed += (sender, e) =>
+            {
+                _initWorker.Dispose();
+                _mainWorker.Dispose();
+            };
+
+            _initWorker.RunWorkerAsync();
+            
+        }
+
+        private void InitWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
             {
                 foreach (var order in _orders)
                 {
+                    if (_initWorker.CancellationPending)
+                    {
+                        return;
+                    }
+
                     _totalCount += order.AdditionalPartSet.Count();
                     _totalCount++;
                 }
-            };
-            _initWorker.RunWorkerCompleted += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                DeleteProgressBar.Minimum = 0;
-                DeleteProgressBar.Maximum = _totalCount;
-                DeleteProgressBar.Value = 0;
-                CounterTextBlock.Text = "0 z " + _totalCount;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnConnectionLost(exc);
+                });
+            }
+        }
 
-                TitleTextBlock.Text = "Usuwanie...";
+        private void InitWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            DeleteProgressBar.Minimum = 0;
+            DeleteProgressBar.Maximum = _totalCount;
+            DeleteProgressBar.Value = 0;
+            CounterTextBlock.Text = "0 z " + _totalCount;
 
-                _backgroundWorker.RunWorkerAsync();
-            };
+            TitleTextBlock.Text = "Usuwanie...";
 
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.WorkerReportsProgress = true;
-            _backgroundWorker.DoWork += (sender, e) =>
+            _mainWorker.RunWorkerAsync();
+        }
+
+        private void MainWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
             {
                 foreach (var order in _orders)
                 {
+                    if (_mainWorker.CancellationPending)
+                    {
+                        return;
+                    }
+
                     int count = order.AdditionalPartSet.Count;
                     _dbContext.AdditionalPartSets.RemoveRange(order.AdditionalPartSet);
                     _dbContext.SaveChanges();
 
                     _deletedCount += count;
-                    _backgroundWorker.ReportProgress(0);
+                    _mainWorker.ReportProgress(0);
                 }
-            };
-            _backgroundWorker.ProgressChanged += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                DeleteProgressBar.Value = _deletedCount;
-                CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
-            };
-            _backgroundWorker.RunWorkerCompleted += (sender, e) =>
-            {
-                _deletedCount += _orders.Count();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    OnConnectionLost(exc);
+                });
+            }
+        }
 
-                _dbContext.Orders.RemoveRange(_orders);
+        private void MainWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            DeleteProgressBar.Value = _deletedCount;
+            CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
+        }
+
+        private void MainWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _deletedCount += _orders.Count();
+
+            _dbContext.Orders.RemoveRange(_orders);
+            try
+            {
                 _dbContext.SaveChanges();
-
-                OnOrdersDeleted(_orders);
-
-                DeleteProgressBar.Value += _deletedCount;
-                CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
-
-                //parentWindow.FillDetailedInfo(null);
-                
-                OnWorkCompleted();
-
-                this.Close();
-            };
-
-            this.Closed += (sender, e) =>
+            }
+            catch (Exception exc)
             {
-                _initWorker.Dispose();
-                _backgroundWorker.Dispose();
-            };
+                OnConnectionLost(exc);
+                return;
+            }
 
-            _initWorker.RunWorkerAsync();
-            
+            OnOrdersDeleted(_orders);
+
+            DeleteProgressBar.Value += _deletedCount;
+            CounterTextBlock.Text = _deletedCount + " z " + _totalCount;
+
+            //parentWindow.FillDetailedInfo(null);
+
+            OnWorkCompleted();
+
+            this.Close();
+        }
+
+        private void ConnectionLostHandler(object sender, Exception exc)
+        {
+            _initWorker.CancelAsync();
+            _mainWorker.CancelAsync();
+
+            _initWorker.RunWorkerCompleted -= InitWorker_RunWorkerCompleted;
+            _mainWorker.DoWork -= MainWorker_DoWork;
+            _mainWorker.ProgressChanged -= MainWorker_ProgressChanged;
+            _mainWorker.RunWorkerCompleted -= MainWorker_RunWorkerCompleted;
+
+            this.Close();
+
+            this.ConnectionLost -= ConnectionLostHandler;
         }
 
         private void OnOrdersDeleted(IEnumerable<Order> orders)
@@ -125,6 +194,14 @@ namespace SpawmetDatabaseWPF
             if (WorkCompleted != null)
             {
                 WorkCompleted(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnConnectionLost(Exception exc)
+        {
+            if (ConnectionLost != null)
+            {
+                ConnectionLost(this, exc);
             }
         }
     }

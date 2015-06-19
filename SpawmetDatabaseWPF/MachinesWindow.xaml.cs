@@ -24,6 +24,7 @@ using Microsoft.Win32;
 using SpawmetDatabase;
 using SpawmetDatabase.FileCreators;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.ViewModel;
 
@@ -82,6 +83,14 @@ namespace SpawmetDatabaseWPF
                 NameTextBlock.Text = name;
                 PriceTextBlock.Text = price;
             };
+
+            //viewModel.ConnectionChanged += (sender, state) =>
+            //{
+            //    //if (state == ConnectionState.Lost)
+            //    //{
+            //    //    MessageBox.Show("");
+            //    //}
+            //};
 
             viewModel.PartSetStartLoading += delegate
             {

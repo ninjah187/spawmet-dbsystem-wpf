@@ -73,7 +73,10 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeletingPartWindow.bam
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\DeliveriesWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchClientsWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchDeliveriesWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchMachinesByName.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchOrdersWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchPartsWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddClientWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\AddDeliveryWindow.g.cs
@@ -101,7 +104,10 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PartsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\PrintWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SaveFileWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\TestWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchClientsWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchDeliveriesWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchMachinesByName.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchOrdersWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchPartsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\App.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -116,9 +122,3 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.Pro
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.exe
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.pdb
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchOrdersWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchOrdersWindow.g.cs
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchClientsWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchClientsWindow.g.cs
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchDeliveriesWindow.baml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\Windows\Searching\SearchDeliveriesWindow.g.cs

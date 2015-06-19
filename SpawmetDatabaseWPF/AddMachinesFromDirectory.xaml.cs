@@ -34,6 +34,7 @@ namespace SpawmetDatabaseWPF
 
         private DispatcherTimer _timer;
         private static readonly TimeSpan _timerStep = new TimeSpan(0, 0, 0, 0, 100);
+        private DateTime _startTime;
         private DateTime _currentTime;
         private const string CurrentTimePattern = "HH:mm:ss.f";
 
@@ -57,8 +58,10 @@ namespace SpawmetDatabaseWPF
             _timer.Interval = _timerStep;
             _timer.Tick += delegate
             {
-                _currentTime += _timerStep;
-                TimeTextBlock.Text = _currentTime.ToString(CurrentTimePattern);
+                _currentTime = DateTime.Now;
+                //TimeTextBlock.Text = _currentTime.ToString(CurrentTimePattern);
+                var time = _currentTime - _startTime;
+                TimeTextBlock.Text = time.ToString();
             };
 
             _parser = new MachinePathParser(machineDirectoryPath);
@@ -124,13 +127,16 @@ namespace SpawmetDatabaseWPF
                     ParserProgressBar.IsIndeterminate = false;
                     
                     //string txt = "Czas operacji: " + e.TimeElapsed;
-                    string txt = "Czas operacji: " + _currentTime.ToString(CurrentTimePattern);
+                    var time = _currentTime - _startTime;
+                    string txt = "Czas operacji: " + time;
+                    //string txt = "Czas operacji: " + _currentTime.ToString(CurrentTimePattern);
                     MessageBox.Show(txt, "Zakończono dodawanie maszyn");
                 });
             };
 
             this.Loaded += delegate
             {
+                _startTime = _currentTime = DateTime.Now;
                 _timer.Start();
                 _parser.ParseAsync();
             };

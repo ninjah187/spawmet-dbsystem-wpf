@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
@@ -142,6 +143,24 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             InitializeCommands();
             InitializeBackgroundWorkers();
+
+            ConnectionChanged += delegate
+            {
+                if (IsConnected == false)
+                {
+                    Machines = null;
+                    StandardPartSet = null;
+                    Orders = null;
+                    OnElementSelected(null);
+                }
+                else
+                {
+                    if (Machines == null)
+                    {
+                        Load();
+                    }
+                }
+            };
         }
 
         public override void Dispose()
@@ -183,7 +202,19 @@ namespace SpawmetDatabaseWPF.ViewModel
             };
             _partsBackgroundWorker.RunWorkerCompleted += (sender, e) =>
             {
-                var source = (ICollection<StandardPartSetElement>)e.Result;
+                ICollection<StandardPartSetElement> source;
+
+                try
+                {
+                    source = (ICollection<StandardPartSetElement>) e.Result;
+                }
+                catch (TargetInvocationException)
+                {
+                    IsConnected = false;
+                    OnPartSetCompletedLoading();
+                    return;
+                }
+                
                 StandardPartSet = new ObservableCollection<StandardPartSetElement>(source);
 
                 OnPartSetCompletedLoading();
@@ -205,7 +236,19 @@ namespace SpawmetDatabaseWPF.ViewModel
             };
             _ordersBackgroundWorker.RunWorkerCompleted += (sender, e) =>
             {
-                var source = (ICollection<Order>) e.Result;
+                ICollection<Order> source;
+
+                try
+                {
+                    source = (ICollection<Order>) e.Result;
+                }
+                catch (TargetInvocationException)
+                {
+                    IsConnected = false;
+                    OnOrdersCompletedLoading();
+                    return;
+                }
+
                 Orders = new ObservableCollection<Order>(source);
 
                 OnOrdersCompletedLoading();
@@ -267,6 +310,11 @@ namespace SpawmetDatabaseWPF.ViewModel
                         Orders = null;
 
                         OnElementSelected(null);
+                    };
+                    win.ConnectionLost += (sender, exc) =>
+                    {
+                        IsConnected = false;
+                        //MessageWindow.Show("Stracono połączenie.", "Błąd", _window);
                     };
                     win.Show();
                 };
@@ -420,6 +468,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             LoadMachines();
 
+            IsConnected = true;
+
             // if some element were previously selected; needed in refreshing window
             if (WindowConfig.SelectedElement != null)
             {
@@ -434,9 +484,15 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         private void LoadMachines()
         {
-            var machines = DbContext.Machines.ToList();
-
-            Machines = new ObservableCollection<Machine>(machines);
+            try
+            {
+                var machines = DbContext.Machines.ToList();
+                Machines = new ObservableCollection<Machine>(machines);
+            }
+            catch (Exception exc)
+            {
+                IsConnected = false;
+            }
         }
 
         private void LoadStandardPartSet()
