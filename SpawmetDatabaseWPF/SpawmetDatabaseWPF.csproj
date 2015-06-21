@@ -141,6 +141,7 @@
     </Compile>
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Converters\BoolToBrushConverter.cs" />
+    <Compile Include="Converters\BoolToOpacityConverter.cs" />
     <Compile Include="Converters\OrderStatusToStringConverter.cs" />
     <Compile Include="Converters\OriginToStringConverter.cs" />
     <Compile Include="CraftPartWindow.xaml.cs">
@@ -399,12 +400,14 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="icon2.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <SplashScreen Include="splashscreen2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="icon2.ico" />
+    <Resource Include="save icon.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

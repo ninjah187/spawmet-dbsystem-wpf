@@ -1,0 +1,47 @@
+20.06.2015:
+
+ - graficzny interfejs do skryptu dodaj¹cego maszyny i czêœci z hdd
+
+ - sam skrypt dzia³a aktualnie tak:
+   1. wybierz g³ówny folder z maszyn¹ (np. D:\Projekty\Krótka brona talerzowa)
+   2. skrypt przeszukuje wszystkie podfoldery
+   3. jeœli trafi na podfolder o nazwie "do wypalania", rozpoczyna analizê plików (w folderze "do wypalania" oraz wszystkich podfolderach):
+      - szuka plików z rozszerzeniem *.dxf
+      - jeœli trafi na taki plik, ze œcie¿ki dostêpu do niego generuje nazwê maszyny, nazwê czêœci oraz iloœæ czêœci; zasada jest nastêpuj¹ca:
+
+          nazwa maszyny = nazwy podfolderów od nazwy wskazanego g³ównego folderu (w³¹cznie) do podfolderu "do wypalania" (nazwy podfolderów s¹ obcinane z kropek)
+          nazwa czêœci = nazwy podfolderów, w których znajduje siê plik dxf + nazwa pliku bez rozszerzenia
+          iloœæ = liczba wyciêta z nazwy pliku; skrypt rozpoznaje j¹ po tym, ¿e ma na pocz¹tku znak 'x'
+
+      przyk³ad:
+
+          wskazany folder: D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Krótka brona talerzowa\
+          znaleziony plik: D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Krótka brona talerzowa\KBT560\2,5m\Do wypalania\Wa³ Packera\skrobak x20 - 5mm.dxf
+          nazwa maszyny: \Krótka brona talerzowa\KBT560\2,5m\ = krótka brona talerzowa kbt560 2,5m
+          nazwa czêœci: \Wa³ Packera\skrobak x20 - 5mm.dxf = wa³ packera skrobak - 5mm
+          iloœæ: skrobak x20 - 5mm.dxf = 20
+
+      - skrypt sprawdza czy nie ma ju¿ w bazie maszyny lub czêœci o danej nazwie oraz czy nie ma ju¿ po³¹czenia miêdzy dan¹ maszyn¹ i czêœci¹
+
+      - do bazy dodawane s¹ rekordy, które siê nie dubluj¹
+
+   (zaznaczam, ¿e nie wiem w jaki sposób teraz wszystko nazywacie, wiêc jakby nie dzia³a³ teraz, to  po nastêpnej wizycie go zauktualizujê ¿eby dzia³a³ pod waszym aktualnym systemem nazewnictwa)
+   (no i jak widaæ czasami mog¹ powstawaæ dziwne nazwy czêœci i maszyn, ale nad tym siê jeszcze zastanowimy)
+
+ - wyszukiwanie rekordów
+   ¿eby by³o ciekawiej, wyszukiwarka obs³uguje wyra¿enia regularne (jeœli nie mia³eœ z tym do czynienia to np. tutaj http://grabun.pl/wyrazenia-regularne/#wstep masz dobre materia³y na ten temat); do przysz³ego tygodnia postaram siê przygotowaæ kilka wyra¿eñ, które bêd¹ mog³y Ci siê przydaæ
+
+ - automatyczne zapisywanie danych po edycji (przycisk Zapisz (stan bazy) teoretycznie powinien byæ nieprzydatny, ale póki co go zostawi³em, bo nie zd¹¿y³em tego dobrze przetestowaæ)
+
+ - okienko kontrolne przed usuwaniem; skrót klawiszowy Delete dzia³a
+
+ - okienko do wypalania okreœlonej iloœci czêœci
+
+ - dodatkowy w¹tek, który regularnie sprawdza po³¹czenie z baz¹ danych i w przypadku roz³¹czenia, automatycznie przywraca po³¹czenie jeœli jest to mo¿liwe (symbolizuje to ta zielona kropka u góry)
+
+ - mo¿liwoœæ dowolnej zmiany rozmiaru okien
+ 
+ - trochê usprawnieñ maj¹cych zwiêkszyæ wygodê korzystania z programu (ró¿ne drobne motywy jak skróty klawiszowe, zachowywanie zaznaczonego elementu po odœwie¿eniu okna itp.)
+
+To chyba tyle z wa¿niejszych rzeczy, które sobie przypominam, ¿e siê zmieni³y od ostatniego razu.
+Du¿o jest jeszcze do zrobienia i do przysz³ego spotkania jeszcze pewnie coœ wykombinujê :).

@@ -216,7 +216,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Show();
             });
 
-            ChangeStatusCommand = new ParamCommand<Order>((order) =>
+            ChangeStatusCommand = new ParamCommand<Order>(async (order) =>
             {
                 OrderStatus? oldStatus;
                 OrderStatus? newStatus;
@@ -231,7 +231,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                         switch (newStatus)
                         {
                             case OrderStatus.InProgress:
-                                ApplyPartSets(SelectedOrder);
+                                await ApplyPartSetsAsync(SelectedOrder);
                                 break;
 
                             case OrderStatus.Done:
@@ -476,6 +476,32 @@ namespace SpawmetDatabaseWPF.ViewModel
                 part.Amount -= element.Amount;
             }
             DbContext.SaveChanges();
+            //SaveDbStateCommand.Execute(null);
+        }
+
+        private Task ApplyPartSetsAsync(Order order)
+        {
+            return Task.Run(() =>
+            {
+                IsSaving = true;
+                lock (DbContextLock)
+                {
+                    foreach (var element in order.Machine.StandardPartSet)
+                    {
+                        var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                        part.Amount -= element.Amount;
+                    }
+                    foreach (var element in order.AdditionalPartSet)
+                    {
+                        var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                        part.Amount -= element.Amount;
+                    }
+                    DbContext.SaveChanges();
+                }
+                IsSaving = false;
+            });
         }
 
         private void UndoApplyPartSets(Order order)

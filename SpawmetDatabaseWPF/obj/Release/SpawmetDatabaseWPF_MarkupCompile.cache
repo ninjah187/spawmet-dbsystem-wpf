@@ -10,11 +10,11 @@ none
 false
 TRACE
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\App.xaml
-24-133628311
+31821608219
 
-321537181202
-21-942313727
-AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ClientsWindow.xaml;ConnectingWindow.xaml;DeleteClientWindow.xaml;DeleteDeliveryWindow.xaml;DeleteMachineWindow.xaml;DeleteOrderWindow.xaml;DeletingPartWindow.xaml;DeliveriesWindow.xaml;InitialWindow.xaml;MachinesWindow.xaml;MainWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;PrintWindow.xaml;RemoveWindow.xaml;SaveFileWindow.xaml;
+582110789378
+25-1192586546
+AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachinesFromDirectory.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ClientsWindow.xaml;CommonWindows\ConfirmWindow.xaml;CommonWindows\MessageWindow.xaml;ConnectingWindow.xaml;CraftPartWindow.xaml;DeleteClientWindow.xaml;DeleteDeliveryWindow.xaml;DeleteMachineWindow.xaml;DeleteOrderWindow.xaml;DeletingPartWindow.xaml;DeliveriesWindow.xaml;MachinesWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;PrintWindow.xaml;SaveFileWindow.xaml;TestWindow.xaml;Windows\Searching\SearchClientsWindow.xaml;Windows\Searching\SearchDeliveriesWindow.xaml;Windows\Searching\SearchMachinesByName.xaml;Windows\Searching\SearchOrdersWindow.xaml;Windows\Searching\SearchPartsWindow.xaml;
 splashscreen2.png
 False
 

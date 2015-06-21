@@ -47,12 +47,14 @@
         <DockPanel Grid.Row="0" Grid.Column="1" Margin="10,0">
             <DockPanel.Resources>
                 <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+                <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
             </DockPanel.Resources>
 
             <Ellipse DockPanel.Dock="Left" Width="10" Height="10" Fill="{Binding IsConnected,
                                                                          Converter={StaticResource BoolToBrushConverter}}"
-                     Margin="0,0,10,0"/>
-
+                     Margin="0,0,5,0" />
+            <Image Source="save icon.png" Width="15" Height="15"
+                   Margin="0,0,5,0" Opacity="{Binding IsSaving, Converter={StaticResource BoolToOpacityConverter}}" />
             <TextBlock DockPanel.Dock="Left" Text="Filtr: " TextAlignment="Left" />
             <TextBlock DockPanel.Dock="Right" Text="{Binding SearchExpression}" TextAlignment="Right" TextWrapping="Wrap" />
         </DockPanel>
@@ -61,12 +63,12 @@
                   ItemsSource="{Binding Clients, Mode=TwoWay}" SelectedItem="{Binding SelectedClient}"
                   Margin="0,0,0,0" DockPanel.Dock="Left"
                   AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="CellEditEnding">
                     <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                      AncestorType={x:Type Window}}, Path=DataContext.CellEditEndingCommand}"></i:InvokeCommandAction>
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
 
             <DataGrid.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteClientsCommand}"></KeyBinding>

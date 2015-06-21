@@ -134,7 +134,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 List<Order> result;
                 using (var context = new SpawmetDBContext())
                 {
-                    result = DbContext.Orders
+                    result = context.Orders
                         .Where(o => o.Client.Id == clientId)
                         .Include(o => o.Client)
                         .Include(o => o.Machine)
@@ -241,11 +241,25 @@ namespace SpawmetDatabaseWPF.ViewModel
             LoadClients();
 
             IsConnected = true;
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                var client = Clients.Single(c => c.Id == WindowConfig.SelectedElement.Id);
+
+                SelectedClient = client;
+
+                _window.MainDataGrid.SelectedItem = SelectedClient;
+                _window.MainDataGrid.ScrollIntoView(SelectedClient);
+            }
         }
 
         private void LoadClients()
         {
-            var clients = DbContext.Clients.ToList();
+            List<Client> clients = null;
+            lock (DbContextLock)
+            {
+                clients = DbContext.Clients.ToList();
+            }
 
             Clients = new ObservableCollection<Client>(clients);
         }

@@ -47,7 +47,7 @@ namespace SpawmetDatabaseWPF
             AmountTextBox.Focus();
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             var amountStr = AmountTextBox.Text;
 
@@ -67,13 +67,21 @@ namespace SpawmetDatabaseWPF
                 AmountTextBox.Text = "Ilość musi być liczbą.";
                 return;
             }
-
-            _part.Amount += amount;
-            _dbContext.SaveChanges();
             
             Close();
 
+            await AddPartAsync(amount);
+
             OnPartCrafted(_part, amount);
+        }
+
+        private Task AddPartAsync(int amount)
+        {
+            return Task.Run(() =>
+            {
+                _part.Amount += amount;
+                _dbContext.SaveChanges();
+            });
         }
 
         private void OnPartCrafted(Part part, int amount)

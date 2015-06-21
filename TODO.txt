@@ -1,0 +1,7 @@
+- otwieranie innych okien z okna "Maszyny"
+- sprawdzanie unikalnoœci nazwy rekordu przy rêcznym dodawaniu maszyny/czêœci
+- prze³adowywanie danych po ich edycji, by unikn¹æ wyj¹tków (patrz AddMachineFromDirectoryCommand)
+  jakaœ master klasa, która zarz¹dza oknami i komunikacj¹ miêdzy nimi ?
+- zapisywanie zamówieñ do pliku + drukowanie
+- pokazywanie okien usuwania jako dialogi (blokowanie okna macierzystego + innych okien)
+- poprawa hierarchii klas (?)

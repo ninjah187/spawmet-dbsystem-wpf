@@ -438,7 +438,12 @@ namespace SpawmetDatabaseWPF.ViewModel
                             StandardPartSet.Add(element);
                         }
                     };
-                    win.Show();
+                    win.WorkCompleted += delegate
+                    {
+                        Load(); // reload all data to avoid exceptions during later data manipulations
+                    };
+                    win.Owner = _window;
+                    win.ShowDialog();
                 }
 
                 dialog.Dispose();
@@ -477,6 +482,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 SelectedMachine = machine;
 
+                // change to OnElementSelected(machine) ?
                 _window.DataGrid.SelectedItem = SelectedMachine;
                 _window.DataGrid.ScrollIntoView(SelectedMachine);
             }

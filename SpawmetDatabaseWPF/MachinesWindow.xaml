@@ -45,12 +45,11 @@
                     <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
                 </MenuItem>
                 <MenuItem Header="Narzędzia">
-                    <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"
-                              InputGestureText="Ctrl+D"
-                              x:Name="AddMachinesFromDirectoryMenuItem"></MenuItem>
                     <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
                               InputGestureText="Ctrl+F"
                               x:Name="SearchMenuItem"></MenuItem>
+                    <MenuItem Header="Dodaj z dysku" Command="{Binding AddMachinesFromDirectoryCommand}"
+                              x:Name="AddMachinesFromDirectoryMenuItem"></MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
@@ -62,11 +61,14 @@
         <DockPanel Grid.Row="0" Grid.Column="1" Margin="10,0">
             <DockPanel.Resources>
                 <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+                <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter"></converters:BoolToOpacityConverter>
             </DockPanel.Resources>
-            
+
             <Ellipse DockPanel.Dock="Left" Width="10" Height="10" Fill="{Binding IsConnected,
                                                                          Converter={StaticResource BoolToBrushConverter}}"
-                     Margin="0,0,10,0"/>
+                     Margin="0,0,5,0" />
+            <Image Source="save icon.png" Width="15" Height="15"
+                   Margin="0,0,5,0" Opacity="{Binding IsSaving, Converter={StaticResource BoolToOpacityConverter}}" />
             <TextBlock DockPanel.Dock="Left" Text="Filtr: " TextAlignment="Left" />
             <TextBlock DockPanel.Dock="Right" Text="{Binding SearchExpression}" TextAlignment="Right" TextWrapping="Wrap" />
         </DockPanel>

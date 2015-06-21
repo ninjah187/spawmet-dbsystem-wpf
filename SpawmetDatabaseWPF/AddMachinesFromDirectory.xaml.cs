@@ -27,6 +27,7 @@ namespace SpawmetDatabaseWPF
     {
         public event EventHandler<Machine> MachineAdded;
         public event EventHandler<StandardPartSetElement> PartSetElementAdded;
+        public event EventHandler WorkCompleted;
 
         public ObservableCollection<Machine> Machines { get; set; }
         public ObservableCollection<Part> Parts { get; set; }
@@ -125,12 +126,14 @@ namespace SpawmetDatabaseWPF
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     ParserProgressBar.IsIndeterminate = false;
-                    
+
                     //string txt = "Czas operacji: " + e.TimeElapsed;
                     var time = _currentTime - _startTime;
                     string txt = "Czas operacji: " + time;
                     //string txt = "Czas operacji: " + _currentTime.ToString(CurrentTimePattern);
                     MessageBox.Show(txt, "Zakończono dodawanie maszyn");
+
+                    OnWorkCompleted();
                 });
             };
 
@@ -165,6 +168,14 @@ namespace SpawmetDatabaseWPF
             if (PartSetElementAdded != null)
             {
                 PartSetElementAdded(this, element);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
             }
         }
     }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -50,6 +51,20 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                     var state = _isConnected ? ConnectionState.Ok : ConnectionState.Lost;
                     OnConnectionChanged(state);
+                }
+            }
+        }
+
+        private volatile bool _isSaving;
+        public bool IsSaving
+        {
+            get { return _isSaving; }
+            set
+            {
+                if (_isSaving != value)
+                {
+                    _isSaving = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -122,7 +137,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             SearchExpression = "";
 
-            _window.DataGrid.CellEditEnding += CellEditEndingHandler;
+            //_window.DataGrid.CellEditEnding += CellEditEndingHandler;
             _window.DataGrid.RowEditEnding += RowEditEndingHandler;
 
             _connectionCheckTimer = new Timer(1000);
@@ -152,10 +167,25 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         protected virtual void InitializeCommands()
         {
-            SaveDbStateCommand = new Command(() =>
+            SaveDbStateCommand = new Command(async () =>
             {
                 _window.CommitEdit();
-                DbContext.SaveChanges();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock) // otherwise there's big chance to InvalidOperationException be thrown (unexpected connection state)
+                    {
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
+
+                //IsSaving = true;
+                //var saveTask = DbContext.SaveChangesAsync();
+                //await saveTask;
+                //IsSaving = false;
+                //MessageBox.Show("Save complete");
             });
 
             const int offset = 40;
