@@ -103,6 +103,12 @@
     <Compile Include="AddDeliveryWindow.xaml.cs">
       <DependentUpon>AddDeliveryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddMachineModuleToOrderWindow.xaml.cs">
+      <DependentUpon>AddMachineModuleToOrderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddMachineModuleWindow.xaml.cs">
+      <DependentUpon>AddMachineModuleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddMachinesFromDirectory.xaml.cs">
       <DependentUpon>AddMachinesFromDirectory.xaml</DependentUpon>
     </Compile>
@@ -118,8 +124,14 @@
     <Compile Include="AddPartToMachine.xaml.cs">
       <DependentUpon>AddPartToMachine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddPartToModuleWindow.xaml.cs">
+      <DependentUpon>AddPartToModuleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddPartToOrderWindow.xaml.cs">
       <DependentUpon>AddPartToOrderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArchiveWindow.xaml.cs">
+      <DependentUpon>ArchiveWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ClientsWindow.xaml.cs">
       <DependentUpon>ClientsWindow.xaml</DependentUpon>
@@ -142,11 +154,15 @@
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Converters\BoolToBrushConverter.cs" />
     <Compile Include="Converters\BoolToOpacityConverter.cs" />
+    <Compile Include="Converters\DateTimeToStringConverter.cs" />
+    <Compile Include="Converters\NullableDateTimeToStringConverter.cs" />
+    <Compile Include="Converters\NullableOrderStatusToStringConverter.cs" />
     <Compile Include="Converters\OrderStatusToStringConverter.cs" />
     <Compile Include="Converters\OriginToStringConverter.cs" />
     <Compile Include="CraftPartWindow.xaml.cs">
       <DependentUpon>CraftPartWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DbContextMediator.cs" />
     <Compile Include="DeleteClientWindow.xaml.cs">
       <DependentUpon>DeleteClientWindow.xaml</DependentUpon>
     </Compile>
@@ -171,10 +187,16 @@
     <Compile Include="Events\PartCraftedEventArgs.cs" />
     <Compile Include="Events\PartCraftedEventHandler.cs" />
     <Compile Include="Exceptions\ConnectionLostException.cs" />
+    <Compile Include="IDbContextChangesNotifier.cs" />
+    <Compile Include="IMainWindow.cs" />
     <Compile Include="ISpawmetWindow.cs" />
+    <Compile Include="MachineModuleDetailsWindow.xaml.cs">
+      <DependentUpon>MachineModuleDetailsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MachinesWindow.xaml.cs">
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModelElementComparer.cs" />
     <Compile Include="OrdersWindow.xaml.cs">
       <DependentUpon>OrdersWindow.xaml</DependentUpon>
     </Compile>
@@ -187,15 +209,25 @@
     <Compile Include="SaveFileWindow.xaml.cs">
       <DependentUpon>SaveFileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SpawmetAppObserver.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\ArchiveWindowViewModel.cs" />
     <Compile Include="ViewModel\ClientsWindowViewModel.cs" />
     <Compile Include="ViewModel\DeliveriesWindowViewModel.cs" />
     <Compile Include="ViewModel\MachinesWindowViewModel.cs" />
     <Compile Include="ViewModel\OrdersWindowViewModel.cs" />
     <Compile Include="ViewModel\PartsWindowViewModel.cs" />
     <Compile Include="ViewModel\SpawmetWindowViewModel.cs" />
+    <Compile Include="ViewModel\UtilityWindowViewModel.cs" />
+    <Compile Include="WindowsEnablementController.cs" />
+    <Compile Include="Windows\ExceptionWindow.xaml.cs">
+      <DependentUpon>ExceptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PartsRaportWindow.xaml.cs">
+      <DependentUpon>PartsRaportWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Searching\SearchClientsWindow.xaml.cs">
       <DependentUpon>SearchClientsWindow.xaml</DependentUpon>
     </Compile>
@@ -211,11 +243,25 @@
     <Compile Include="Windows\Searching\SearchPartsWindow.xaml.cs">
       <DependentUpon>SearchPartsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SendConfirmationWindow.xaml.cs">
+      <DependentUpon>SendConfirmationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\WaitWindow.xaml.cs">
+      <DependentUpon>WaitWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="AddClientWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddDeliveryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddMachineModuleToOrderWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddMachineModuleWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -239,11 +285,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddPartToModuleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddPartToOrderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ArchiveWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -291,6 +345,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MachineModuleDetailsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MachinesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -322,6 +380,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\ExceptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PartsRaportWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Searching\SearchClientsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -339,6 +405,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Searching\SearchPartsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SendConfirmationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\WaitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,6 +7,10 @@
         Icon="icon.ico">
     <Window.InputBindings>
         <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+1" Command="{Binding NewMachinesWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+2" Command="{Binding NewPartsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+3" Command="{Binding NewOrdersWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+5" Command="{Binding NewArchiveWindowCommand}"></KeyBinding>
     </Window.InputBindings>
     
     <Grid>
@@ -25,11 +29,15 @@
             <DockPanel DockPanel.Dock="Top">
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Tabele">
-                        <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding Source=DataContext, Path=NewMachinesWindowCommand}"></MenuItem>
-                        <MenuItem x:Name="PartsMenuItem" Header="Części" Command="{Binding NewPartsWindowCommand}"></MenuItem>
-                        <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
-                        <MenuItem Header="Klienci" IsEnabled="False"></MenuItem>
-                        <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
+                        <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding Source=DataContext, Path=NewMachinesWindowCommand}"
+                                  InputGestureText="Ctrl+1"></MenuItem>
+                        <MenuItem x:Name="PartsMenuItem" Header="Części" Command="{Binding NewPartsWindowCommand}"
+                                  InputGestureText="Ctrl+2"></MenuItem>
+                        <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"
+                                  InputGestureText="Ctrl+3"></MenuItem>
+                        <MenuItem Header="Klienci" IsEnabled="False" InputGestureText="Ctrl+4"></MenuItem>
+                        <MenuItem Header="Archiwum" Command="{Binding NewArchiveWindowCommand}"
+                                  InputGestureText="Ctrl+5"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Opcje">
                         <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
@@ -78,7 +86,7 @@
                 <ContextMenu>
                     <MenuItem x:Name="AddContextMenuItem" Header="Dodaj" Command="{Binding AddClientCommand}"></MenuItem>
                     <MenuItem x:Name="DeleteContextMenuItem" Header="Usuń" Command="{Binding DeleteClientsCommand}"></MenuItem>
-                    <MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>
+                    <!--<MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>-->
                     <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -106,27 +114,33 @@
                     <StackPanel>
                         <DockPanel>
                             <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Id}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Name}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Telefon: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="PhoneTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="PhoneTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Phone}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Email: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="EmailTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="EmailTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Email}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="NIP: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="NipTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="NipTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Nip}"></TextBlock>
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Adres: " FontWeight="DemiBold" DockPanel.Dock="Left"></TextBlock>
-                            <TextBlock x:Name="AddressTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"></TextBlock>
+                            <TextBlock x:Name="AddressTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedClient.Address}"></TextBlock>
                         </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -138,11 +152,17 @@
             
             <StackPanel Grid.Row="2">
                 <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature"
-                         ItemsSource="{Binding Orders}"
+                         ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
                                   Path=RowDefinitions[2].ActualHeight, UpdateSourceTrigger=Explicit}"
                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
-                                 Path=ColumnDefinitions[0].ActualWidth}" />
+                                 Path=ColumnDefinitions[0].ActualWidth}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Idź do" Command="{Binding GoToOrderCommand}"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </StackPanel>
             
             <StackPanel Grid.Row="3">

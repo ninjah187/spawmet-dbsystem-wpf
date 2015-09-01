@@ -28,6 +28,49 @@ namespace SpawmetDatabase.FileCreators
             sourceFile.Close();
             sourceFile.Dispose();
 
+            SaveXPS(sourcePath, savePath);
+        }
+
+        public override void Create(Order order, string savePath)
+        {
+            Create(order.AsEnumerable(), savePath);
+        }
+
+        public override void Create(IEnumerable<Order> orders, string savePath)
+        {
+            base.Create(orders, @".\temp.docx");
+
+            string sourcePath = "";
+
+            var sourceFile = File.Open(@".\temp.docx", FileMode.Open);
+            sourcePath = sourceFile.Name;
+            sourceFile.Close();
+            sourceFile.Dispose();
+
+            SaveXPS(sourcePath, savePath);
+        }
+
+        public override void Create(Part part, string savePath)
+        {
+            Create(part.AsEnumerable(), savePath);
+        }
+
+        public override void Create(IEnumerable<Part> parts, string savePath)
+        {
+            base.Create(parts, @".\temp.docx");
+
+            string sourcePath = "";
+
+            var sourceFile = File.Open(@".\temp.docx", FileMode.Open);
+            sourcePath = sourceFile.Name;
+            sourceFile.Close();
+            sourceFile.Dispose();
+
+            SaveXPS(sourcePath, savePath);
+        }
+
+        protected void SaveXPS(string sourcePath, string savePath)
+        {
             // Create an instance of the Word ApplicationClass object:
             var wordApplication = new Application();
             Document wordDocument = null;

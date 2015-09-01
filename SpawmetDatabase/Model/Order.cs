@@ -9,6 +9,7 @@ namespace SpawmetDatabase.Model
         public Order()
         {
             this.AdditionalPartSet = new HashSet<AdditionalPartSetElement>();
+            MachineModules = new HashSet<MachineModule>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -92,6 +93,45 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public bool ConfirmationSent
+        {
+            get { return _confirmationSent; }
+            set
+            {
+                if (_confirmationSent != value)
+                {
+                    _confirmationSent = value;
+                    NotifyPropertyChanged("ConfirmationSent");
+                }
+            }
+        }
+
+        public decimal Price
+        {
+            get { return _price; }
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    NotifyPropertyChanged("Price");
+                }
+            }
+        }
+
+        public string SerialNumber
+        {
+            get { return _serialNumber; }
+            set
+            {
+                if (_serialNumber != value)
+                {
+                    _serialNumber = value;
+                    NotifyPropertyChanged("SerialNumber");
+                }
+            }
+        }
+
         public virtual Client Client
         {
             get { return _client; }
@@ -131,6 +171,19 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public virtual ICollection<MachineModule> MachineModules
+        {
+            get { return _machineModules; }
+            set
+            {
+                if (_machineModules != value)
+                {
+                    _machineModules = value;
+                    NotifyPropertyChanged("MachineModules");
+                }
+            }
+        }
+
         public string Signature
         {
             //get
@@ -158,9 +211,13 @@ namespace SpawmetDatabase.Model
         private string _remarks;
         private DateTime? _startDate;
         private DateTime? _sendDate;
+        private bool _confirmationSent;
+        private decimal _price;
+        private string _serialNumber;
 
         private Client _client;
         private Machine _machine;
+        private ICollection<MachineModule> _machineModules;
         private ICollection<AdditionalPartSetElement> _additionalPartSet;
 
         protected void NotifyPropertyChanged(string propertyName)

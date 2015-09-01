@@ -1,0 +1,27 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.Windows.PartsRaportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Raport z magazynu" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Icon="/icon2.ico">
+    <StackPanel Margin="10">
+        <TextBlock Text="Części:" FontWeight="DemiBold" />
+        <DataGrid AutoGenerateColumns="False" MaxHeight="500"
+                  ItemsSource="{Binding Parts}" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Część" Binding="{Binding Name}" IsReadOnly="True" Width="SizeToCells" />
+                <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" IsReadOnly="True" Width="SizeToCells" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="SaveToFileButton" Grid.Column="0" Width="60" Click="SaveToFileButton_OnClick">Zapisz</Button>
+            <Button x:Name="PrintButton" Grid.Column="1" Width="60" Click="PrintButton_OnClick">Drukuj</Button>
+        </Grid>
+        
+    </StackPanel>
+</Window>

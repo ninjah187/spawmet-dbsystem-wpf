@@ -58,7 +58,7 @@ namespace SpawmetDatabase.Model
                 if (_machine != value)
                 {
                     _machine = value;
-                    NotifyPropertyChanged("Order");
+                    NotifyPropertyChanged("Machine");
                 }
             }
         }

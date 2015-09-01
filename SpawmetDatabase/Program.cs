@@ -29,41 +29,41 @@ namespace SpawmetDatabase
             //Console.Write("Podaj ścieżkę dostępu: ");
             //string path = Console.ReadLine();
             //PCDatabaseConnection.AddMachineBetter(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Pługi śnieżne");
-            var crawler = new DirectoryCrawler(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem");
+            //var crawler = new DirectoryCrawler(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem");
 
-            // włóka łąkowa
-            using (var parser = new MachinePathParser(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem"))
-            {
-                parser.MachineAdded += (sender, e) =>
-                {
-                    Console.Clear();
-                    Console.WriteLine("Dodano maszynę:\n" + e.Name);
-                    Console.WriteLine();
-                };
-                parser.PartAdded += (sender, e) =>
-                {
-                    Console.WriteLine("\tDodano część:\n\t" + e.Name);
-                    Console.WriteLine();
-                };
-                parser.StandardPartSetElementAdded += (sender, e) =>
-                {
-                    string txt = e.Machine.Name + " <- " + e.Part.Name;
-                    Console.WriteLine("\t\tDodano zestaw:\n\t\t" + txt);
-                    Console.WriteLine();
-                };
-                parser.ParserRunCompleted += (sender, e) =>
-                {
-                    Console.Clear();
-                    Console.WriteLine("Zakończono. Czas operacji: " + e.TimeElapsed);
-                };
+            //// włóka łąkowa
+            //using (var parser = new MachinePathParser(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Widły z krokodylem"))
+            //{
+            //    parser.MachineAdded += (sender, e) =>
+            //    {
+            //        Console.Clear();
+            //        Console.WriteLine("Dodano maszynę:\n" + e.Name);
+            //        Console.WriteLine();
+            //    };
+            //    parser.PartAdded += (sender, e) =>
+            //    {
+            //        Console.WriteLine("\tDodano część:\n\t" + e.Name);
+            //        Console.WriteLine();
+            //    };
+            //    parser.StandardPartSetElementAdded += (sender, e) =>
+            //    {
+            //        string txt = e.Machine.Name + " <- " + e.Part.Name;
+            //        Console.WriteLine("\t\tDodano zestaw:\n\t\t" + txt);
+            //        Console.WriteLine();
+            //    };
+            //    parser.ParserRunCompleted += (sender, e) =>
+            //    {
+            //        Console.Clear();
+            //        Console.WriteLine("Zakończono. Czas operacji: " + e.TimeElapsed);
+            //    };
 
-                /////////////////////////////////////////////////////
-                /// zmień w parserze wybieranie indeksu "do wypalania"
-                /// D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Szuflokrokodyle\....S\szuflokrokodyl HD\odkręcane boczki\1,0m; 4 zębów\Do wypalania 1,0 sob
-                /// /////////////////////////////////////////////////
+            //    /////////////////////////////////////////////////////
+            //    /// zmień w parserze wybieranie indeksu "do wypalania"
+            //    /// D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Szuflokrokodyle\....S\szuflokrokodyl HD\odkręcane boczki\1,0m; 4 zębów\Do wypalania 1,0 sob
+            //    /// /////////////////////////////////////////////////
 
-                parser.Parse();
-            }
+            //    parser.Parse();
+            //}
 
             //var sw = new Stopwatch();
             //sw.Start();
@@ -85,7 +85,7 @@ namespace SpawmetDatabase
             //    Console.WriteLine(file);
             //}
 
-            crawler.Dispose();
+            //crawler.Dispose();
 
             //PCDatabaseConnection.AddMachine(@"D:\Widły z krokodylem");
 
@@ -111,7 +111,7 @@ namespace SpawmetDatabase
             //    temp += timeSpan;
             //}
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
             //var mainProcess = Process.Start(@".\SpawmetDatabaseWPF.exe");
 
@@ -119,7 +119,7 @@ namespace SpawmetDatabase
 
             //Process.GetCurrentProcess().Close();
 
-            //Database.SetInitializer(new DropCreateDatabaseAlways<SpawmetDBContext>());
+            //CreateDb();
             ////Database.SetInitializer<SpawmetDBContext>(null);
 
             //using (var context = new SpawmetDBContext())
@@ -129,7 +129,29 @@ namespace SpawmetDatabase
 
             //using (var context = new SpawmetDBContext())
             //{
-            //    Console.WriteLine(context.Parts.Count());
+            //    foreach (var arch in context.ArchivedOrders.ToList())
+            //    {
+            //        Console.WriteLine("Części:\nMaszyna:");
+            //        foreach (var p in arch.Machine.Parts.ToList())
+            //        {
+            //            Console.WriteLine(" - " + p.PartName + ", x" + p.Amount);
+            //        }
+            //        Console.WriteLine("Moduły:");
+            //        foreach (var m in arch.Modules)
+            //        {
+            //            Console.WriteLine(" - " + m.Name);
+            //            foreach (var p in m.Parts)
+            //            {
+            //                Console.WriteLine("   - " + p.PartName + ", x" + p.Amount);
+            //            }
+            //        }
+            //        Console.WriteLine("Dodatkowe części:");
+            //        foreach (var p in arch.Parts)
+            //        {
+            //            Console.WriteLine(" - " + p.PartName + ", x" + p.Amount);
+            //        }
+            //        Console.WriteLine();
+            //    }
             //}
 
             //var sw = new Stopwatch();
@@ -194,7 +216,7 @@ namespace SpawmetDatabase
             //Console.WriteLine();
             //}
 
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private static void InitializeDB()
@@ -315,7 +337,7 @@ namespace SpawmetDatabase
                         machines.Add(new Machine()
                         {
                             Name = "maszyna " + i,
-                            Price = random.Next(10000),
+                            //Price = random.Next(10000),
                             //StandardPartSet = standardPartSet,
                         });
                     }
@@ -398,6 +420,15 @@ namespace SpawmetDatabase
                     context.SaveChanges();
                 }
 
+            }
+        }
+
+        private static void CreateDb()
+        {
+            Database.SetInitializer(new DropCreateDatabaseAlways<SpawmetDBContext>());
+            using (var context = new SpawmetDBContext())
+            {
+                Console.WriteLine(context.Parts.Count());
             }
         }
 

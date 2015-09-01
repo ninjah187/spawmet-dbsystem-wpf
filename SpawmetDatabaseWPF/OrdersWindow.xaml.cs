@@ -28,6 +28,8 @@ namespace SpawmetDatabaseWPF
     {
         public DataGrid DataGrid { get { return MainDataGrid; } }
 
+        private OrdersWindowViewModel _viewModel;
+
         public OrdersWindow()
             : this(40, 40)
         {
@@ -46,58 +48,58 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            var viewModel = new OrdersWindowViewModel(this, config);
-            DataContext = viewModel;
+            _viewModel = new OrdersWindowViewModel(this, config);
+            DataContext = _viewModel;
 
-            viewModel.ElementSelected += (sender, e) =>
+            _viewModel.ElementSelected += (sender, e) =>
             {
-                string id = "";
-                string client = "";
-                string machine = "";
-                string startDate = "";
-                string sendDate = "";
-                string status = "";
-                string remarks = "";
+                //string id = "";
+                //string client = "";
+                //string machine = "";
+                //string startDate = "";
+                //string sendDate = "";
+                //string status = "";
+                //string remarks = "";
 
-                if (e.Element != null)
-                {
-                    var order = (Order) e.Element;
-                    id = order.Id.ToString();
-                    client = order.Client.Name;
-                    machine = order.Machine.Name;
+                //if (e.Element != null)
+                //{
+                //    var order = (Order) e.Element;
+                //    id = order.Id.ToString();
+                //    client = order.Client != null ? order.Client.Name : "";
+                //    machine = order.Machine.Name;
 
-                    startDate = order.StartDate != null
-                    ? order.StartDate.Value.ToString("yyyy-MM-dd")
-                    : "";
+                //    startDate = order.StartDate != null
+                //    ? order.StartDate.Value.ToString("yyyy-MM-dd")
+                //    : "";
 
-                    sendDate = order.SendDate != null
-                    ? order.SendDate.Value.ToString("yyyy-MM-dd")
-                    : "";
+                //    sendDate = order.SendDate != null
+                //    ? order.SendDate.Value.ToString("yyyy-MM-dd")
+                //    : "";
 
-                    status = order.Status != null
-                    ? order.Status.Value.GetDescription()
-                    : "";
+                //    status = order.Status != null
+                //    ? order.Status.Value.GetDescription()
+                //    : "";
 
-                    remarks = order.Remarks;
-                }
+                //    remarks = order.Remarks;
+                //}
 
-                IdTextBlock.Text = id;
-                ClientTextBlock.Text = client;
-                MachineTextBlock.Text = machine;
-                StartDateTextBlock.Text = startDate;
-                SendDateTextBlock.Text = sendDate;
-                StatusTextBlock.Text = status;
-                RemarksTextBlock.Text = remarks;
+                //IdTextBlock.Text = id;
+                //ClientTextBlock.Text = client;
+                //MachineTextBlock.Text = machine;
+                //StartDateTextBlock.Text = startDate;
+                //SendDateTextBlock.Text = sendDate;
+                //StatusTextBlock.Text = status;
+                //RemarksTextBlock.Text = remarks;
             };
 
-            viewModel.PartSetStartLoading += delegate
-            {
-                AdditionalPartSetProgressBar.IsIndeterminate = true;
-            };
-            viewModel.PartSetCompletedLoading += delegate
-            {
-                AdditionalPartSetProgressBar.IsIndeterminate = false;
-            };
+            //_viewModel.PartSetStartLoading += delegate
+            //{
+            //    AdditionalPartSetProgressBar.IsIndeterminate = true;
+            //};
+            //_viewModel.PartSetCompletedLoading += delegate
+            //{
+            //    AdditionalPartSetProgressBar.IsIndeterminate = false;
+            //};
 
             this.SizeChanged += delegate
             {
@@ -110,16 +112,39 @@ namespace SpawmetDatabaseWPF
 
             this.Closed += delegate
             {
-                viewModel.Dispose();
+                _viewModel.Dispose();
             };
 
-            viewModel.Load();
+            //_viewModel.Load();
+            Loaded += async delegate
+            {
+                await _viewModel.LoadAsync();
+            };
         }
 
         public void CommitEdit()
         {
-            MainDataGrid.CommitEdit();
-            AdditionalPartSetDataGrid.CommitEdit();
+            //MainDataGrid.CommitEdit();
+            //AdditionalPartSetDataGrid.CommitEdit();
+
+            MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+            AdditionalPartSetDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        }
+
+        public void Select(Order order)
+        {
+            _viewModel.SelectElement(order);
+        }
+
+        private void StatusComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems.Count != 0 && e.AddedItems.Count != 0)
+            {
+                var oldStatus = (OrderStatus) e.RemovedItems[0];
+                var newStatus = (OrderStatus) e.AddedItems[0];
+
+                _viewModel.ChangeStatus(oldStatus, newStatus);
+            }
         }
     }
 }

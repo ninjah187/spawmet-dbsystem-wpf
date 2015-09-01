@@ -15,7 +15,9 @@ using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Searching;
+using Application = System.Windows.Application;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -61,6 +63,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     _selectedPart = value;
                     OnPropertyChanged();
                     OnElementSelected(_selectedPart);
+                    SelectedElement = _selectedPart;
                     LoadMachines();
                     LoadOrders();
                     LoadDeliveries();
@@ -82,6 +85,20 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        private Machine _selectedMachine;
+        public Machine SelectedMachine
+        {
+            get { return _selectedMachine; }
+            set
+            {
+                if (_selectedMachine != value)
+                {
+                    _selectedMachine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private ObservableCollection<Order> _orders;
         public ObservableCollection<Order> Orders
         {
@@ -91,6 +108,20 @@ namespace SpawmetDatabaseWPF.ViewModel
                 if (_orders != value)
                 {
                     _orders = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Order _selectedOrder;
+        public Order SelectedOrder
+        {
+            get { return _selectedOrder; }
+            set
+            {
+                if (_selectedOrder != value)
+                {
+                    _selectedOrder = value;
                     OnPropertyChanged();
                 }
             }
@@ -110,15 +141,39 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        private Delivery _selectedDelivery;
+        public Delivery SelectedDelivery
+        {
+            get { return _selectedDelivery; }
+            set
+            {
+                if (_selectedDelivery != value)
+                {
+                    _selectedDelivery = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ICommand AddPartCommand { get; private set; }
 
         public ICommand DeletePartsCommand { get; private set; }
 
         public override ICommand RefreshCommand { get; protected set; }
 
-        public ICommand CraftPartCommand { get; protected set; }
+        public ICommand CraftPartAmountCommand { get; protected set; }
 
         public override ICommand NewSearchWindowCommand { get; protected set; }
+
+        public ICommand GoToMachineCommand { get; protected set; }
+
+        public ICommand GoToOrderCommand { get; protected set; }
+
+        public ICommand GoToDeliveryCommand { get; protected set; }
+
+        public ICommand PartsRaportCommand { get; protected set; }
+
+        //private SpawmetAppObserver _observer;
 
         public PartsWindowViewModel(PartsWindow window)
             : this(window, null)
@@ -264,50 +319,107 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Show();
             });
 
+            //DeletePartsCommand = new Command(() =>
+            //{
+            //    var selected = GetSelectedParts();
+
+            //    if (selected == null)
+            //    {
+            //        return;
+            //    }
+
+            //    string msg = selected.Count == 1
+            //        ? "Czy chcesz usunąć zaznaczoną część?"
+            //        : "Czy chcesz usunąć zaznaczone części?";
+
+            //    var confirmWin = new ConfirmWindow(msg);
+            //    confirmWin.Confirmed += delegate
+            //    {
+            //        var win = new DeletingPartWindow(DbContext, selected);
+            //        win.PartsDeleted += (sender, parts) =>
+            //        {
+            //            foreach (var part in parts)
+            //            {
+            //                Parts.Remove(part);
+            //            }
+            //        };
+            //        win.WorkCompleted += delegate
+            //        {
+            //            Machines = null;
+            //            Orders = null;
+            //            Deliveries = null;
+
+            //            OnElementSelected(null);
+            //        };
+            //        win.ConnectionLost += (sender, exc) =>
+            //        {
+            //            IsConnected = false;
+            //        };
+            //        win.Owner = _window;
+            //        win.ShowDialog();
+            //    };
+            //    confirmWin.Show();
+            //});
+
+            #region
             DeletePartsCommand = new Command(() =>
             {
-                var selected = GetSelectedParts();
-
-                if (selected == null)
+                var parts = GetSelectedParts();
+                if (parts == null)
                 {
                     return;
                 }
 
-                string msg = selected.Count == 1
-                    ? "Czy chcesz usunąć zaznaczoną część?"
-                    : "Czy chcesz usunąć zaznaczone części?";
-
-                var confirmWin = new ConfirmWindow(_window, msg);
-                confirmWin.Confirmed += delegate
+                var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczone części?");
+                confirmWin.Confirmed += async delegate
                 {
-                    var win = new DeletingPartWindow(DbContext, selected);
-                    win.PartsDeleted += (sender, parts) =>
-                    {
-                        foreach (var part in parts)
-                        {
-                            Parts.Remove(part);
-                        }
-                    };
-                    win.WorkCompleted += delegate
-                    {
-                        Machines = null;
-                        Orders = null;
-                        Deliveries = null;
+                    var waitWin = new WaitWindow("Proszę czekać, trwa usuwanie...");
+                    waitWin.Show();
 
-                        OnElementSelected(null);
-                    };
-                    win.ConnectionLost += (sender, exc) =>
+                    foreach (var part in parts)
                     {
-                        IsConnected = false;
-                    };
-                    win.Show();
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                var standardParts = part.StandardPartSets;
+                                DbContext.StandardPartSets.RemoveRange(standardParts);
+
+                                var additionalParts = part.AdditionalPartSets;
+                                DbContext.AdditionalPartSets.RemoveRange(additionalParts);
+
+                                var moduleParts = part.MachineModulePartSets;
+                                DbContext.MachineModulePartSets.RemoveRange(moduleParts);
+
+                                DbContext.Parts.Remove(part);
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        Parts.Remove(part);
+                    }
+
+                    Mediator.NotifyContextChange(this);
+                    waitWin.Close();
                 };
                 confirmWin.Show();
             });
+            #endregion
 
-            RefreshCommand = new Command(() =>
+            RefreshCommand = new Command(async () =>
             {
-                SaveDbStateCommand.Execute(null);
+                //SaveDbStateCommand.Execute(null);
+
+                _window.CommitEdit();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
 
                 var config = GetWindowConfig();
                 var win = new PartsWindow(config);
@@ -318,7 +430,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Show();
             });
 
-            CraftPartCommand = new Command(() =>
+            CraftPartAmountCommand = new Command(() =>
             {
                 if (SelectedPart == null)
                 {
@@ -326,14 +438,25 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
 
                 var win = new CraftPartWindow(DbContext, SelectedPart);
+                win.WorkStarted += delegate
+                {
+                    IsSaving = true;
+                };
+                win.WorkCompleted += delegate
+                {
+                    IsSaving = false;
+                };
                 win.PartCrafted += (sender, e) =>
                 {
                     LoadParts(); // to update MainDataGrid
 
+                    Mediator.NotifyContextChange(this);
+
                     string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
                     MessageWindow.Show(txt, "Wypalono część", _window);
                 };
-                win.Show();
+                win.Owner = _window;
+                win.ShowDialog();
             });
 
             NewSearchWindowCommand = new Command(() =>
@@ -355,26 +478,122 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.ShowDialog();
             });
+
+            GoToMachineCommand = new Command(() =>
+            {
+                var machine = SelectedMachine;
+                if (machine == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<MachinesWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(machine);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = machine
+                    };
+                    var window = new MachinesWindow(config);
+                    window.Show();
+                }
+            });
+
+            GoToOrderCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<OrdersWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = order
+                    };
+                    var window = new OrdersWindow(config);
+                    window.Show();
+                }
+            });
+
+            GoToDeliveryCommand = new Command(() =>
+            {
+                var delivery = SelectedDelivery;
+                if (delivery == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<DeliveriesWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(delivery);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = delivery
+                    };
+                    var window = new DeliveriesWindow(config);
+                    window.Show();
+                }
+            });
+
+            PartsRaportCommand = new Command(() =>
+            {
+                var parts = Parts.Where(p => p.Amount <= 0).OrderBy(p => p.Name).ToList();
+
+                var win = new PartsRaportWindow(parts);
+                win.Owner = _window;
+                win.ShowDialog();
+            });
         }
 
         public override void Load()
         {
             LoadParts();
 
-            IsConnected = true;
-
-            if (WindowConfig.SelectedElement != null)
-            {
-                var part = Parts.Single(p => p.Id == WindowConfig.SelectedElement.Id);
-
-                SelectedPart = part;
-
-                _window.DataGrid.SelectedItem = SelectedPart;
-                _window.DataGrid.ScrollIntoView(SelectedPart);
-            }
+            FinishLoading();
         }
 
-        private void LoadParts()
+        public override async Task LoadAsync()
+        {
+            await Task.Run(() =>
+            {
+                LoadParts();
+            });
+
+            FinishLoading();
+        }
+
+        public void LoadParts()
         {
             try
             {
@@ -388,9 +607,15 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private void LoadMachines()
+        public void LoadMachines()
         {
             var part = SelectedPart;
+
+            if (part == null)
+            {
+                Machines = null;
+                return;
+            }
 
             if (_machinesBackgroundWorker.IsBusy == false)
             {
@@ -400,9 +625,15 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private void LoadOrders()
+        public void LoadOrders()
         {
             var part = SelectedPart;
+
+            if (part == null)
+            {
+                Orders = null;
+                return;
+            }
 
             if (_ordersBackgroundWorker.IsBusy == false)
             {
@@ -412,9 +643,15 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private void LoadDeliveries()
+        public void LoadDeliveries()
         {
             var part = SelectedPart;
+
+            if (part == null)
+            {
+                Deliveries = null;
+                return;
+            }
 
             if (_deliveriesBackgroundWorker.IsBusy == false)
             {
@@ -422,6 +659,16 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 OnDeliveriesStartLoading();
             }
+        }
+
+        public override void SelectElement(IModelElement element)
+        {
+            var part = Parts.Single(e => e.Id == element.Id);
+
+            SelectedPart = part;
+
+            _window.DataGrid.SelectedItem = part;
+            _window.DataGrid.ScrollIntoView(part);
         }
 
         private List<Part> GetSelectedParts()

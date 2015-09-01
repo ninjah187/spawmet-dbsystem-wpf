@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using SpawmetDatabase;
 using SpawmetDatabase.Model;
 
-namespace SpawmetDatabaseWPF
+namespace SpawmetDatabaseWPF.Converters
 {
     public class OriginToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var origin = (Origin) value;
+            var origin = (Origin)value;
             switch (origin)
             {
                 case Origin.Outside:
@@ -25,6 +26,8 @@ namespace SpawmetDatabaseWPF
                 default:
                     throw new InvalidOperationException("There's no such Origin enum value.");
             }
+            //var origin = (Origin) value;
+            //return origin.GetDescription();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

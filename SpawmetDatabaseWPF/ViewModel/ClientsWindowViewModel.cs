@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -12,7 +13,9 @@ using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Searching;
+using Application = System.Windows.Application;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -40,7 +43,6 @@ namespace SpawmetDatabaseWPF.ViewModel
         }
 
         private Client _selectedClient;
-
         public Client SelectedClient
         {
             get { return _selectedClient; }
@@ -51,6 +53,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     _selectedClient = value;
                     OnPropertyChanged();
                     OnElementSelected(_selectedClient);
+                    SelectedElement = _selectedClient;
                     LoadOrders();
                 }
             }
@@ -70,6 +73,20 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        private Order _selectedOrder;
+        public Order SelectedOrder
+        {
+            get { return _selectedOrder; }
+            set
+            {
+                if (_selectedOrder != value)
+                {
+                    _selectedOrder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public ICommand AddClientCommand { get; private set; }
 
         public ICommand DeleteClientsCommand { get; private set; }
@@ -77,6 +94,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public override ICommand RefreshCommand { get; protected set; }
 
         public override ICommand NewSearchWindowCommand { get; protected set; }
+
+        public ICommand GoToOrderCommand { get; protected set; }
 
         public ClientsWindowViewModel(ClientsWindow window)
             : this(window, null)
@@ -166,47 +185,106 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.Show();
             });
 
+            //DeleteClientsCommand = new Command(() =>
+            //{
+            //    var selected = GetSelectedClients();
+            //    if (selected == null)
+            //    {
+            //        return;
+            //    }
+
+            //    string msg = selected.Count == 1
+            //        ? "Czy chcesz usunąć zaznaczoną część?"
+            //        : "Czy chcesz usunąć zaznaczone części?";
+
+            //    var confirmWin = new ConfirmWindow(msg);
+            //    confirmWin.Confirmed += delegate
+            //    {
+            //        var win = new DeleteClientWindow(DbContext, selected);
+            //        win.ClientsDeleted += (sender, clients) =>
+            //        {
+            //            foreach (var client in clients)
+            //            {
+            //                Clients.Remove(client);
+            //            }
+            //        };
+            //        win.WorkCompleted += delegate
+            //        {
+            //            Orders = null;
+
+            //            OnElementSelected(null);
+            //        };
+            //        win.ConnectionLost += (sender, e) =>
+            //        {
+            //            IsConnected = false;
+            //        };
+            //        win.Owner = _window;
+            //        win.ShowDialog();
+            //    };
+            //    confirmWin.Show();
+            //});
+
+            #region DeleteClients
             DeleteClientsCommand = new Command(() =>
             {
-                var selected = GetSelectedClients();
-                if (selected == null)
+                var clients = GetSelectedClients();
+                if (clients == null)
                 {
                     return;
                 }
 
-                string msg = selected.Count == 1
-                    ? "Czy chcesz usunąć zaznaczoną część?"
-                    : "Czy chcesz usunąć zaznaczone części?";
-
-                var confirmWin = new ConfirmWindow(_window, msg);
-                confirmWin.Confirmed += delegate
+                var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczonych klientów?");
+                confirmWin.Confirmed += async delegate
                 {
-                    var win = new DeleteClientWindow(DbContext, selected);
-                    win.ClientsDeleted += (sender, clients) =>
-                    {
-                        foreach (var client in clients)
-                        {
-                            Clients.Remove(client);
-                        }
-                    };
-                    win.WorkCompleted += delegate
-                    {
-                        Orders = null;
+                    var waitWin = new WaitWindow("Proszę czekać, trwa usuwanie...");
+                    waitWin.Show();
 
-                        OnElementSelected(null);
-                    };
-                    win.ConnectionLost += (sender, e) =>
+                    foreach (var client in clients)
                     {
-                        IsConnected = false;
-                    };
-                    win.Show();
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                foreach (var order in client.Orders)
+                                {
+                                    var additionalParts = order.AdditionalPartSet;
+                                    DbContext.AdditionalPartSets.RemoveRange(additionalParts);
+
+                                    order.MachineModules.Clear();
+
+                                    DbContext.Orders.Remove(order);
+                                }
+
+                                DbContext.Clients.Remove(client);
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        Clients.Remove(client);
+                    }
+
+                    Mediator.NotifyContextChange(this);
+                    waitWin.Close();
                 };
+
                 confirmWin.Show();
             });
+            #endregion
 
-            RefreshCommand = new Command(() =>
+            RefreshCommand = new Command(async () =>
             {
-                SaveDbStateCommand.Execute(null);
+                //SaveDbStateCommand.Execute(null);
+
+                _window.CommitEdit();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
 
                 var config = GetWindowConfig();
                 var win = new ClientsWindow(config);
@@ -234,23 +312,52 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+
+            GoToOrderCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (SelectedOrder == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<OrdersWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = order
+                    };
+                    var window = new OrdersWindow(config);
+                    window.Show();
+                }
+            });
         }
 
         public override void Load()
         {
             LoadClients();
 
-            IsConnected = true;
+            FinishLoading();
+        }
 
-            if (WindowConfig.SelectedElement != null)
+        public override async Task LoadAsync()
+        {
+            await Task.Run(() =>
             {
-                var client = Clients.Single(c => c.Id == WindowConfig.SelectedElement.Id);
+                LoadClients();
+            });
 
-                SelectedClient = client;
-
-                _window.MainDataGrid.SelectedItem = SelectedClient;
-                _window.MainDataGrid.ScrollIntoView(SelectedClient);
-            }
+            FinishLoading();
         }
 
         private void LoadClients()
@@ -268,12 +375,28 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             var client = SelectedClient;
 
+            if (client == null)
+            {
+                Orders = null;
+                return;
+            }
+
             if (_ordersBackgroundWorker.IsBusy == false)
             {
                 _ordersBackgroundWorker.RunWorkerAsync(client.Id);
 
                 OnOrdersStartLoading();
             }
+        }
+
+        public override void SelectElement(IModelElement element)
+        {
+            var client = Clients.Single(e => e.Id == element.Id);
+
+            SelectedClient = client;
+
+            _window.DataGrid.SelectedItem = client;
+            _window.DataGrid.ScrollIntoView(client);
         }
 
         private List<Client> GetSelectedClients()

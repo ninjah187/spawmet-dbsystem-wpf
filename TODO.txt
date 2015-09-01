@@ -5,3 +5,7 @@
 - zapisywanie zamówieñ do pliku + drukowanie
 - pokazywanie okien usuwania jako dialogi (blokowanie okna macierzystego + innych okien)
 - poprawa hierarchii klas (?)
+
+- zmienianie zamówieñ
+
+- zmodyfikowanie funkcji Load(), tak aby ka¿de ³adowanie danych bra³o pod uwagê SearchExpr (wyszukiwanie)

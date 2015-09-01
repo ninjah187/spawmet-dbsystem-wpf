@@ -257,7 +257,7 @@ namespace SpawmetDatabase
                     context.Machines.Add(machine = new Machine()
                     {
                         Name = machineName,
-                        Price = 0,
+                        //Price = 0,
                     });
                     OnMachineAdded(machine);
                 }

@@ -1,21 +1,24 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.AddOrderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Dodaj zamówienie" Height="330" Width="300" ResizeMode="CanMinimize"
+        Title="Dodaj zamówienie" Height="385" Width="300" ResizeMode="CanMinimize"
         Icon="icon.ico">
     <DockPanel Margin="10">
         <StackPanel DockPanel.Dock="Left">
             <TextBlock Text="Klient: " FontWeight="DemiBold" Margin="0,15"></TextBlock>
             <TextBlock Text="Maszyna: " FontWeight="DemiBold"></TextBlock>
-            <TextBlock Text="Przyjęcie: " FontWeight="DemiBold" Margin="0,17"></TextBlock>
+            <TextBlock Text="Nr fabr.: " FontWeight="DemiBold" Margin="0,12,0,0"></TextBlock>
+            <TextBlock Text="Przyjęcie: " FontWeight="DemiBold" Margin="0,15"></TextBlock>
             <TextBlock Text="Wysyłka: " FontWeight="DemiBold" Margin="0,2"></TextBlock>
-            <TextBlock Text="Status: " FontWeight="DemiBold" Margin="0,14"></TextBlock>
-            <TextBlock Text="Uwagi: " FontWeight="DemiBold"></TextBlock>
+            <TextBlock Text="Status: " FontWeight="DemiBold" Margin="0,16"></TextBlock>
+            <TextBlock Text="Cena:" FontWeight="DemiBold" Margin="0, 0"></TextBlock>
+            <TextBlock Text="Uwagi: " FontWeight="DemiBold" Margin="0,10,0,0"></TextBlock>
         </StackPanel>
         
         <StackPanel DockPanel.Dock="Right">
             <ComboBox x:Name="ClientComboBox" DisplayMemberPath="Name" Margin="5,10" />
             <ComboBox x:Name="MachineComboBox" DisplayMemberPath="Name" Margin="5,0" />
+            <TextBox x:Name="SerialNumberTextBox" Margin="5,10,5,0"></TextBox>
             <DatePicker x:Name="StartDatePicker" Margin="5,10" IsTodayHighlighted="True" />
             <DatePicker x:Name="SendDatePicker" Margin="5,0" IsTodayHighlighted="True" />
             <ComboBox x:Name="StatusComboBox" Margin="5,10">
@@ -23,8 +26,9 @@
                 <ComboBoxItem>W toku</ComboBoxItem>
                 <ComboBoxItem>Zakończone</ComboBoxItem>
             </ComboBox>
+            <TextBox x:Name="PriceTextBox" Text="0" Margin="5,2"></TextBox>
             <!--<ScrollViewer MaxHeight="60">-->
-                <TextBox x:Name="RemarksTextBox" Margin="5,0" Height="60" TextWrapping="Wrap" />
+                <TextBox x:Name="RemarksTextBox" Margin="5,8,5,0" Height="60" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
             <!--</ScrollViewer>-->
             <Button Width="60" Click="ButtonBase_OnClick" Margin="0,10">Dodaj</Button>
         </StackPanel>

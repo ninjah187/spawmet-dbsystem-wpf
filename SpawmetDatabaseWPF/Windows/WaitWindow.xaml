@@ -1,0 +1,10 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.Windows.WaitWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wykonywanie operacji" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Icon="../icon2.ico">
+    <StackPanel Margin="10" Width="300">
+        <TextBlock x:Name="MessageTextBlock" FontWeight="DemiBold" TextWrapping="Wrap" Text="Proszę czekać..."></TextBlock>
+        <ProgressBar x:Name="ProgressBar" Height="10" Margin="0,10" IsIndeterminate="True"></ProgressBar>
+    </StackPanel>
+</Window>

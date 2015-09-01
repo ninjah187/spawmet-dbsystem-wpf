@@ -1,0 +1,24 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.Windows.SendConfirmationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Wyślij potwierdzenie" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        Icon="/icon2.ico">
+    <StackPanel Width="600">
+        <DockPanel Margin="10">
+            <StackPanel DockPanel.Dock="Left">
+                <TextBlock Text="Odbiorca:" Margin="0,0,0,10" FontWeight="DemiBold" />
+                <TextBlock Text="Podgląd:" FontWeight="DemiBold" />
+            </StackPanel>
+        
+            <StackPanel DockPanel.Dock="Right">
+                <TextBlock x:Name="ReceiverTextBlock" Margin="5,0,5,10" TextWrapping="Wrap" />
+                <WebBrowser x:Name="PreviewWebBrowser" Margin="5,0" Height="180" PreviewMouseDown="PreviewWebBrowser_OnPreviewMouseDown" />
+                <!--<TextBox x:Name="PreviewTextBox" Margin="5,0" Height="180" VerticalScrollBarVisibility="Auto"
+                         IsReadOnly="True" TextWrapping="Wrap"></TextBox>-->
+                <Button Width="60" Margin="0,10,0,0" Click="ButtonBase_OnClick">Wyślij</Button>
+            </StackPanel>
+        </DockPanel>
+        
+        <ProgressBar x:Name="SendingProgressBar" Height="5"></ProgressBar>
+    </StackPanel>
+</Window>

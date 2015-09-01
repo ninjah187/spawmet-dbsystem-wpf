@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Channels;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,6 +19,7 @@ using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Events;
+using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Searching;
 
 namespace SpawmetDatabaseWPF.ViewModel
@@ -26,6 +28,9 @@ namespace SpawmetDatabaseWPF.ViewModel
     {
         public event EventHandler PartSetStartLoading;
         public event EventHandler PartSetCompletedLoading;
+
+        public event EventHandler ModulesStartLoading;
+        public event EventHandler ModulesCompletedLoading;
 
         public event EventHandler OrdersStartLoading;
         public event EventHandler OrdersCompletedLoading;
@@ -62,9 +67,25 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     _selectedMachine = value;
                     OnPropertyChanged();
-                    OnElementSelected(_selectedMachine);
+                    //OnElementSelected(_selectedMachine);
+                    SelectedElement = _selectedMachine;
                     LoadStandardPartSet();
                     LoadOrders();
+                    LoadModulesAsync();
+                }
+            }
+        }
+
+        private IEnumerable<Machine> _selectedMachines;
+        public IEnumerable<Machine> SelectedMachines
+        {
+            get { return _selectedMachines; }
+            set
+            {
+                if (_selectedMachines != value)
+                {
+                    _selectedMachines = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -97,6 +118,34 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        private ObservableCollection<MachineModule> _modules;
+        public ObservableCollection<MachineModule> Modules
+        {
+            get { return _modules; }
+            set
+            {
+                if (_modules != value)
+                {
+                    _modules = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private MachineModule _selectedModule;
+        public MachineModule SelectedModule
+        {
+            get { return _selectedModule; }
+            set
+            {
+                if (_selectedModule != value)
+                {
+                    _selectedModule = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private ObservableCollection<Order> _orders;
         public ObservableCollection<Order> Orders
         {
@@ -106,6 +155,20 @@ namespace SpawmetDatabaseWPF.ViewModel
                 if (_orders != value)
                 {
                     _orders = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Order _selectedOrder;
+        public Order SelectedOrder
+        {
+            get { return _selectedOrder; }
+            set
+            {
+                if (_selectedOrder != value)
+                {
+                    _selectedOrder = value;
                     OnPropertyChanged();
                 }
             }
@@ -125,11 +188,25 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand CraftPartCommand { get; private set; }
 
+        public ICommand CraftPartAmountCommand { get; private set; }
+
         public ICommand DeletePartFromMachineCommand { get; private set; }
 
         public ICommand AddMachinesFromDirectoryCommand { get; private set; }
+        
+        public ICommand AddMachineModuleCommand { get; protected set; }
+
+        public ICommand DeleteMachineModuleCommand { get; protected set; }
+
+        public ICommand MachineModuleDetailsCommand { get; protected set; }
 
         public override ICommand NewSearchWindowCommand { get; protected set; }
+
+        public ICommand GoToPartCommand { get; protected set; }
+
+        public ICommand GoToOrderCommand { get; protected set; }
+
+        //private SpawmetAppObserver _observer;
 
         public MachinesWindowViewModel(MachinesWindow window)
             : this(window, null)
@@ -259,6 +336,7 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             base.InitializeCommands();
 
+            #region AddMachine
             AddMachineCommand = new Command(() =>
             {
                 var win = new AddMachineWindow(DbContext);
@@ -268,59 +346,190 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+            #endregion
 
-            CraftPartCommand = new Command(() =>
+            #region CraftPart
+            CraftPartCommand = new Command(async () =>
             {
                 var element = SelectedPartSetElement;
                 var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
-                part.Amount += element.Amount;
-                
-                DbContext.SaveChanges();
 
-                string txt = "Wypalono: " + part.Name + "\nIlość: " + element.Amount;
-                MessageBox.Show(txt, "Wypalono część");
+                await Task.Run(() =>
+                {
+                    IsSaving = true;
+                    lock (DbContextLock)
+                    {
+                        part.Amount += element.Amount;
+                        DbContext.SaveChanges();
+                    }
+                    IsSaving = false;
+                });
+
+                LoadStandardPartSet();
+
+                Mediator.NotifyContextChange(this);
+
+                string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+                MessageWindow.Show(txt, "Wypalono część", _window);
             });
+            #endregion
 
-            DeleteMachinesCommand = new Command(() =>
+            #region CraftPartAmount
+            CraftPartAmountCommand = new Command(() =>
             {
-                var selected = GetSelectedMachines();
-                if (selected == null)
+                if (SelectedPartSetElement == null)
                 {
                     return;
                 }
 
-                string msg = selected.Count == 1
-                    ? "Czy na pewno chcesz usunąć zaznaczoną maszynę?"
-                    : "Czy na pewno chcesz usunąć zaznaczone maszyny?";
-
-                var confirmWin = new ConfirmWindow(_window, msg);
-                confirmWin.Confirmed += delegate
+                var win = new CraftPartWindow(DbContext, SelectedPartSetElement.Part);
+                win.WorkStarted += delegate
                 {
-                    var win = new DeleteMachineWindow(DbContext, selected);
-                    win.MachinesDeleted += (sender, machines) =>
-                    {
-                        foreach (var machine in machines)
-                        {
-                            Machines.Remove(machine);
-                        }
-                    };
-                    win.WorkCompleted += delegate
-                    {
-                        StandardPartSet = null;
-                        Orders = null;
+                    IsSaving = true;
+                };
+                win.WorkCompleted += delegate
+                {
+                    IsSaving = false;
+                };
+                win.PartCrafted += (sender, e) =>
+                {
+                    LoadStandardPartSet();
 
-                        OnElementSelected(null);
-                    };
-                    win.ConnectionLost += (sender, exc) =>
+                    Mediator.NotifyContextChange(this);
+
+                    string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
+                    MessageWindow.Show(txt, "Wypalono część", _window);
+                };
+                win.Owner = _window;
+                win.ShowDialog();
+            });
+            #endregion
+
+            #region DeleteMachines
+            //DeleteMachinesCommand = new Command(() =>
+            //{
+            //    var selected = GetSelectedMachines();
+            //    if (selected == null)
+            //    {
+            //        return;
+            //    }
+
+            //    string msg = selected.Count == 1
+            //        ? "Czy na pewno chcesz usunąć zaznaczoną maszynę?"
+            //        : "Czy na pewno chcesz usunąć zaznaczone maszyny?";
+
+            //    var confirmWin = new ConfirmWindow(_window, msg);
+            //    confirmWin.Confirmed += delegate
+            //    {
+            //        var win = new DeleteMachineWindow(DbContext, selected);
+            //        win.MachinesDeleted += (sender, machines) =>
+            //        {
+            //            foreach (var machine in machines)
+            //            {
+            //                Machines.Remove(machine);
+            //            }
+            //        };
+            //        win.WorkCompleted += delegate
+            //        {
+            //            StandardPartSet = null;
+            //            Orders = null;
+
+            //            OnElementSelected(null);
+            //        };
+            //        win.ConnectionLost += (sender, exc) =>
+            //        {
+            //            IsConnected = false;
+            //            //MessageWindow.Show("Stracono połączenie.", "Błąd", _window);
+            //        };
+            //        win.Owner = _window;
+            //        win.ShowDialog();
+            //        //Task.Run(() => { win.ShowDialog(); });
+            //    };
+            //    confirmWin.Show();
+            //});
+            #endregion
+
+            #region DeleteMachinesMuchBetter
+            DeleteMachinesCommand = new Command(() =>
+            {
+                var machines = GetSelectedMachines();
+                if (machines == null)
+                {
+                    return;
+                }
+
+                var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczone maszyny?", _window);
+                confirmWin.Confirmed += async delegate
+                {
+                    var waitWin = new WaitWindow("Proszę czekać, trwa usuwanie...");
+                    waitWin.Show();
+
+                    foreach (var machine in machines)
                     {
-                        IsConnected = false;
-                        //MessageWindow.Show("Stracono połączenie.", "Błąd", _window);
-                    };
-                    win.Show();
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                var standardParts = machine.StandardPartSet;
+                                DbContext.StandardPartSets.RemoveRange(standardParts);
+
+                                foreach (var module in machine.Modules)
+                                {
+                                    var moduleParts = module.MachineModulePartSet;
+                                    DbContext.MachineModulePartSets.RemoveRange(moduleParts);
+                                }
+                                var modules = machine.Modules;
+                                DbContext.MachineModules.RemoveRange(modules);
+
+                                foreach (var order in machine.Orders)
+                                {
+                                    var additionalParts = order.AdditionalPartSet;
+                                    DbContext.AdditionalPartSets.RemoveRange(additionalParts);
+                                }
+                                DbContext.Orders.RemoveRange(machine.Orders);
+
+                                DbContext.Machines.Remove(machine);
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        Machines.Remove(machine);
+                    }
+
+                    //foreach (var machine in YieldSelectedMachines())
+                    //{
+                    //    await Task.Run(() =>
+                    //    {
+                    //        var standardParts = machine.StandardPartSet;
+                    //        DbContext.StandardPartSets.RemoveRange(standardParts);
+
+                    //        foreach (var module in machine.Modules)
+                    //        {
+                    //            var moduleParts = module.MachineModulePartSet;
+                    //            DbContext.MachineModulePartSets.RemoveRange(moduleParts);
+                    //        }
+                    //        var modules = machine.Modules;
+                    //        DbContext.MachineModules.RemoveRange(modules);
+
+                    //        foreach (var order in machine.Orders)
+                    //        {
+                    //            var additionalParts = order.AdditionalPartSet;
+                    //            DbContext.AdditionalPartSets.RemoveRange(additionalParts);
+                    //        }
+                    //        DbContext.Orders.RemoveRange(machine.Orders);
+
+                    //        DbContext.Machines.Remove(machine);
+                    //        DbContext.SaveChanges();
+                    //    });
+                    //}
+
+                    Mediator.NotifyContextChange(this);
+                    waitWin.Close();
                 };
                 confirmWin.Show();
             });
+            #endregion
 
+            #region PrintDialog
             PrintDialogCommand = new Command(() =>
             {
                 var selected = GetSelectedMachines();
@@ -337,18 +546,30 @@ namespace SpawmetDatabaseWPF.ViewModel
                 bool? print = printDialog.ShowDialog();
                 if (print == true)
                 {
-                    string description = selected.Count == 1
-                        ? selected.First().Name
-                        : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
-
-                    var printWindow = new PrintWindow(selected, printDialog);
+                    //var printWindow = new PrintWindow(selected, printDialog);
+                    var printWindow = new PrintWindow();
+                    printWindow.PrintAsync(selected, printDialog);
                     printWindow.Show();
                 }
             });
+            #endregion
 
-            RefreshCommand = new Command(() =>
+            #region Refresh
+            RefreshCommand = new Command(async () =>
             {
-                SaveDbStateCommand.Execute(null);
+                //SaveDbStateCommand.Execute(null);
+
+                _window.CommitEdit();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
 
                 var config = GetWindowConfig();
                 var win = new MachinesWindow(config);
@@ -358,7 +579,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+            #endregion
 
+            #region SaveToFile
             SaveToFileCommand = new Command(() =>
             {
                 var selected = GetSelectedMachines();
@@ -379,7 +602,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                     new SaveFileWindow(selected, saveFileDialog.FileName).Show();
                 }
             });
+            #endregion
 
+            #region AddPartToMachine
             AddPartToMachineCommand = new Command(() =>
             {
                 var machine = SelectedMachine;
@@ -396,23 +621,49 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+            #endregion
 
-            DeletePartFromMachineCommand = new Command(() =>
+            #region DeletePartFromMachine
+            DeletePartFromMachineCommand = new Command(async () =>
             {
-                if (SelectedPartSetElement == null)
+                var element = SelectedPartSetElement;
+                if (element == null)
                 {
                     return;
                 }
 
-                var element = DbContext.StandardPartSets
-                    .Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
-                                                                      && el.Machine.Id == SelectedPartSetElement.Machine.Id);
-                DbContext.StandardPartSets.Remove(element);
-                DbContext.SaveChanges();
+                var waitWin = new WaitWindow("Proszę czekać, trwa aktualizacja stanu magazynu...");
+                waitWin.Show();
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    foreach (var order in element.Machine.Orders)
+                    {
+                        if (order.Status == OrderStatus.InProgress ||
+                            order.Status == OrderStatus.Done)
+                        {
+                            element.Part.Amount += element.Amount;
+                        }
+                    }
+                    DbContext.StandardPartSets.Remove(element);
+                    DbContext.SaveChanges();
+                });
+                IsSaving = false;
+                waitWin.Close();
+
+                Mediator.NotifyContextChange(this);
+
+                //var element = DbContext.StandardPartSets
+                //    .Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
+                //                                                      && el.Machine.Id == SelectedPartSetElement.Machine.Id);
+                //DbContext.StandardPartSets.Remove(element);
+                //DbContext.SaveChanges();
 
                 LoadStandardPartSet();
             });
+            #endregion
 
+            #region AddMachinesFromDirectory
             AddMachinesFromDirectoryCommand = new Command(() =>
             {
                 var dialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -448,7 +699,88 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 dialog.Dispose();
             });
+            #endregion
 
+            #region AddMachineModule
+            AddMachineModuleCommand = new Command(() =>
+            {
+                if (SelectedMachine == null)
+                {
+                    return;
+                }
+
+                new AddMachineModuleWindow(SelectedMachine.Id).Show();
+            });
+            #endregion
+
+            #region DeleteMachineModule
+            DeleteMachineModuleCommand = new Command(async () =>
+            {
+                if (SelectedModule == null)
+                {
+                    return;
+                }
+
+                _window.IsEnabled = false;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        //SelectedModule.MachineModulePartSet.Clear();
+
+                        DbContext.MachineModulePartSets
+                            .RemoveRange(DbContext.MachineModulePartSets.Where(e => e.MachineModule.Id == SelectedModule.Id));
+
+                        //foreach (var element in SelectedModule.MachineModulePartSet.ToList())
+                        //{
+                        //    DbContext.MachineModulePartSets.Remove(element);
+                        //}
+
+                        SelectedModule.Orders.Clear();
+                        DbContext.MachineModules.Remove(SelectedModule);
+                        DbContext.SaveChanges();
+                    }
+                });
+
+                var window = Application.Current.Windows
+                    .OfType<MachineModuleDetailsWindow>()
+                    .FirstOrDefault(w => w.Module.Id == SelectedModule.Id);
+                if (window != null)
+                {
+                    window.Close();
+                }
+
+                Modules.Remove(SelectedModule);
+
+                Mediator.NotifyContextChange(this);
+                _window.IsEnabled = true;
+            });
+            #endregion
+
+            #region MachineModuleDetails
+            MachineModuleDetailsCommand = new Command(() =>
+            {
+                if (SelectedModule == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows
+                    .OfType<MachineModuleDetailsWindow>()
+                    .Where(w => w.Module.Id == SelectedModule.Id);
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new MachineModuleDetailsWindow(SelectedModule.Id).Show();   
+                }
+            });
+            #endregion
+
+            #region NewSearchWindow
             NewSearchWindowCommand = new Command(() =>
             {
                 var win = new SearchMachinesByName(_window, DbContext);
@@ -467,6 +799,69 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+            #endregion
+
+            #region GoToPart
+            GoToPartCommand = new Command(() =>
+            {
+                var partSetElement = SelectedPartSetElement;
+                if (partSetElement == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<PartsWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(partSetElement.Part);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = partSetElement.Part
+                    };
+                    var window = new PartsWindow(config);
+                    window.Show();
+                }
+            });
+            #endregion
+
+            #region GoToOrder
+            GoToOrderCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<OrdersWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = order
+                    };
+                    var window = new OrdersWindow(config);
+                    window.Show();
+                }
+            });
+            #endregion
         }
 
         public override void Load()
@@ -478,21 +873,31 @@ namespace SpawmetDatabaseWPF.ViewModel
             // if some element were previously selected; needed in refreshing window
             if (WindowConfig.SelectedElement != null)
             {
-                var machine = Machines.Single(m => m.Id == WindowConfig.SelectedElement.Id);
-
-                SelectedMachine = machine;
-
-                // change to OnElementSelected(machine) ?
-                _window.DataGrid.SelectedItem = SelectedMachine;
-                _window.DataGrid.ScrollIntoView(SelectedMachine);
+                SelectElement(WindowConfig.SelectedElement);
             }
         }
 
-        private void LoadMachines()
+        public override async Task LoadAsync()
+        {
+            await LoadMachinesAsync();
+
+            IsConnected = true;
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                SelectElement(WindowConfig.SelectedElement);
+            }
+        }
+
+        public void LoadMachines()
         {
             try
             {
-                var machines = DbContext.Machines.ToList();
+                List<Machine> machines = null;
+                lock (DbContextLock)
+                {
+                    machines = DbContext.Machines.ToList();
+                }
                 Machines = new ObservableCollection<Machine>(machines);
             }
             catch (Exception exc)
@@ -501,9 +906,35 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private void LoadStandardPartSet()
+        public Task LoadMachinesAsync()
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    List<Machine> machines = null;
+                    lock (DbContextLock)
+                    {
+                        machines = DbContext.Machines.ToList();
+                    }
+                    Machines = new ObservableCollection<Machine>(machines);
+                }
+                catch (Exception exc)
+                {
+                    IsConnected = false;
+                }
+            });
+        }
+
+        public void LoadStandardPartSet()
         {
             var machine = SelectedMachine;
+
+            if (machine == null)
+            {
+                StandardPartSet = null;
+                return;
+            }
 
             if (_partsBackgroundWorker.IsBusy == false)
             {
@@ -513,9 +944,55 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private void LoadOrders()
+        public async Task LoadModulesAsync()
         {
             var machine = SelectedMachine;
+            if (machine == null)
+            {
+                return;
+            }
+
+            OnModulesStartLoading();
+
+            var machineId = machine.Id;
+
+            await Task.Run(() =>
+            {
+                List<MachineModule> modules = null;
+                //using (var context = new SpawmetDBContext()) // use other context, because data in this windows are read-only and it'll not block main context of window
+                //{
+                //    modules = context.MachineModules
+                //        .Where(m => m.Machine.Id == machineId)
+                //        //.Include(m => m.MachineModulePartSet)
+                //        .OrderBy(m => m.Name)
+                //        .ToList();
+                //}
+                lock (DbContextLock)
+                {
+                    modules = DbContext.MachineModules
+                        .Where(m => m.Machine.Id == machineId)
+                        //.Include(m => m.MachineModulePartSet)
+                        .OrderBy(m => m.Name)
+                        .ToList();
+                }
+
+                if (machine == SelectedMachine) // check if it has any sense; it's because SelectedOrder may change during async call
+                {
+                    Modules = new ObservableCollection<MachineModule>(modules);
+                }
+            });
+            OnModulesCompletedLoading();
+        }
+
+        public void LoadOrders()
+        {
+            var machine = SelectedMachine;
+
+            if (machine == null)
+            {
+                Orders = null;
+                return;
+            }
 
             if (_ordersBackgroundWorker.IsBusy == false)
             {
@@ -523,6 +1000,24 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 OnOrdersStartLoading();
             }
+        }
+
+        public override void SelectElement(IModelElement element)
+        {
+            if (element == null)
+            {
+                StandardPartSet = null;
+                Modules = null;
+                Orders = null;
+                return;
+            }
+
+            var machine = Machines.Single(e => e.Id == element.Id);
+
+            SelectedMachine = machine;
+
+            _window.DataGrid.SelectedItem = machine;
+            _window.DataGrid.ScrollIntoView(machine);
         }
 
         private List<Machine> GetSelectedMachines() // bind instead of GetSelectedMachines()
@@ -539,6 +1034,19 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        private IEnumerable<Machine> YieldSelectedMachines()
+        {
+            //if (_window.MainDataGrid.SelectedItems.Count == 0)
+            //{
+            //    yield break;
+            //}
+
+            foreach (var item in _window.MainDataGrid.SelectedItems)
+            {
+                yield return (Machine)item;
+            }
         }
 
         protected override WindowConfig GetWindowConfig()
@@ -579,6 +1087,22 @@ namespace SpawmetDatabaseWPF.ViewModel
             if (PartSetCompletedLoading != null)
             {
                 PartSetCompletedLoading(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnModulesStartLoading()
+        {
+            if (ModulesStartLoading != null)
+            {
+                ModulesStartLoading(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnModulesCompletedLoading()
+        {
+            if (ModulesCompletedLoading != null)
+            {
+                ModulesCompletedLoading(this, EventArgs.Empty);
             }
         }
 

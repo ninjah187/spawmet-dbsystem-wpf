@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.DeletingPartWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Usuwanie części" SizeToContent="WidthAndHeight"
+        Title="Usuwanie części" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         Icon="icon2.ico">
     <StackPanel>
         <TextBlock x:Name="TitleTextBlock" Text="Przygotowywanie operacji..." TextAlignment="Center" Margin="0,10"></TextBlock>

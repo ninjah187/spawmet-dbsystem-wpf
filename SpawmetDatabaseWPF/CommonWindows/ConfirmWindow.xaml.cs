@@ -24,12 +24,12 @@ namespace SpawmetDatabaseWPF.CommonWindows
         //opcjonalnie mozna zrobic metode bool Show(), która zwraca true,
         //jeśli użytkownik nacisnął tak
 
-        public ConfirmWindow(Window owner, string message)
-            : this(owner, message, "Potwierdzenie")
+        public ConfirmWindow(string message, Window owner = null)
+            : this(message, "Potwierdzenie", owner)
         {
         }
 
-        public ConfirmWindow(Window owner, string message, string title)
+        public ConfirmWindow(string message, string title, Window owner = null)
         {
             InitializeComponent();
 
@@ -73,20 +73,20 @@ namespace SpawmetDatabaseWPF.CommonWindows
 
         private void OnConfirmed()
         {
+            Close();
             if (Confirmed != null)
             {
                 Confirmed(this, EventArgs.Empty);
             }
-            Close();
         }
 
         private void OnDeclined()
         {
+            Close();
             if (Declined != null)
             {
                 Declined(this, EventArgs.Empty);
             }
-            Close();
         }
     }
 }

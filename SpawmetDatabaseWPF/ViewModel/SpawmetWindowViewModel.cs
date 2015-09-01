@@ -21,7 +21,7 @@ using SpawmetDatabaseWPF.Events;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
-    public abstract class SpawmetWindowViewModel : INotifyPropertyChanged, IDisposable
+    public abstract class SpawmetWindowViewModel : INotifyPropertyChanged, IDbContextChangesNotifier, IDisposable
     {
         public event ElementSelectedEventHandler<IModelElement> ElementSelected;
 
@@ -29,14 +29,22 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public event EventHandler<ConnectionState> ConnectionChanged;
 
+        public event EventHandler DataGridEditCanceled;
+        public event EventHandler DataGridEditCommited;
+
+        public event EventHandler DbContextChanged;
+
         private ISpawmetWindow _window;
         protected WindowConfig WindowConfig { get; private set; }
+        protected const int Offset = 40;
 
-        protected SpawmetDBContext DbContext = new SpawmetDBContext();
+        internal SpawmetDBContext DbContext = new SpawmetDBContext();
         private const string connectionStringName = "SpawmetDBContext";
         protected object DbContextLock = new object();
 
         private Timer _connectionCheckTimer;
+
+        public IModelElement SelectedElement { get; protected set; }
 
         private bool _isConnected;
         public virtual bool IsConnected
@@ -83,6 +91,8 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        public DbContextMediator Mediator { get; set; } // observes and notifies to other windows any changes occured in DbContext
+
         public ICommand SaveDbStateCommand { get; protected set; }
 
         public ICommand NewMachinesWindowCommand { get; protected set; }
@@ -95,7 +105,9 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand NewDeliveriesWindowCommand { get; protected set; }
 
-        public abstract ICommand RefreshCommand { get; protected set; }
+        public ICommand NewArchiveWindowCommand { get; protected set; }
+
+        public virtual ICommand RefreshCommand { get; protected set; }
 
         public virtual ICommand NewSearchWindowCommand { get; protected set; }
 
@@ -113,6 +125,8 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
+        public ICommand CancelEditCommand { get; protected set; }
+
         protected SpawmetWindowViewModel(ISpawmetWindow window)
             : this(window, null)
         {
@@ -121,6 +135,21 @@ namespace SpawmetDatabaseWPF.ViewModel
         protected SpawmetWindowViewModel(ISpawmetWindow window, WindowConfig config)
         {
             _window = window;
+
+            _window.Closing += delegate
+            {
+                if (IsConnected == false)
+                {
+                    return;
+                }
+
+                _window.CommitEdit();
+
+                lock (DbContextLock)
+                {
+                    DbContext.SaveChanges();
+                }
+            };
 
             if (config == null)
             {
@@ -154,6 +183,17 @@ namespace SpawmetDatabaseWPF.ViewModel
                     SearchExpression = "";
                 }
             };
+
+            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            Mediator.ContextChanged += async (sender, notifier) =>
+            {
+                if (notifier == this)
+                {
+                    return;
+                }
+
+                await ReloadContextAsync(SelectedElement);
+            };
         }
 
         public virtual void Dispose()
@@ -181,6 +221,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 });
                 IsSaving = false;
 
+                Mediator.NotifyContextChange(this);
                 //IsSaving = true;
                 //var saveTask = DbContext.SaveChangesAsync();
                 //await saveTask;
@@ -188,55 +229,166 @@ namespace SpawmetDatabaseWPF.ViewModel
                 //MessageBox.Show("Save complete");
             });
 
-            const int offset = 40;
             var config = new WindowConfig()
             {
-                Left = _window.Left + offset,
-                Top = _window.Top + offset
+                Left = _window.Left + Offset,
+                Top = _window.Top + Offset
             };
 
             NewMachinesWindowCommand = new Command(() =>
             {
-                new MachinesWindow(config).Show();
+                var windows = Application.Current.Windows.OfType<MachinesWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new MachinesWindow(config).Show();
+                }
             });
 
             NewPartsWindowCommand = new Command(() =>
             {
-                new PartsWindow(config).Show();
+                var windows = Application.Current.Windows.OfType<PartsWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new PartsWindow(config).Show();
+                }
             });
 
             NewOrdersWindowCommand = new Command(() =>
             {
-                new OrdersWindow(config).Show();
+                var windows = Application.Current.Windows.OfType<OrdersWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new OrdersWindow(config).Show();
+                }
             });
 
             NewClientsWindowCommand = new Command(() =>
             {
-                new ClientsWindow(config).Show();
+                var windows = Application.Current.Windows.OfType<ClientsWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new ClientsWindow(config).Show();                    
+                }
             });
 
             NewDeliveriesWindowCommand = new Command(() =>
             {
-                new DeliveriesWindow(config).Show();
+                var windows = Application.Current.Windows.OfType<DeliveriesWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new DeliveriesWindow(config).Show();                    
+                }
             });
 
-            CellEditEndingCommand = new Command(() =>
+            NewArchiveWindowCommand = new Command(() =>
             {
-                var command = CellEditEndingCommand;
-
-                CellEditEndingCommand = null;
-                SaveDbStateCommand.Execute(null);
-
-                CellEditEndingCommand = command;
+                var windows = Application.Current.Windows.OfType<ArchiveWindow>();
+                if (windows.Any())
+                {
+                    var win = windows.Single();
+                    win.Focus();
+                }
+                else
+                {
+                    new ArchiveWindow(config).Show();
+                }
             });
+
+            //CellEditEndingCommand = new Command(() =>
+            //{
+            //    var command = CellEditEndingCommand;
+
+            //    CellEditEndingCommand = null;
+            //    SaveDbStateCommand.Execute(null);
+
+            //    CellEditEndingCommand = command;
+            //});
 
             NewSearchWindowCommand = new Command(() =>
             {
                 throw new NotImplementedException();
             });
+
+            CancelEditCommand = new Command(() =>
+            {
+                _window.DataGrid.CancelEdit(DataGridEditingUnit.Row);
+            });
         }
 
         public abstract void Load();
+
+        public abstract Task LoadAsync();
+
+        public abstract void SelectElement(IModelElement element);
+
+        protected void FinishLoading()
+        {
+            IsConnected = true;
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                Application.Current.Dispatcher.Invoke(() => SelectElement(WindowConfig.SelectedElement));
+            }
+        }
+
+        public void ReloadContext()
+        {
+            lock (DbContextLock)
+            {
+                DbContext.Dispose();
+                DbContext = new SpawmetDBContext();
+            }
+            Load();
+        }
+
+        public async Task ReloadContextAsync()
+        {
+            await Task.Run(() =>
+            {
+                ReloadContext();
+            });
+        }
+
+        public void ReloadContext(IModelElement element)
+        {
+            ReloadContext();
+            SelectElement(element);
+        }
+
+        public async Task ReloadContextAsync(IModelElement element)
+        {
+            await ReloadContextAsync();
+
+            if (element != null)
+            {
+                SelectElement(element);
+            }
+        }
 
         public bool IsDatabaseServerAvailable()
         {
@@ -305,8 +457,41 @@ namespace SpawmetDatabaseWPF.ViewModel
         protected void RowEditEndingHandler(object sender, DataGridRowEditEndingEventArgs e)
         {
             _window.DataGrid.RowEditEnding -= RowEditEndingHandler;
+            //if (e.EditAction == DataGridEditAction.Commit)
+            //{
+            //    OnDataGridEditCommited();
+            //}
+            //else // DataGridEditAction.Cancel
+            //{
+            //    OnDataGridEditCanceled();
+            //}
+            //throw new Exception("row edit ending");
             SaveDbStateCommand.Execute(null);
             _window.DataGrid.RowEditEnding += RowEditEndingHandler;
+        }
+
+        private void OnDataGridEditCanceled()
+        {
+            if (DataGridEditCanceled != null)
+            {
+                DataGridEditCanceled(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnDataGridEditCommited()
+        {
+            if (DataGridEditCommited != null)
+            {
+                DataGridEditCommited(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnDbContextChanged()
+        {
+            if (DbContextChanged != null)
+            {
+                DbContextChanged(this, EventArgs.Empty);
+            }
         }
     }
 }

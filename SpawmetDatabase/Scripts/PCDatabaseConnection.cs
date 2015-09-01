@@ -92,7 +92,7 @@ namespace SpawmetDatabase.Scripts
                             machineEntity = new Machine()
                             {
                                 Name = machineName + " " + machineVariantName,
-                                Price = 0,
+                                //Price = 0,
                             };
                             context.Machines.Add(machineEntity);
                             context.SaveChanges();

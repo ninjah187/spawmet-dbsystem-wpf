@@ -25,58 +25,94 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class PrintWindow : Window
     {
-        private readonly BackgroundWorker _backgroundWorker;
+        private string _path;
 
-        private readonly string _xpsPath;
-
-        public PrintWindow(IEnumerable<Machine> machines, PrintDialog printDialog/*,
-            Window parentWindow*/)
+        public PrintWindow()
         {
             InitializeComponent();
+        }
 
+        protected void PrepareXpsFile()
+        {
             if (Directory.Exists(@".\temp") == false)
             {
                 Directory.CreateDirectory(@".\temp");
             }
 
-            // Create stream to get full path of .\temp.xps (it's needed in XpsDocument constructor).
             var stream = File.Open(@".\temp\print.xps", FileMode.Create);
-            _xpsPath = stream.Name;
+            _path = stream.Name;
             stream.Close();
             stream.Dispose();
+        }
 
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.DoWork += (sender, e) =>
+        public async Task PrintAsync(IEnumerable<Machine> machines, PrintDialog printDialog)
+        {
+            await Task.Run(() =>
             {
+                PrepareXpsFile();
+
                 var xpsCreator = new XPSCreator();
-                xpsCreator.Create(machines, _xpsPath);
-            };
-            _backgroundWorker.RunWorkerCompleted += (sender, e) =>
-            {
-                var xpsDocument = new XpsDocument(_xpsPath, FileAccess.ReadWrite);
-                var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
+                xpsCreator.Create(machines, _path);
+            });
 
-                string description = machines.Count() == 1
+            var xpsDocument = new XpsDocument(_path, FileAccess.ReadWrite);
+            var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
+
+            string description = machines.Count() == 1
                 ? machines.First().Name
                 : "Wykaz maszyn, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
 
-                printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
-                
-                xpsDocument.Close();
-                this.Close();
-            };
+            printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
 
-            this.Loaded += (sender, e) =>
-            {
-                //parentWindow.IsEnabled = false;
-            };
-            this.Closed += (sender, e) =>
-            {
-                _backgroundWorker.Dispose();
-                //parentWindow.IsEnabled = true;
-            };
+            xpsDocument.Close();
 
-            _backgroundWorker.RunWorkerAsync();
+            this.Close();
+        }
+
+        public async Task PrintAsync(IEnumerable<Order> orders, PrintDialog printDialog)
+        {
+            await Task.Run(() =>
+            {
+                PrepareXpsFile();
+
+                var xpsCreator = new XPSCreator();
+                xpsCreator.Create(orders, _path);
+            });
+
+            var xpsDocument = new XpsDocument(_path, FileAccess.ReadWrite);
+            var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
+
+            string description = orders.Count() == 1
+                ? orders.First().Machine.Name
+                : "Wykaz zamówień, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
+
+            printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
+
+            xpsDocument.Close();
+
+            this.Close();
+        }
+
+        public async Task PrintAsync(IEnumerable<Part> parts, PrintDialog printDialog)
+        {
+            await Task.Run(() =>
+            {
+                PrepareXpsFile();
+
+                var xpsCreator = new XPSCreator();
+                xpsCreator.Create(parts, _path);
+            });
+
+            var xpsDocument = new XpsDocument(_path, FileAccess.ReadWrite);
+            var fixedDocumentSequence = xpsDocument.GetFixedDocumentSequence();
+
+            string description = "Raport z magazynu";
+
+            printDialog.PrintDocument(fixedDocumentSequence.DocumentPaginator, description);
+
+            xpsDocument.Close();
+
+            this.Close();
         }
     }
 }

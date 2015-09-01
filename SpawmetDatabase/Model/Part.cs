@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Part : IModelElement
+    public class Part : EditableModelElement<Part>, INotifyPropertyChanged
     {
         public Part()
         {
@@ -15,7 +15,7 @@ namespace SpawmetDatabase.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int Id
+        public override int Id
         {
             get { return _id; }
             set
@@ -114,6 +114,19 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public virtual ICollection<MachineModuleSetElement> MachineModulePartSets
+        {
+            get { return _machineModulePartSets; }
+            set
+            {
+                if (_machineModulePartSets != value)
+                {
+                    _machineModulePartSets = value;
+                    NotifyPropertyChanged("MachineModulePartSets");
+                }
+            }
+        }
+
         private int _id;
         private string _name;
         private int _amount;
@@ -122,6 +135,7 @@ namespace SpawmetDatabase.Model
         private ICollection<DeliveryPartSetElement> _deliveryPartSets;
         private ICollection<StandardPartSetElement> _standardPartSets;
         private ICollection<AdditionalPartSetElement> _additionalPartSets;
+        private ICollection<MachineModuleSetElement> _machineModulePartSets;
 
         protected void NotifyPropertyChanged(string propertyName)
         {
@@ -129,6 +143,15 @@ namespace SpawmetDatabase.Model
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public override void UndoChanges()
+        {
+            var backup = BackupElement;
+
+            Id = backup.Id;
+            Amount = backup.Amount;
+            Origin = backup.Origin;
         }
     }
 }

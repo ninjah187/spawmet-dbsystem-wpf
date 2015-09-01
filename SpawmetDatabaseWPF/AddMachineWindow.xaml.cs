@@ -46,7 +46,6 @@ namespace SpawmetDatabaseWPF
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             NameTextBox.GotFocus += TextBox_GotFocus;
-            PriceTextBox.GotFocus += TextBox_GotFocus;
 
             NameTextBox.Focus();
         }
@@ -59,21 +58,10 @@ namespace SpawmetDatabaseWPF
                 MessageBox.Show("Brak nazwy.", "Błąd");
                 return;
             }
-            Decimal price = 0;
-            try
-            {
-                price = Decimal.Parse(PriceTextBox.Text);
-            }
-            catch (FormatException exc)
-            {
-                MessageBox.Show("Cena musi być liczbą.", "Błąd");
-                return;
-            }
 
             var machine = new Machine()
             {
                 Name = name,
-                Price = price,
             };
 
             _dbContext.Machines.Add(machine);

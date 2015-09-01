@@ -34,5 +34,9 @@ namespace SpawmetDatabase.FileCreators
 
         public abstract void Create(Machine machine, string savePath);
         public abstract void Create(IEnumerable<Machine> machines, string savePath);
+        public abstract void Create(Order order, string savePath);
+        public abstract void Create(IEnumerable<Order> orders, string savePath);
+        public abstract void Create(Part part, string savePath);
+        public abstract void Create(IEnumerable<Part> parts, string savePath);
     }
 }

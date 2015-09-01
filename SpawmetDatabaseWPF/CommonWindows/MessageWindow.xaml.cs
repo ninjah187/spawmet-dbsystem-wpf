@@ -54,12 +54,12 @@ namespace SpawmetDatabaseWPF.CommonWindows
             };
         }
 
-        public static void Show(string message, Window owner)
+        public static void Show(string message, Window owner = null)
         {
             Show(message, "", owner);
         }
 
-        public static void Show(string message, string title, Window owner)
+        public static void Show(string message, string title, Window owner = null)
         {
             var win = new MessageWindow(message, title, owner);
             win.Focus();

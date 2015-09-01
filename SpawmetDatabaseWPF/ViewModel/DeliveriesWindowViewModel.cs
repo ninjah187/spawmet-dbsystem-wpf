@@ -12,6 +12,7 @@ using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Windows.Searching;
+using Application = System.Windows.Application;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -49,6 +50,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     _selectedDelivery = value;
                     OnPropertyChanged();
                     OnElementSelected(_selectedDelivery);
+                    SelectedElement = _selectedDelivery;
                     LoadDeliveryPartSet();
                 }
             }
@@ -93,6 +95,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand DeletePartFromDeliveryCommand { get; private set; }
 
         public override ICommand NewSearchWindowCommand { get; protected set; }
+
+        public ICommand GoToPartCommand { get; protected set; }
 
         public DeliveriesWindowViewModel(DeliveriesWindow window)
             : this(window, null)
@@ -192,7 +196,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     ? "Czy chcesz usunąć zaznaczoną dostawę?"
                     : "Czy chcesz usunąć zaznaczone dostawy?";
 
-                var confirmWin = new ConfirmWindow(_window, msg);
+                var confirmWin = new ConfirmWindow(msg);
                 confirmWin.Confirmed += delegate
                 {
                     var win = new DeleteDeliveryWindow(DbContext, selected);
@@ -213,7 +217,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                     {
                         IsConnected = false;
                     };
-                    win.Show();
+                    win.Owner = _window;
+                    win.ShowDialog();
                 };
                 confirmWin.Show();
             });
@@ -279,23 +284,52 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+
+            GoToPartCommand = new Command(() =>
+            {
+                var partSetElement = SelectedPartSetElement;
+                if (partSetElement == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<PartsWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(partSetElement.Part);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = partSetElement.Part
+                    };
+                    var window = new PartsWindow(config);
+                    window.Show();
+                }
+            });
         }
 
         public override void Load()
         {
             LoadDeliveries();
 
-            IsConnected = true;
+            FinishLoading();
+        }
 
-            if (WindowConfig.SelectedElement != null)
+        public override async Task LoadAsync()
+        {
+            await Task.Run(() =>
             {
-                var delivery = Deliveries.Single(d => d.Id == WindowConfig.SelectedElement.Id);
+                LoadDeliveries();
+            });
 
-                SelectedDelivery = delivery;
-
-                _window.DataGrid.SelectedItem = SelectedDelivery;
-                _window.DataGrid.ScrollIntoView(SelectedDelivery);
-            }
+            FinishLoading();
         }
 
         private void LoadDeliveries()
@@ -309,12 +343,28 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             var delivery = SelectedDelivery;
 
+            if (delivery == null)
+            {
+                DeliveryPartSet = null;
+                return;
+            }
+
             if (_partsBackgroundWorker.IsBusy == false)
             {
                 _partsBackgroundWorker.RunWorkerAsync(delivery.Id);
 
                 OnPartSetStartLoading();
             }
+        }
+
+        public override void SelectElement(IModelElement element)
+        {
+            var delivery = Deliveries.Single(e => e.Id == element.Id);
+
+            SelectedDelivery = delivery;
+
+            _window.DataGrid.SelectedItem = delivery;
+            _window.DataGrid.ScrollIntoView(delivery);
         }
 
         private List<Delivery> GetSelectedDeliveries()

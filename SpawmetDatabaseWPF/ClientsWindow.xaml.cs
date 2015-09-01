@@ -26,6 +26,8 @@ namespace SpawmetDatabaseWPF
     {
         public DataGrid DataGrid { get { return MainDataGrid; } }
 
+        private ClientsWindowViewModel _viewModel;
+
         public ClientsWindow()
             : this(40, 40)
         {
@@ -44,42 +46,42 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            var viewModel = new ClientsWindowViewModel(this, config);
-            DataContext = viewModel;
+            _viewModel = new ClientsWindowViewModel(this, config);
+            DataContext = _viewModel;
 
-            viewModel.ElementSelected += (sender, e) =>
+            _viewModel.ElementSelected += (sender, e) =>
             {
-                string id = "";
-                string name = "";
-                string address = "";
-                string phone = "";
-                string email = "";
-                string nip = "";
+                //string id = "";
+                //string name = "";
+                //string address = "";
+                //string phone = "";
+                //string email = "";
+                //string nip = "";
 
-                if (e.Element != null)
-                {
-                    var client = (Client)e.Element;
-                    id = client.Id.ToString();
-                    name = client.Name;
-                    address = client.Address;
-                    phone = client.Phone;
-                    email = client.Email;
-                    nip = client.Nip;
-                }
+                //if (e.Element != null)
+                //{
+                //    var client = (Client)e.Element;
+                //    id = client.Id.ToString();
+                //    name = client.Name;
+                //    address = client.Address;
+                //    phone = client.Phone;
+                //    email = client.Email;
+                //    nip = client.Nip;
+                //}
 
-                IdTextBlock.Text = id;
-                NameTextBlock.Text = name;
-                AddressTextBlock.Text = address;
-                PhoneTextBlock.Text = phone;
-                EmailTextBlock.Text = email;
-                NipTextBlock.Text = nip;
+                //IdTextBlock.Text = id;
+                //NameTextBlock.Text = name;
+                //AddressTextBlock.Text = address;
+                //PhoneTextBlock.Text = phone;
+                //EmailTextBlock.Text = email;
+                //NipTextBlock.Text = nip;
             };
 
-            viewModel.OrdersStartLoading += delegate
+            _viewModel.OrdersStartLoading += delegate
             {
                 OrdersProgressBar.IsIndeterminate = true;
             };
-            viewModel.OrdersCompletedLoading += delegate
+            _viewModel.OrdersCompletedLoading += delegate
             {
                 OrdersProgressBar.IsIndeterminate = false;
             };
@@ -95,15 +97,23 @@ namespace SpawmetDatabaseWPF
 
             this.Closed += delegate
             {
-                viewModel.Dispose();
+                _viewModel.Dispose();
             };
 
-            viewModel.Load();
+            Loaded += async delegate
+            {
+                await _viewModel.LoadAsync();
+            };
         }
 
         public void CommitEdit()
         {
-            MainDataGrid.CommitEdit();
+            MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        }
+
+        public void Select(Client client)
+        {
+            _viewModel.SelectElement(client);
         }
     }
 }

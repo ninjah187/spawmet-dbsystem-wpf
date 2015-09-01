@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace SpawmetDatabase.Model
 {
-    public class Machine : IModelElement, INotifyPropertyChanged
+    public class Machine : EditableModelElement<Machine>, INotifyPropertyChanged
     {
         public Machine()
         {
             this.Orders = new HashSet<Order>();
             this.StandardPartSet = new HashSet<StandardPartSetElement>();
+            this.Modules = new HashSet<MachineModule>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public int Id
+        public override int Id
         {
             get { return _id; }
             set
@@ -35,19 +37,6 @@ namespace SpawmetDatabase.Model
                 {
                     _name = value;
                     NotifyPropertyChanged("Name");
-                }
-            }
-        }
-
-        public decimal Price
-        {
-            get { return _price; }
-            set
-            {
-                if (_price != value)
-                {
-                    _price = value;
-                    NotifyPropertyChanged("Price");
                 }
             }
         }
@@ -78,12 +67,26 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        private ICollection<MachineModule> _modules;
+        public virtual ICollection<MachineModule> Modules
+        {
+            get { return _modules; }
+            set
+            {
+                if (_modules != value)
+                {
+                    _modules = value;
+                    NotifyPropertyChanged("Modules");
+                }
+            }
+        }
+
         private int _id;
         private string _name;
-        private decimal _price;
 
         private ICollection<Order> _orders;
         private ICollection<StandardPartSetElement> _standardPartSet;
+        private ICollection<MachineModule> _machineModules;
 
         protected void NotifyPropertyChanged(string propertyName)
         {
@@ -91,6 +94,14 @@ namespace SpawmetDatabase.Model
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public override void UndoChanges()
+        {
+            var backup = BackupElement;
+
+            Id = backup.Id;
+            Name = backup.Name;
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.Windows.Common.ExceptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Błąd" SizeToContent="WidthAndHeight" Icon="../icon2.ico">
+    <Grid Width="400"
+          Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Błąd działania programu." FontWeight="DemiBold" Margin="0,0,0,5" />
+            <TextBlock Text="Informacje o błędzie:"></TextBlock>
+            <TextBox x:Name="ExceptionInfoTextBox" IsReadOnly="True" Height="200"
+                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"></TextBox>
+        </StackPanel>
+        
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Width="100">Wyślij raport</Button>
+            
+            <Button Grid.Column="1" Width="60" Click="OkButton_OnClick">OK</Button>
+        </Grid>
+    </Grid>
+</Window>

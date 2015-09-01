@@ -1,7 +1,7 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.DeleteOrderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Usuwanie zamówień" SizeToContent="WidthAndHeight"
+        Title="Usuwanie zamówień" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         Icon="icon2.ico">
     <StackPanel>
         <TextBlock x:Name="TitleTextBlock" Text="Przygotowywanie operacji..." TextAlignment="Center" Margin="0,10"></TextBlock>

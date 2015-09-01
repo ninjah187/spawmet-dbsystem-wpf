@@ -4,21 +4,31 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Searching;
+using Application = System.Windows.Application;
+using PrintDialog = System.Windows.Controls.PrintDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
     public class OrdersWindowViewModel : SpawmetWindowViewModel
     {
+        public event EventHandler ModulesStartLoading;
+        public event EventHandler ModulesCompletedLoading;
+
         public event EventHandler PartSetStartLoading;
         public event EventHandler PartSetCompletedLoading;
 
@@ -52,7 +62,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                     _selectedOrder = value;
                     OnPropertyChanged();
                     OnElementSelected(_selectedOrder);
+                    SelectedElement = _selectedOrder;
                     LoadAdditionalPartSet();
+                    LoadModulesAsync();
                 }
             }
         }
@@ -80,6 +92,34 @@ namespace SpawmetDatabaseWPF.ViewModel
                 if (_machines != value)
                 {
                     _machines = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private ObservableCollection<MachineModule> _modules;
+        public ObservableCollection<MachineModule> Modules
+        {
+            get { return _modules; }
+            set
+            {
+                if (_modules != value)
+                {
+                    _modules = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private MachineModule _selectedModule;
+        public MachineModule SelectedModule
+        {
+            get { return _selectedModule; }
+            set
+            {
+                if (_selectedModule != value)
+                {
+                    _selectedModule = value;
                     OnPropertyChanged();
                 }
             }
@@ -113,21 +153,70 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        public ICommand AddOrderCommand { get; private set; }
+        public ICommand AddOrderCommand { get; protected set; }
 
-        public ICommand DeleteOrdersCommand { get; private set; }
+        public ICommand DeleteOrdersCommand { get; protected set; }
 
-        public ICommand ChangeStatusCommand { get; private set; }
+        public ICommand ChangeStatusCommand { get; protected set; }
 
         public override ICommand RefreshCommand { get; protected set; }
 
-        public ICommand AddPartToOrderCommand { get; private set; }
+        public ICommand AddPartToOrderCommand { get; protected set; }
 
-        public ICommand CraftPartCommand { get; private set; }
+        public ICommand CraftPartCommand { get; protected set; }
 
-        public ICommand DeletePartFromOrderCommand { get; private set; }
+        public ICommand CraftPartAmountCommand { get; protected set; }
+
+        public ICommand DeletePartFromOrderCommand { get; protected set; }
+
+        public ICommand PrintDialogCommand { get; protected set; }
+
+        public ICommand SaveToFileCommand { get; protected set; }
 
         public override ICommand NewSearchWindowCommand { get; protected set; }
+
+        public ICommand AddMachineModuleCommand { get; protected set; }
+
+        public ICommand DeleteMachineModuleCommand { get; protected set; }
+
+        public ICommand MachineModuleDetailsCommand { get; protected set; }
+
+        public ICommand SendMailToClientCommand { get; protected set; }
+
+        public ICommand GoToMachineCommand { get; protected set; }
+
+        public ICommand GoToClientCommand { get; protected set; }
+
+        public ICommand GoToPartCommand { get; protected set; }
+
+        public ICommand ArchiveCommand { get; protected set; }
+
+        private bool _arePartsLoading;
+        public bool ArePartsLoading
+        {
+            get { return _arePartsLoading; }
+            set
+            {
+                if (_arePartsLoading != value)
+                {
+                    _arePartsLoading = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _areModulesLoading;
+        public bool AreModulesLoading
+        {
+            get { return _areModulesLoading; }
+            set
+            {
+                if (_areModulesLoading != value)
+                {
+                    _areModulesLoading = value;
+                }
+            }
+        }
 
         public OrdersWindowViewModel(OrdersWindow window)
             : this(window, null)
@@ -198,7 +287,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 var source = (List<AdditionalPartSetElement>) e.Result;
                 AdditionalPartSet = new ObservableCollection<AdditionalPartSetElement>(source);
 
-                OnPartSetCompletedLoading();
+                ArePartsLoading = false;
             };
         }
 
@@ -209,9 +298,23 @@ namespace SpawmetDatabaseWPF.ViewModel
             AddOrderCommand = new Command(() =>
             {
                 var win = new AddOrderWindow(DbContext);
-                win.OrderAdded += (sender, e) =>
+                win.OrderAdded += async (sender, e) =>
                 {
                     Orders.Add(e);
+
+                    // TODO: throw new Exception("Zrób tu wait window");
+                    switch (e.Status)
+                    {
+                        case OrderStatus.InProgress:
+                            await ApplyPartSetsAsync(e);
+                            break;
+
+                        case OrderStatus.Done:
+                            await ApplyPartSetsAsync(e);
+                            break;
+                    }
+
+                    Mediator.NotifyContextChange(this);
                 };
                 win.Show();
             });
@@ -222,103 +325,113 @@ namespace SpawmetDatabaseWPF.ViewModel
                 OrderStatus? newStatus;
 
                 oldStatus = order.Status;
-                SaveDbStateCommand.Execute(null);
-                newStatus = order.Status;
+                //SaveDbStateCommand.Execute(null);
+                //newStatus = order.Status;
 
-                switch (oldStatus)
-                {
-                    case OrderStatus.New:
-                        switch (newStatus)
-                        {
-                            case OrderStatus.InProgress:
-                                await ApplyPartSetsAsync(SelectedOrder);
-                                break;
+                // SaveDbStateCommand is async so create task that will save dbContext and then will
+                // be continued by task which applies part sets
 
-                            case OrderStatus.Done:
-                                ApplyPartSets(SelectedOrder);
-                                break;
-
-                            default:
-                                throw new InvalidOperationException();
-                        }
-                        break;
-
-                    case OrderStatus.InProgress:
-                        switch (newStatus)
-                        {
-                            case OrderStatus.New:
-                                UndoApplyPartSets(SelectedOrder);
-                                break;
-
-                            case OrderStatus.Done:
-                                break;
-
-                            default:
-                                throw new InvalidOperationException();
-                        }
-                        break;
-
-                    case OrderStatus.Done:
-                        switch (newStatus)
-                        {
-                            case OrderStatus.New:
-                                UndoApplyPartSets(SelectedOrder);
-                                break;
-
-                            case OrderStatus.InProgress:
-                                break;
-
-                            default:
-                                throw new InvalidOperationException();
-                        }
-                        break;
-
-                    default:
-                        throw new InvalidOperationException();
-                }
+                
+                //changeStatusTask.Wait();
+                //await changeStatusTask;
             });
 
+            //DeleteOrdersCommand = new Command(() =>
+            //{
+            //    var selected = GetSelectedOrders();
+            //    if (selected == null)
+            //    {
+            //        return;
+            //    }
+
+            //    string msg = selected.Count == 1
+            //        ? "Czy chcesz usunąć zaznaczone zamówienie?"
+            //        : "Czy chcesz usunąć zaznaczone zamówienia?";
+
+            //    var confirmWin = new ConfirmWindow(msg);
+            //    confirmWin.Confirmed += delegate
+            //    {
+            //        var win = new DeleteOrderWindow(DbContext, selected);
+            //        win.OrdersDeleted += (sender, orders) =>
+            //        {
+            //            foreach (var order in orders)
+            //            {
+            //                Orders.Remove(order);
+            //            }
+            //        };
+            //        win.WorkCompleted += delegate
+            //        {
+            //            AdditionalPartSet = null;
+
+            //            OnElementSelected(null);
+            //        };
+            //        win.ConnectionLost += (sender, exc) =>
+            //        {
+            //            IsConnected = false;
+            //        };
+            //        win.Owner = _window;
+            //        win.ShowDialog();
+            //    };
+            //    confirmWin.Show();
+            //});
+
+            #region DeleteOrders
             DeleteOrdersCommand = new Command(() =>
             {
-                var selected = GetSelectedOrders();
-                if (selected == null)
+                var orders = GetSelectedOrders();
+                if (orders == null)
                 {
                     return;
                 }
 
-                string msg = selected.Count == 1
-                    ? "Czy chcesz usunąć zaznaczone zamówienie?"
-                    : "Czy chcesz usunąć zaznaczone zamówienia?";
-
-                var confirmWin = new ConfirmWindow(_window, msg);
-                confirmWin.Confirmed += delegate
+                var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczone zamówienia?");
+                confirmWin.Confirmed += async delegate
                 {
-                    var win = new DeleteOrderWindow(DbContext, selected);
-                    win.OrdersDeleted += (sender, orders) =>
-                    {
-                        foreach (var order in orders)
-                        {
-                            Orders.Remove(order);
-                        }
-                    };
-                    win.WorkCompleted += delegate
-                    {
-                        AdditionalPartSet = null;
+                    var waitWin = new WaitWindow("Proszę czekać, trwa usuwanie...");
+                    waitWin.Show();
 
-                        OnElementSelected(null);
-                    };
-                    win.ConnectionLost += (sender, exc) =>
+                    foreach (var order in orders)
                     {
-                        IsConnected = false;
-                    };
-                    win.Show();
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                var additionalParts = order.AdditionalPartSet;
+                                DbContext.AdditionalPartSets.RemoveRange(additionalParts);
+
+                                order.MachineModules.Clear();
+
+                                DbContext.Orders.Remove(order);
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        Orders.Remove(order);
+                    }
+
+                    Mediator.NotifyContextChange(this);
+                    waitWin.Close();
                 };
                 confirmWin.Show();
             });
+            #endregion
 
-            RefreshCommand = new Command(() =>
+            RefreshCommand = new Command(async () =>
             {
-                SaveDbStateCommand.Execute(null);
+                //SaveDbStateCommand.Execute(null);
+
+                _window.CommitEdit();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
+
+                //_window.Close();
 
                 var config = GetWindowConfig();
                 var win = new OrdersWindow(config);
@@ -339,27 +452,102 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
 
                 var win = new AddPartToOrderWindow(DbContext, order);
-                win.PartAdded += (sender, partSetElement) =>
+                win.PartAdded += async (sender, partSetElement) =>
                 {
                     AdditionalPartSet.Add(partSetElement);
+
+                    if (partSetElement.Order.Status == OrderStatus.InProgress ||
+                        partSetElement.Order.Status == OrderStatus.Done)
+                    {
+                        IsSaving = true;
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                var part = DbContext.Parts.Single(p => p.Id == partSetElement.Part.Id);
+
+                                part.Amount -= partSetElement.Amount;
+
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        IsSaving = false;
+
+                        LoadAdditionalPartSet();
+
+                        Mediator.NotifyContextChange(this);
+                    }
                 };
                 win.Show();
             });
 
-            CraftPartCommand = new Command(() =>
+            CraftPartCommand = new Command(async () =>
             {
                 var element = SelectedPartSetElement;
-
                 var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
-                part.Amount += element.Amount;
 
-                DbContext.SaveChanges();
+                await Task.Run(() =>
+                {
+                    IsSaving = true;
+                    lock (DbContextLock)
+                    {
+                        part.Amount += element.Amount;
+                        DbContext.SaveChanges();
+                    }
+                    IsSaving = false;
+                });
 
-                string txt = "Wypalono: " + part.Name + "\nIlość: " + element.Amount;
-                MessageBox.Show(txt, "Wypalono część");
+                LoadAdditionalPartSet();
+
+                Mediator.NotifyContextChange(this);
+
+                string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+                MessageWindow.Show(txt, "Wypalono część", _window);
             });
 
-            DeletePartFromOrderCommand = new Command(() =>
+            CraftPartAmountCommand = new Command(() =>
+            {
+                if (SelectedPartSetElement == null)
+                {
+                    return;
+                }
+
+                var win = new CraftPartWindow(DbContext, SelectedPartSetElement.Part);
+                win.WorkStarted += delegate
+                {
+                    IsSaving = true;
+                };
+                win.WorkCompleted += delegate
+                {
+                    IsSaving = false;
+                };
+                win.PartCrafted += (sender, e) =>
+                {
+                    LoadAdditionalPartSet();
+
+                    Mediator.NotifyContextChange(this);
+
+                    string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
+                    MessageWindow.Show(txt, "Wypalono część", _window);
+                };
+                win.Owner = _window;
+                win.ShowDialog();
+            });
+
+            //CraftPartCommand = new Command(() =>
+            //{
+            //    var element = SelectedPartSetElement;
+
+            //    var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+            //    part.Amount += element.Amount;
+
+            //    DbContext.SaveChanges();
+
+            //    string txt = "Wypalono: " + part.Name + "\nIlość: " + element.Amount;
+            //    MessageBox.Show(txt, "Wypalono część");
+            //});
+
+            DeletePartFromOrderCommand = new Command(async () =>
             {
                 if (SelectedPartSetElement == null)
                 {
@@ -369,10 +557,82 @@ namespace SpawmetDatabaseWPF.ViewModel
                 var element = DbContext.AdditionalPartSets
                     .Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
                                                                         && el.Order.Id == SelectedPartSetElement.Order.Id);
-                DbContext.AdditionalPartSets.Remove(element);
-                DbContext.SaveChanges();
+
+                if (element.Order.Status == OrderStatus.InProgress ||
+                    element.Order.Status == OrderStatus.Done)
+                {
+                    IsSaving = true;
+                    await Task.Run(() =>
+                    {
+                        lock (DbContextLock)
+                        {
+                            var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                            part.Amount += element.Amount;
+
+                            DbContext.SaveChanges();
+                        }
+                    });
+                    IsSaving = false;
+
+                    //lock (DbContextLock)
+                    //{
+                    //    LoadAdditionalPartSet();
+                    //}
+                }
+                
+                //lock (DbContextLock)
+                //{
+                    DbContext.AdditionalPartSets.Remove(element);
+                    DbContext.SaveChanges();
+                //}
 
                 LoadAdditionalPartSet();
+
+                Mediator.NotifyContextChange(this);
+            });
+
+            PrintDialogCommand = new Command(() =>
+            {
+                var selected = GetSelectedOrders();
+                if (selected == null)
+                {
+                    return;
+                }
+
+                var printDialog = new PrintDialog();
+                printDialog.PageRangeSelection = PageRangeSelection.AllPages;
+                printDialog.UserPageRangeEnabled = false;
+                printDialog.SelectedPagesEnabled = false;
+
+                bool? print = printDialog.ShowDialog();
+                if (print == true)
+                {
+                    var printWindow = new PrintWindow();
+                    printWindow.PrintAsync(selected, printDialog);
+                    printWindow.Show();
+                }
+            });
+
+            SaveToFileCommand = new Command(() =>
+            {
+                var selected = GetSelectedOrders();
+                if (selected == null)
+                {
+                    return;
+                }
+
+                var saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Plik Word 2007 (*.docx)|*.docx|Plik PDF (*.pdf)|*.pdf";
+                saveFileDialog.AddExtension = true;
+                saveFileDialog.FileName = selected.Count == 1
+                    ? selected.First().Machine.Name
+                    : "Wykaz zamówień, " + DateTime.Now.ToString("yyyy-MM-dd HH_mm");
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    new SaveFileWindow(selected, saveFileDialog.FileName).Show();
+                }
             });
 
             NewSearchWindowCommand = new Command(() =>
@@ -392,6 +652,233 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Show();
             });
+
+            SendMailToClientCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                if (order.Client == null)
+                {
+                    MessageWindow.Show("Zamówienie nie jest powiązane z żadnym klientem.", "Błąd", null);
+                    return;
+                }
+
+                if (order.Client.Email == "")
+                {
+                    MessageWindow.Show("Klient powiązany z zamówieniem nie ma przypisanego adresu e-mail.", "Błąd", null);
+                    return;
+                }
+
+                var win = new SendConfirmationWindow(order);
+                win.WorkCompleted += delegate
+                {
+                    order.ConfirmationSent = true;
+                    MessageWindow.Show("Wysyłanie potwierdzenia zakończono powodzeniem.", "Zakończono", null);
+                };
+                win.Owner = _window;
+                win.ShowDialog();
+            });
+
+            #region AddMachineModule
+            AddMachineModuleCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var win = new AddMachineModuleToOrderWindow(order.Id);
+                win.ModuleAdded += async (sender, mod) =>
+                {
+                    MachineModule module = null;
+
+                    module = DbContext.MachineModules.Single(m => m.Id == mod.Id);
+
+                    Modules.Add(module);
+
+                    if (order.Status == OrderStatus.InProgress ||
+                        order.Status == OrderStatus.Done)
+                    {
+                        IsSaving = true;
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                foreach (var element in module.MachineModulePartSet)
+                                {
+                                    var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                                    part.Amount -= element.Amount;
+                                }
+                                DbContext.SaveChanges();
+                            }
+                        });
+
+                        Mediator.NotifyContextChange(this);
+
+                        IsSaving = false;
+                    }
+                };
+                win.ShowDialog();
+            });
+            #endregion
+
+            #region DeleteMachineModule
+            DeleteMachineModuleCommand = new Command(async () =>
+            {
+                var module = SelectedModule;
+                var order = SelectedOrder;
+                if (module == null)
+                {
+                    return;
+                }
+
+                _window.IsEnabled = false;
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        order.MachineModules.Remove(module);
+                        if (order.Status == OrderStatus.InProgress ||
+                            order.Status == OrderStatus.Done)
+                        {
+                            foreach (var element in module.MachineModulePartSet)
+                            {
+                                element.Part.Amount += element.Amount;
+                            }
+                        }
+                        DbContext.SaveChanges();
+                    }
+                });
+
+                Mediator.NotifyContextChange(this);
+
+                Modules.Remove(module);
+                IsSaving = false;
+                _window.IsEnabled = true;
+            });
+            #endregion
+
+            GoToMachineCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<MachinesWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order.Machine);
+                }
+                else
+                {
+                    //NewMachinesWindowCommand.Execute(null);
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = order.Machine
+                    };
+                    var window = new MachinesWindow(config);
+                    window.Show();
+                }
+            });
+
+            GoToClientCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<ClientsWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order.Client);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = order.Client
+                    };
+                    var window = new ClientsWindow(config);
+                    window.Show();
+                }
+            });
+
+            GoToPartCommand = new Command(() =>
+            {
+                var partSetElement = SelectedPartSetElement;
+                if (partSetElement == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<PartsWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(partSetElement.Part);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        Left = _window.Left + Offset,
+                        Top = _window.Top + Offset,
+                        SelectedElement = partSetElement.Part
+                    };
+                    var window = new PartsWindow(config);
+                    window.Show();
+                }
+            });
+
+            #region Archive
+            ArchiveCommand = new Command(async () =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var waitWin = new WaitWindow("Proszę czekać, trwa archiwizowanie...");
+                waitWin.Show();
+                
+                await Task.Run(() =>
+                {
+                    var archivedOrder = new ArchivedOrder(order);
+
+                    DbContext.ArchivedOrders.Add(archivedOrder);
+
+                    DbContext.SaveChanges();
+                });
+                
+                Mediator.NotifyContextChange(this);
+
+                waitWin.Close();
+            });
+            #endregion
         }
 
         public override void Load()
@@ -404,12 +891,24 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             if (WindowConfig.SelectedElement != null)
             {
-                var order = Orders.Single(o => o.Id == WindowConfig.SelectedElement.Id);
+                SelectElement(WindowConfig.SelectedElement);
+            }
+        }
 
-                SelectedOrder = order;
+        public override async Task LoadAsync()
+        {
+            await Task.Run(() =>
+            {
+                LoadOrders();
+                LoadClients();
+                LoadMachines();
+            });
 
-                _window.DataGrid.SelectedItem = SelectedOrder;
-                _window.DataGrid.ScrollIntoView(SelectedOrder);
+            IsConnected = true;
+
+            if (WindowConfig.SelectedElement != null)
+            {
+                SelectElement(WindowConfig.SelectedElement);
             }
         }
 
@@ -437,12 +936,59 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         private void LoadAdditionalPartSet()
         {
+            if (SelectedOrder == null)
+            {
+                AdditionalPartSet = null;
+                return;
+            }
+
             if (_partsBackgroundWorker.IsBusy == false)
             {
                 _partsBackgroundWorker.RunWorkerAsync(SelectedOrder.Id);
 
-                OnPartSetStartLoading();
+                ArePartsLoading = true;
             }
+        }
+
+        public async Task LoadModulesAsync()
+        {
+            var order = SelectedOrder;
+            if (order == null)
+            {
+                return;
+            }
+
+            AreModulesLoading = true;
+
+            await Task.Run(() =>
+            {
+                List<MachineModule> modules = null;
+                lock (DbContextLock)
+                {
+                    //modules = DbContext.MachineModules
+                    //    .Where(m => m.Orders.Contains(order))
+                    //    .OrderBy(m => m.Name)
+                    //    .ToList();
+                    modules = order.MachineModules.OrderBy(m => m.Name).ToList();
+                }
+
+                if (order == SelectedOrder) // check if it has any sense; it's because SelectedOrder may change during async call                    
+                {
+                    Modules = new ObservableCollection<MachineModule>(modules);
+                }
+            });
+
+            AreModulesLoading = false;
+        }
+
+        public override void SelectElement(IModelElement element)
+        {
+            var order = Orders.Single(e => e.Id == element.Id);
+
+            SelectedOrder = order;
+
+            _window.DataGrid.SelectedItem = order;
+            _window.DataGrid.ScrollIntoView(order);
         }
 
         private List<Order> GetSelectedOrders()
@@ -461,6 +1007,79 @@ namespace SpawmetDatabaseWPF.ViewModel
             return selected;
         }
 
+        public async void ChangeStatus(OrderStatus oldStatus, OrderStatus newStatus)
+        {
+            _window.CommitEdit();
+
+            IsSaving = true;
+            await Task.Run(() =>
+            {
+                lock (DbContextLock)
+                {
+                    DbContext.SaveChanges();
+                }
+            });
+            IsSaving = false;
+
+            switch (oldStatus)
+            {
+                case OrderStatus.New:
+                    switch (newStatus)
+                    {
+                        case OrderStatus.InProgress:
+                            await ApplyPartSetsAsync(SelectedOrder);
+                            Mediator.NotifyContextChange(this);
+                            // zamiast async metody i await, powinno wystarczyć
+                            // Task.Run(() => { ApplyPartSets(SelectedOrder) });
+                            break;
+
+                        case OrderStatus.Done:
+                            await ApplyPartSetsAsync(SelectedOrder);
+                            Mediator.NotifyContextChange(this);
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.InProgress:
+                    switch (newStatus)
+                    {
+                        case OrderStatus.New:
+                            await UndoApplyPartSetsAsync(SelectedOrder);
+                            Mediator.NotifyContextChange(this);
+                            break;
+
+                        case OrderStatus.Done:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                case OrderStatus.Done:
+                    switch (newStatus)
+                    {
+                        case OrderStatus.New:
+                            await UndoApplyPartSetsAsync(SelectedOrder);
+                            Mediator.NotifyContextChange(this);
+                            break;
+
+                        case OrderStatus.InProgress:
+                            break;
+
+                        default:
+                            throw new InvalidOperationException();
+                    }
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+
         private void ApplyPartSets(Order order)
         {
             foreach (var element in order.Machine.StandardPartSet)
@@ -475,33 +1094,46 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 part.Amount -= element.Amount;
             }
+            foreach (var module in order.MachineModules)
+            {
+                foreach (var element in module.MachineModulePartSet)
+                {
+                    var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                    part.Amount -= element.Amount;
+                }
+            }
             DbContext.SaveChanges();
             //SaveDbStateCommand.Execute(null);
         }
 
-        private Task ApplyPartSetsAsync(Order order)
+        private async Task ApplyPartSetsAsync(Order order)
         {
-            return Task.Run(() =>
+            //return Task.Run(() =>
+            //{
+            //    IsSaving = true;
+            //    lock (DbContextLock)
+            //    {
+            //        ApplyPartSets(order);
+            //    }
+            //    IsSaving = false;
+            //});
+
+            var win = new WaitWindow("Proszę czekać, trwa aktualizacja stanu magazynu...");
+
+            IsSaving = true;
+            var task = Task.Run(() =>
             {
-                IsSaving = true;
                 lock (DbContextLock)
                 {
-                    foreach (var element in order.Machine.StandardPartSet)
-                    {
-                        var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
-
-                        part.Amount -= element.Amount;
-                    }
-                    foreach (var element in order.AdditionalPartSet)
-                    {
-                        var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
-
-                        part.Amount -= element.Amount;
-                    }
-                    DbContext.SaveChanges();
+                    ApplyPartSets(order);
                 }
-                IsSaving = false;
             });
+            win.Show();
+            await task;
+            IsSaving = false;
+
+            win.Close();
         }
 
         private void UndoApplyPartSets(Order order)
@@ -518,7 +1150,44 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 part.Amount += element.Amount;
             }
+            foreach (var module in order.MachineModules)
+            {
+                foreach (var element in module.MachineModulePartSet)
+                {
+                    var part = DbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                    part.Amount += element.Amount;
+                }
+            }
             DbContext.SaveChanges();
+        }
+
+        private async Task UndoApplyPartSetsAsync(Order order)
+        {
+            //return Task.Run(() =>
+            //{
+            //    IsSaving = true;
+            //    lock (DbContextLock)
+            //    {
+            //        UndoApplyPartSets(order);
+            //    }
+            //    IsSaving = false;
+            //});
+            var win = new WaitWindow("Proszę czekać, trwa aktualizacja stanu magazynu...");
+
+            IsSaving = true;
+            var task = Task.Run(() =>
+            {
+                lock (DbContextLock)
+                {
+                    UndoApplyPartSets(order);
+                }
+            });
+            win.Show();
+            await task;
+            IsSaving = false;
+
+            win.Close();
         }
 
         protected override WindowConfig GetWindowConfig()
@@ -530,6 +1199,22 @@ namespace SpawmetDatabaseWPF.ViewModel
         }
 
         #region Event invokers.
+
+        private void OnModulesStartLoading()
+        {
+            if (ModulesStartLoading != null)
+            {
+                ModulesStartLoading(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnModulesCompletedLoading()
+        {
+            if (ModulesCompletedLoading != null)
+            {
+                ModulesCompletedLoading(this, EventArgs.Empty);
+            }
+        }
 
         private void OnPartSetStartLoading()
         {

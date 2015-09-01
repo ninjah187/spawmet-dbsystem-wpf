@@ -11,9 +11,18 @@
     
     <Window.InputBindings>
         <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+1" Command="{Binding NewMachinesWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+3" Command="{Binding NewOrdersWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+4" Command="{Binding NewClientsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+5" Command="{Binding NewArchiveWindowCommand}"></KeyBinding>
     </Window.InputBindings>
     
     <Grid>
+        
+        <Grid.Resources>
+            <converters:OriginToStringConverter x:Key="OriginToStringConverter" />
+        </Grid.Resources>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -29,11 +38,16 @@
             <DockPanel DockPanel.Dock="Top">
                 <Menu DockPanel.Dock="Top">
                     <MenuItem Header="Tabele">
-                        <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"></MenuItem>
-                        <MenuItem Header="Części" IsEnabled="False"></MenuItem>
-                        <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"></MenuItem>
-                        <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"></MenuItem>
-                        <MenuItem x:Name="DeliveriesMenuItem" Header="Dostawy" Command="{Binding NewDeliveriesWindowCommand}"></MenuItem>
+                        <MenuItem x:Name="MachinesMenuItem" Header="Maszyny" Command="{Binding NewMachinesWindowCommand}"
+                                  InputGestureText="Ctrl+1"></MenuItem>
+                        <MenuItem Header="Części" IsEnabled="False"
+                                  InputGestureText="Ctrl+2"></MenuItem>
+                        <MenuItem x:Name="OrdersMenuItem" Header="Zamówienia" Command="{Binding NewOrdersWindowCommand}"
+                                  InputGestureText="Ctrl+3"></MenuItem>
+                        <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"
+                                  InputGestureText="Ctrl+4"></MenuItem>
+                        <MenuItem Header="Archiwum" Command="{Binding NewArchiveWindowCommand}"
+                                  InputGestureText="Ctrl+5"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Opcje">
                         <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
@@ -41,6 +55,7 @@
                     <MenuItem Header="Narzędzia">
                         <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
                                   InputGestureText="Ctrl+F"></MenuItem>
+                        <MenuItem Header="Raport" Command="{Binding PartsRaportCommand}"></MenuItem>
                     </MenuItem>
                 </Menu>
             </DockPanel>
@@ -76,8 +91,6 @@
                         <x:Type TypeName="custns:Origin"></x:Type>
                     </ObjectDataProvider.MethodParameters>
                 </ObjectDataProvider>
-
-                <spawmetDatabaseWpf:OriginToStringConverter x:Key="enumItemsConverter" />
             </DataGrid.Resources>
 
             <!--<i:Interaction.Triggers>
@@ -95,7 +108,7 @@
                 <ContextMenu>
                     <MenuItem x:Name="AddPartMenuItem" Header="Dodaj" Command="{Binding AddPartCommand}"></MenuItem>
                     <MenuItem x:Name="DeletePartMenuItem" Header="Usuń" Command="{Binding DeletePartsCommand}"></MenuItem>
-                    <MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>
+                    <!--<MenuItem Header="Zapisz" Command="{Binding SaveDbStateCommand}"></MenuItem>-->
                     <MenuItem Header="Odśwież" Command="{Binding RefreshCommand}"></MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>
@@ -103,14 +116,14 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="SizeToCells" />
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" Width="SizeToCells" />
-                <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells"></DataGridTextColumn>
+                <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" Width="SizeToCells" />
                 <!--<DataGridComboBoxColumn Header="Pochodzenie" SelectedItemBinding="{Binding Origin}"
                                                     ItemsSource="{Binding Source={StaticResource originEnum}}" />-->
 
                 <DataGridTemplateColumn Header="Pochodzenie" SortMemberPath="Origin">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Label Content="{Binding Origin, Converter={StaticResource enumItemsConverter}}"></Label>
+                            <Label Content="{Binding Origin, Converter={StaticResource OriginToStringConverter}}"></Label>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -120,7 +133,7 @@
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=., Mode=OneWay,
-                                                         Converter={StaticResource enumItemsConverter}}" />
+                                                         Converter={StaticResource OriginToStringConverter}}" />
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
@@ -132,7 +145,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
-                                              AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
+                                              AncestorType={x:Type Window}}, Path=DataContext.CraftPartAmountCommand}">Wypal</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -156,23 +169,23 @@
                     <StackPanel>
                         <DockPanel>
                             <TextBlock Text="ID: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
-                                           Margin="10,0"/>
+                            <TextBlock x:Name="IdTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedPart.Id}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Nazwa: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
-                                           Margin="10,0"/>
+                            <TextBlock x:Name="NameTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedPart.Name}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Pochodzenie: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                            <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
-                                           Margin="10,0"/>
+                            <TextBlock x:Name="OriginTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0"
+                                       Text="{Binding SelectedPart.Origin, Converter={StaticResource OriginToStringConverter}}" />
                         </DockPanel>
                         <DockPanel>
                             <TextBlock Text="Ilość: " FontWeight="DemiBold" DockPanel.Dock="Left" />
-                            <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" 
-                                           Margin="10,0"/>
+                            <TextBlock x:Name="AmountTextBlock" TextAlignment="Right" TextWrapping="Wrap" DockPanel.Dock="Right" Margin="10,0" 
+                                       Text="{Binding SelectedPart.Amount}" />
                         </DockPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -184,10 +197,17 @@
             
             <StackPanel Grid.Row="2">
                 <ListBox x:Name="MachinesListBox" DisplayMemberPath="Name" ItemsSource="{Binding Machines}"
+                         SelectedItem="{Binding SelectedMachine}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[2].ActualHeight,
                                   UpdateSourceTrigger=Explicit}"
                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
-                                 UpdateSourceTrigger=Explicit}" />
+                                 UpdateSourceTrigger=Explicit}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Idź do" Command="{Binding GoToMachineCommand}"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </StackPanel>
             
             <StackPanel Grid.Row="3">
@@ -197,10 +217,17 @@
             
             <StackPanel Grid.Row="4">
                 <ListBox x:Name="OrdersListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Orders}"
+                         SelectedItem="{Binding SelectedOrder}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[4].ActualHeight,
                                   UpdateSourceTrigger=Explicit}"
                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
-                                 UpdateSourceTrigger=Explicit}" />
+                                 UpdateSourceTrigger=Explicit}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Idź do" Command="{Binding GoToOrderCommand}"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </StackPanel>
             
             <StackPanel Grid.Row="5">
@@ -210,10 +237,17 @@
             
             <StackPanel Grid.Row="6">
                 <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Deliveries}"
+                         SelectedItem="{Binding SelectedDelivery}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[6].ActualHeight,
                                   UpdateSourceTrigger=Explicit}" 
                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
-                                 UpdateSourceTrigger=Explicit}" />
+                                 UpdateSourceTrigger=Explicit}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Idź do" Command="{Binding GoToDeliveryCommand}"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
             </StackPanel>
             
             <StackPanel Grid.Row="8">

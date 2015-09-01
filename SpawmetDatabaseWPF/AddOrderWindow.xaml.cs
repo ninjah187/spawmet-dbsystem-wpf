@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.CommonWindows;
 
 namespace SpawmetDatabaseWPF
 {
@@ -52,6 +53,7 @@ namespace SpawmetDatabaseWPF
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             RemarksTextBox.GotFocus += TextBox_GotFocus;
+            PriceTextBox.GotFocus += TextBox_GotFocus;
 
             StartDatePicker.SelectedDate = DateTime.Today;
             SendDatePicker.SelectedDate = DateTime.Today;
@@ -61,6 +63,7 @@ namespace SpawmetDatabaseWPF
         {
             var client = (Client) ClientComboBox.SelectedItem;
             var machine = (Machine) MachineComboBox.SelectedItem;
+            var serialNumber = SerialNumberTextBox.Text;
             if (machine == null)
             {
                 MessageBox.Show("Wybierz maszynę.", "Błąd");
@@ -71,14 +74,27 @@ namespace SpawmetDatabaseWPF
             var status = (OrderStatus) StatusComboBox.SelectedIndex;
             var remarks = RemarksTextBox.Text;
 
+            Decimal price = 0;
+            try
+            {
+                price = Decimal.Parse(PriceTextBox.Text);
+            }
+            catch (FormatException exc)
+            {
+                MessageWindow.Show("Cena musi być liczbą.", "Błąd", null);
+                return;
+            }
+
             var order = new Order()
             {
                 //Id = FindSmallestFreeId(),
                 Client = client,
                 Machine = machine,
+                SerialNumber = serialNumber,
                 StartDate = startDate,
                 SendDate = sendDate,
                 Status = status,
+                Price = price,
                 Remarks = remarks
             };
             _dbContext.Orders.Add(order);

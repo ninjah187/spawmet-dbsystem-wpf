@@ -14,17 +14,20 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Windows;
 
 namespace SpawmetDatabaseWPF
 {
     /// <summary>
     /// Interaction logic for AddPartToMachine.xaml
     /// </summary>
-    public partial class AddPartToMachine : Window
+    public partial class AddPartToMachine : Window, IDbContextChangesNotifier
     {
         public event EventHandler<StandardPartSetElement> PartAdded;
 
         public ObservableCollection<Part> ListBoxItemsSource { get; set; }
+
+        public DbContextMediator Mediator { get; set; }
 
         //private readonly MachinesWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
@@ -33,6 +36,8 @@ namespace SpawmetDatabaseWPF
         public AddPartToMachine(/*MachinesWindow parentWindow, */SpawmetDBContext dbContext, Machine machine)
         {
             InitializeComponent();
+
+            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
 
             //_parentWindow = parentWindow;
             _dbContext = dbContext;
@@ -88,7 +93,7 @@ namespace SpawmetDatabaseWPF
             MainListBox.Focus();
         }
 
-        private void OkButton_OnClick(object sender, RoutedEventArgs e)
+        private async void OkButton_OnClick(object sender, RoutedEventArgs e)
         {
             var part = (Part) MainListBox.SelectedItem;
             if (part == null)
@@ -113,22 +118,48 @@ namespace SpawmetDatabaseWPF
                 Amount = amount,
             };
 
-            _machine.StandardPartSet.Add(partSetElement);
-            try
+            var waitWin = new WaitWindow("Proszę czekać, trwa aktualizacja stanu magazynu...");
+            waitWin.Show();
+
+            await Task.Run(() =>
             {
+                _machine.StandardPartSet.Add(partSetElement);
+                foreach (var order in _machine.Orders)
+                {
+                    if (order.Status == OrderStatus.InProgress ||
+                        order.Status == OrderStatus.Done)
+                    {
+                        partSetElement.Part.Amount -= partSetElement.Amount;
+                    }
+                }
                 _dbContext.SaveChanges();
-            }
-            catch (System.Data.Entity.Core.EntityException exc)
-            {
-                Disconnected();
-                return;
-            }
+            });
+
+            waitWin.Close();
+
+            //_machine.StandardPartSet.Add(partSetElement);
+            //try
+            //{
+            //    _dbContext.SaveChanges();
+            //}
+            //catch (System.Data.Entity.Core.EntityException exc)
+            //{
+            //    Disconnected();
+            //    return;
+            //}
 
             //_parentWindow.StandardPartSetDataGrid.ItemsSource = _machine.StandardPartSet
             //    .OrderBy(el => el.Part.Name)
             //    .ToList();
 
             OnPartAdded(partSetElement);
+
+            Mediator.NotifyContextChange(this);
+
+            //foreach (var order in _machine.Orders)
+            //{
+                
+            //}
 
             this.Close();
         }

@@ -29,6 +29,8 @@ namespace SpawmetDatabaseWPF
     {
         public DataGrid DataGrid { get { return MainDataGrid; } }
 
+        private PartsWindowViewModel _viewModel;
+
         public PartsWindow()
             : this(40, 40)
         {
@@ -47,26 +49,26 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            var viewModel = new PartsWindowViewModel(this, config);
-            DataContext = viewModel;
+            _viewModel = new PartsWindowViewModel(this, config);
+            DataContext = _viewModel;
 
-            viewModel.ElementSelected += (sender, e) =>
+            _viewModel.ElementSelected += (sender, e) =>
             {
-                string id = "";
-                string name = "";
-                string amount = "";
+                //string id = "";
+                //string name = "";
+                //string amount = "";
 
-                if (e.Element != null)
-                {
-                    var part = (Part)e.Element;
-                    id = part.Id.ToString();
-                    name = part.Name;
-                    amount = part.Amount.ToString();
-                }
+                //if (e.Element != null)
+                //{
+                //    var part = (Part)e.Element;
+                //    id = part.Id.ToString();
+                //    name = part.Name;
+                //    amount = part.Amount.ToString();
+                //}
 
-                IdTextBlock.Text = id;
-                NameTextBlock.Text = name;
-                AmountTextBlock.Text = amount;
+                //IdTextBlock.Text = id;
+                //NameTextBlock.Text = name;
+                //AmountTextBlock.Text = amount;
             };
 
             //viewModel.ConnectionChanged += delegate
@@ -78,31 +80,31 @@ namespace SpawmetDatabaseWPF
             //    //}
             //};
 
-            viewModel.MachinesStartLoading += delegate
+            _viewModel.MachinesStartLoading += delegate
             {
-                MachinesProgressBar.IsIndeterminate = true;
+                EnableUIElement(MachinesProgressBar);
             };
-            viewModel.MachinesCompletedLoading += delegate
+            _viewModel.MachinesCompletedLoading += delegate
             {
-                MachinesProgressBar.IsIndeterminate = false;
-            };
-
-            viewModel.OrdersStartLoading += delegate
-            {
-                OrdersProgressBar.IsIndeterminate = true;
-            };
-            viewModel.OrdersCompletedLoading += delegate
-            {
-                OrdersProgressBar.IsIndeterminate = false;
+                DisableUIElement(MachinesProgressBar);
             };
 
-            viewModel.DeliveriesStartLoading += delegate
+            _viewModel.OrdersStartLoading += delegate
             {
-                DeliveriesProgressBar.IsIndeterminate = true;
+                EnableUIElement(OrdersProgressBar);
             };
-            viewModel.DeliveriesCompletedLoading += delegate
+            _viewModel.OrdersCompletedLoading += delegate
             {
-                DeliveriesProgressBar.IsIndeterminate = false;
+                DisableUIElement(OrdersProgressBar);
+            };
+
+            _viewModel.DeliveriesStartLoading += delegate
+            {
+                EnableUIElement(DeliveriesProgressBar);
+            };
+            _viewModel.DeliveriesCompletedLoading += delegate
+            {
+                DisableUIElement(DeliveriesProgressBar);
             };
 
             this.SizeChanged += delegate
@@ -128,15 +130,33 @@ namespace SpawmetDatabaseWPF
 
             this.Closed += delegate
             {
-                viewModel.Dispose();
+                _viewModel.Dispose();
             };
 
-            viewModel.Load();
+            Loaded += async delegate
+            {
+                await _viewModel.LoadAsync();
+            };
+        }
+
+        public void DisableUIElement(UIElement element)
+        {
+            Application.Current.Dispatcher.Invoke(() => element.IsEnabled = false);
+        }
+
+        public void EnableUIElement(UIElement element)
+        {
+            Application.Current.Dispatcher.Invoke(() => element.IsEnabled = true);
         }
 
         public void CommitEdit()
         {
-            MainDataGrid.CommitEdit();
+            MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        }
+
+        public void Select(Part part)
+        {
+            _viewModel.SelectElement(part);
         }
     }
 }

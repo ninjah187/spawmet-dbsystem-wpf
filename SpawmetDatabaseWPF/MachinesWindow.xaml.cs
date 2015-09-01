@@ -43,6 +43,10 @@ namespace SpawmetDatabaseWPF
     {
         public DataGrid DataGrid { get { return MainDataGrid; } }
 
+        private MachinesWindowViewModel _viewModel;
+
+        private static bool _firstLaunch = true;
+
         public MachinesWindow()
             : this(40, 40)
         {
@@ -61,27 +65,27 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            var viewModel = new MachinesWindowViewModel(this, config);
-            DataContext = viewModel;
+            _viewModel = new MachinesWindowViewModel(this, config);
+            DataContext = _viewModel;
 
-            viewModel.ElementSelected += (sender, e) =>
+            _viewModel.ElementSelected += (sender, e) =>
             {
-                string id = "";
-                string name = "";
-                string price = "";
+                //string id = "";
+                //string name = "";
+                //string price = "";
 
-                if (e.Element != null)
-                {
-                    var machine = (Machine) e.Element;
+                //if (e.Element != null)
+                //{
+                //    var machine = (Machine) e.Element;
 
-                    id = machine.Id.ToString();
-                    name = machine.Name;
-                    price = machine.Price.ToString();
-                }
+                //    id = machine.Id.ToString();
+                //    name = machine.Name;
+                //    //price = machine.Price.ToString();
+                //}
 
-                IdTextBlock.Text = id;
-                NameTextBlock.Text = name;
-                PriceTextBlock.Text = price;
+                //IdTextBlock.Text = id;
+                //NameTextBlock.Text = name;
+                ////PriceTextBlock.Text = price;
             };
 
             //viewModel.ConnectionChanged += (sender, state) =>
@@ -92,27 +96,36 @@ namespace SpawmetDatabaseWPF
             //    //}
             //};
 
-            viewModel.PartSetStartLoading += delegate
+            _viewModel.PartSetStartLoading += delegate
             {
                 StandardPartSetProgressBar.IsIndeterminate = true;
             };
-            viewModel.PartSetCompletedLoading += delegate
+            _viewModel.PartSetCompletedLoading += delegate
             {
                 StandardPartSetProgressBar.IsIndeterminate = false;
             };
 
-            viewModel.OrdersStartLoading += delegate
+            _viewModel.ModulesStartLoading += delegate
+            {
+                ModuleProgressBar.IsIndeterminate = true;
+            };
+            _viewModel.ModulesCompletedLoading += delegate
+            {
+                ModuleProgressBar.IsIndeterminate = false;
+            };
+
+            _viewModel.OrdersStartLoading += delegate
             {
                 OrdersProgressBar.IsIndeterminate = true;
             };
-            viewModel.OrdersCompletedLoading += delegate
+            _viewModel.OrdersCompletedLoading += delegate
             {
                 OrdersProgressBar.IsIndeterminate = false;
             };
 
             this.Closed += delegate
             {
-                viewModel.Dispose();
+                _viewModel.Dispose();
             };
 
             this.SizeChanged += delegate
@@ -123,20 +136,45 @@ namespace SpawmetDatabaseWPF
                 var standardPartSetGridWidthBinding = StandardPartSetDataGrid.GetBindingExpression(DataGrid.WidthProperty);
                 standardPartSetGridWidthBinding.UpdateTarget();
 
+                var binding = ModulesListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = ModulesListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
+
                 var ordersListBoxHeightBinding = OrdersListBox.GetBindingExpression(HeightProperty);
                 ordersListBoxHeightBinding.UpdateTarget();
 
                 var ordersListBoxWidthBinding = OrdersListBox.GetBindingExpression(WidthProperty);
                 ordersListBoxWidthBinding.UpdateTarget();
             };
+            
+            //_viewModel.Load();
 
-            viewModel.Load();
+            if (_firstLaunch)
+            {
+                _viewModel.Load();
+
+                _firstLaunch = false;
+            }
+            else
+            {
+                Loaded += async delegate
+                {
+                    await _viewModel.LoadAsync();
+                };
+            }
         }
 
         public void CommitEdit()
         {
-            MainDataGrid.CommitEdit();
-            StandardPartSetDataGrid.CommitEdit();
+            MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+            StandardPartSetDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        }
+
+        public void Select(Machine machine)
+        {
+            _viewModel.SelectElement(machine);
         }
     }
 }

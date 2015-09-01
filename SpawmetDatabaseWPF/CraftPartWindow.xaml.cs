@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Events;
 
 namespace SpawmetDatabaseWPF
@@ -22,6 +24,9 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class CraftPartWindow : Window
     {
+        public event EventHandler WorkStarted;
+        public event EventHandler WorkCompleted;
+
         public event PartCraftedEventHandler PartCrafted;
 
         private SpawmetDBContext _dbContext;
@@ -67,11 +72,23 @@ namespace SpawmetDatabaseWPF
                 AmountTextBox.Text = "Ilość musi być liczbą.";
                 return;
             }
-            
+
             Close();
 
-            await AddPartAsync(amount);
+            OnWorkStarted();
 
+            try
+            {
+                await AddPartAsync(amount);
+            }
+            catch (InvalidOperationException)
+            {
+                MessageWindow.Show("", "Błąd", null);
+                OnWorkCompleted();
+                return;
+            }
+
+            OnWorkCompleted();
             OnPartCrafted(_part, amount);
         }
 
@@ -82,6 +99,22 @@ namespace SpawmetDatabaseWPF
                 _part.Amount += amount;
                 _dbContext.SaveChanges();
             });
+        }
+
+        private void OnWorkStarted()
+        {
+            if (WorkStarted != null)
+            {
+                WorkStarted(this, EventArgs.Empty);
+            }
+        }
+
+        private void OnWorkCompleted()
+        {
+            if (WorkCompleted != null)
+            {
+                WorkCompleted(this, EventArgs.Empty);
+            }
         }
 
         private void OnPartCrafted(Part part, int amount)

@@ -26,6 +26,8 @@ namespace SpawmetDatabaseWPF
     {
         public DataGrid DataGrid { get { return MainDataGrid; } }
 
+        private DeliveriesWindowViewModel _viewModel;
+
         public DeliveriesWindow()
             : this(40, 40)
         {
@@ -44,33 +46,33 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            var viewModel = new DeliveriesWindowViewModel(this, config);
-            DataContext = viewModel;
+            _viewModel = new DeliveriesWindowViewModel(this, config);
+            DataContext = _viewModel;
 
-            viewModel.ElementSelected += (sender, e) =>
+            _viewModel.ElementSelected += (sender, e) =>
             {
-                string id = "";
-                string name = "";
-                string date = "";
+                //string id = "";
+                //string name = "";
+                //string date = "";
 
-                if (e.Element != null)
-                {
-                    var delivery = (Delivery)e.Element;
-                    id = delivery.Id.ToString();
-                    name = delivery.Name;
-                    date = delivery.Date.ToString("yyyy-MM-dd");
-                }
+                //if (e.Element != null)
+                //{
+                //    var delivery = (Delivery)e.Element;
+                //    id = delivery.Id.ToString();
+                //    name = delivery.Name;
+                //    date = delivery.Date.ToString("yyyy-MM-dd");
+                //}
 
-                IdTextBlock.Text = id;
-                NameTextBlock.Text = name;
-                DateTextBlock.Text = date;
+                //IdTextBlock.Text = id;
+                //NameTextBlock.Text = name;
+                //DateTextBlock.Text = date;
             };
 
-            viewModel.PartSetStartLoading += delegate
+            _viewModel.PartSetStartLoading += delegate
             {
                 PartsProgressBar.IsIndeterminate = true;
             };
-            viewModel.PartSetCompletedLoading += delegate
+            _viewModel.PartSetCompletedLoading += delegate
             {
                 PartsProgressBar.IsIndeterminate = false;
             };
@@ -86,16 +88,24 @@ namespace SpawmetDatabaseWPF
 
             this.Closed += delegate
             {
-                viewModel.Dispose();
+                _viewModel.Dispose();
             };
 
-            viewModel.Load();
+            Loaded += async delegate
+            {
+                await _viewModel.LoadAsync();
+            };
         }
 
         public void CommitEdit()
         {
-            MainDataGrid.CommitEdit();
-            PartsDataGrid.CommitEdit();
+            MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+            PartsDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+        }
+
+        public void Select(Delivery delivery)
+        {
+            _viewModel.SelectElement(delivery);
         }
     }
 }
