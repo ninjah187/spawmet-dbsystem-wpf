@@ -568,9 +568,9 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             PartsRaportCommand = new Command(() =>
             {
-                var parts = Parts.Where(p => p.Amount <= 0).OrderBy(p => p.Name).ToList();
+                //var parts = Parts.Where(p => p.Amount <= 0).OrderBy(p => p.Name).ToList();
 
-                var win = new PartsRaportWindow(parts);
+                var win = new PartsRaportWindow();
                 win.Owner = _window;
                 win.ShowDialog();
             });

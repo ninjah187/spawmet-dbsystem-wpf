@@ -76,19 +76,19 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private IEnumerable<Machine> _selectedMachines;
-        public IEnumerable<Machine> SelectedMachines
-        {
-            get { return _selectedMachines; }
-            set
-            {
-                if (_selectedMachines != value)
-                {
-                    _selectedMachines = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        //private IEnumerable<Machine> _selectedMachines;
+        //public IEnumerable<Machine> SelectedMachines
+        //{
+        //    get { return _selectedMachines; }
+        //    set
+        //    {
+        //        if (_selectedMachines != value)
+        //        {
+        //            _selectedMachines = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
 
         private ObservableCollection<StandardPartSetElement> _standardPartSet;
         public ObservableCollection<StandardPartSetElement> StandardPartSet
@@ -687,6 +687,18 @@ namespace SpawmetDatabaseWPF.ViewModel
                         if (SelectedMachine.Id == element.Machine.Id)
                         {
                             StandardPartSet.Add(element);
+                        }
+                    };
+                    win.MachineModuleAdded += (sender, module) =>
+                    {
+                        if (SelectedMachine == null)
+                        {
+                            return;
+                        }
+
+                        if (SelectedMachine.Id == module.Machine.Id)
+                        {
+                            Modules.Add(module);
                         }
                     };
                     win.WorkCompleted += delegate

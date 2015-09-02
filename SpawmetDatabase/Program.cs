@@ -26,6 +26,8 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
+            //CreateDb();
+
             //Console.Write("Podaj ścieżkę dostępu: ");
             //string path = Console.ReadLine();
             //PCDatabaseConnection.AddMachineBetter(@"D:\2015.05.14 - 14 maja 2015\SPAW-MET new\Pługi śnieżne");

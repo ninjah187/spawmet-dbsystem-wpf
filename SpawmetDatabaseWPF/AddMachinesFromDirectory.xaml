@@ -6,6 +6,7 @@
     <Grid>
        <Grid.RowDefinitions>
            <RowDefinition />
+           <RowDefinition />
            <RowDefinition Height="Auto"/>
        </Grid.RowDefinitions>
         
@@ -19,7 +20,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             
             <TextBlock Text="Nowe maszyny:" Grid.Row="0" Grid.Column="0"
@@ -28,8 +29,9 @@
             <TextBlock Text="Nowe części:" Grid.Row="0" Grid.Column="1"
                        FontWeight="DemiBold" Margin="5,5,0,5" />
 
-            <TextBlock Text="Nowe połączenia maszyna-część:" Grid.Row="0" Grid.Column="2"
+            <TextBlock Text="Nowe moduły:" Grid.Row="0" Grid.Column="2"
                        FontWeight="DemiBold" Margin="5,5,0,5" />
+
 
             <ListBox x:Name="MachinesListBox" Grid.Row="1" Grid.Column="0"
                      DisplayMemberPath="Name" Margin="10,0,10,0"
@@ -38,8 +40,46 @@
             <ListBox x:Name="PartsListBox" Grid.Row="1" Grid.Column="1"
                      DisplayMemberPath="Name" Margin="10,0,10,0"
                      ItemsSource="{Binding Parts}" />
+
+            <DataGrid x:Name="ModulesDataGrid" Grid.Row="1" Grid.Column="2"
+                      AutoGenerateColumns="False" Margin="10,0,0,0" IsReadOnly="True"
+                      ItemsSource="{Binding Modules}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine.Name}" />
+                    <DataGridTextColumn Header="Moduł" Binding="{Binding Name}" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+            <TextBlock x:Name="MachinesCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="0" 
+                       Margin="5,5,0,5" />
             
-            <DataGrid x:Name="PartSetsDataGrid" Grid.Row="1" Grid.Column="2"
+            <TextBlock x:Name="PartsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="1" 
+                       Margin="5,5,0,5" />
+
+            <TextBlock x:Name="ModulesCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="2" 
+                       Margin="5,5,0,5" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="Nowe połączenia maszyna-część:" Grid.Row="0" Grid.Column="0"
+                       FontWeight="DemiBold" Margin="5,5,0,5" />
+
+            <TextBlock Text="Nowe połączenia moduł-część:" Grid.Row="0" Grid.Column="1"
+                       FontWeight="DemiBold" Margin="5,5,0,5" />
+
+            <DataGrid x:Name="PartSetsDataGrid" Grid.Row="1" Grid.Column="0"
                       AutoGenerateColumns="False" Margin="10,0,0,0" IsReadOnly="True"
                       ItemsSource="{Binding PartSets}">
                 <DataGrid.Columns>
@@ -48,19 +88,25 @@
                     <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" />
                 </DataGrid.Columns>
             </DataGrid>
-
-            <TextBlock x:Name="MachinesCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="0" 
-                       Margin="5,5,0,5" />
             
-            <TextBlock x:Name="PartsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="1" 
+            <DataGrid x:Name="ModuleSetsDataGrid" Grid.Row="1" Grid.Column="1"
+                      AutoGenerateColumns="False" Margin="10,0,0,0" IsReadOnly="True"
+                      ItemsSource="{Binding ModuleSets}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Maszyna" Binding="{Binding MachineModule.Machine.Name}" />
+                    <DataGridTextColumn Header="Moduł" Binding="{Binding MachineModule.Name}" />
+                    <DataGridTextColumn Header="Część" Binding="{Binding Part.Name}" />
+                    <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}" />
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <TextBlock x:Name="PartSetsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="0"
                        Margin="5,5,0,5" />
-
-            <TextBlock x:Name="PartSetsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="2" 
+            <TextBlock x:Name="ModuleSetsCountTextBlock" Text="Dodano: 0" Grid.Row="2" Grid.Column="1"
                        Margin="5,5,0,5" />
-
         </Grid>
-
-        <StackPanel Grid.Row="1">
+        
+        <StackPanel Grid.Row="2">
             <TextBlock Text="Folder:" FontWeight="DemiBold"
                        Margin="10,10,10,0" />
             <TextBlock x:Name="DirectoryTextBlock" Text="directory path" TextWrapping="Wrap"

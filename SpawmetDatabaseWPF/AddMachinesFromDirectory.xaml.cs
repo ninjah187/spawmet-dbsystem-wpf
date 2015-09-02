@@ -27,11 +27,14 @@ namespace SpawmetDatabaseWPF
     {
         public event EventHandler<Machine> MachineAdded;
         public event EventHandler<StandardPartSetElement> PartSetElementAdded;
+        public event EventHandler<MachineModule> MachineModuleAdded;
         public event EventHandler WorkCompleted;
 
         public ObservableCollection<Machine> Machines { get; set; }
         public ObservableCollection<Part> Parts { get; set; }
         public ObservableCollection<StandardPartSetElement> PartSets { get; set; }
+        public ObservableCollection<MachineModule> Modules { get; set; }
+        public ObservableCollection<MachineModuleSetElement> ModuleSets { get; set; }
 
         private DispatcherTimer _timer;
         private static readonly TimeSpan _timerStep = new TimeSpan(0, 0, 0, 0, 100);
@@ -50,6 +53,8 @@ namespace SpawmetDatabaseWPF
             Machines = new ObservableCollection<Machine>();
             Parts = new ObservableCollection<Part>();
             PartSets = new ObservableCollection<StandardPartSetElement>();
+            Modules = new ObservableCollection<MachineModule>();
+            ModuleSets = new ObservableCollection<MachineModuleSetElement>();
 
             _currentTime = default(DateTime);
 
@@ -120,6 +125,32 @@ namespace SpawmetDatabaseWPF
                     OnPartSetElementAdded(element);
                 });
             };
+            _parser.MachineModuleAdded += (sender, module) =>
+            {
+                STAExecute(() =>
+                {
+                    Modules.Add(module);
+
+                    ModulesDataGrid.ScrollIntoView(module);
+
+                    string count = "Dodano: " + Modules.Count;
+                    ModulesCountTextBlock.Text = count;
+
+                    OnMachineModuleAdded(module);
+                });
+            };
+            _parser.MachineModuleSetElementAdded += (sender, element) =>
+            {
+                STAExecute(() =>
+                {
+                    ModuleSets.Add(element);
+
+                    ModuleSetsDataGrid.ScrollIntoView(element);
+
+                    string count = "Dodano: " + ModuleSets.Count;
+                    ModuleSetsCountTextBlock.Text = count;
+                });
+            };
             _parser.ParserRunCompleted += (sender, e) =>
             {
                 _timer.Stop();
@@ -168,6 +199,14 @@ namespace SpawmetDatabaseWPF
             if (PartSetElementAdded != null)
             {
                 PartSetElementAdded(this, element);
+            }
+        }
+
+        private void OnMachineModuleAdded(MachineModule module)
+        {
+            if (MachineModuleAdded != null)
+            {
+                MachineModuleAdded(this, module);
             }
         }
 

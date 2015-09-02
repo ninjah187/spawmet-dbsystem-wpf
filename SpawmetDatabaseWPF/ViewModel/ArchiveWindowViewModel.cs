@@ -199,6 +199,10 @@ namespace SpawmetDatabaseWPF.ViewModel
                     }
                     DbContext.ArchivedOrders.Remove(order);
                     DbContext.SaveChanges();
+
+                    StandardPartSet = null;
+                    AdditionalPartSet = null;
+                    Modules = null;
                 });
                 Orders.Remove(order);
                 waitWin.Close();
