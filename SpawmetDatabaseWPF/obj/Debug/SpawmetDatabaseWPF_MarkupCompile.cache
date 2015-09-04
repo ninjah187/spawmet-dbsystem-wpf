@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\App.xaml
-40-1167539282
+411008425395
 
-79434310701
+801036604530
 25-1812006924
-AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachineModuleToOrderWindow.xaml;AddMachineModuleWindow.xaml;AddMachinesFromDirectory.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToModuleWindow.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ArchiveWindow.xaml;ClientsWindow.xaml;CommonWindows\ConfirmWindow.xaml;CommonWindows\MessageWindow.xaml;ConnectingWindow.xaml;CraftPartWindow.xaml;DeleteClientWindow.xaml;DeleteDeliveryWindow.xaml;DeleteMachineWindow.xaml;DeleteOrderWindow.xaml;DeletingPartWindow.xaml;DeliveriesWindow.xaml;MachineModuleDetailsWindow.xaml;MachinesWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;PrintWindow.xaml;SaveFileWindow.xaml;TestWindow.xaml;Windows\ExceptionWindow.xaml;Windows\PartsRaportWindow.xaml;Windows\Searching\SearchClientsWindow.xaml;Windows\Searching\SearchDeliveriesWindow.xaml;Windows\Searching\SearchMachinesByName.xaml;Windows\Searching\SearchOrdersWindow.xaml;Windows\Searching\SearchPartsWindow.xaml;Windows\SendConfirmationWindow.xaml;Windows\WaitWindow.xaml;
+AddClientWindow.xaml;AddDeliveryWindow.xaml;AddMachineModuleToOrderWindow.xaml;AddMachineModuleWindow.xaml;AddMachinesFromDirectory.xaml;AddMachineWindow.xaml;AddOrderWindow.xaml;AddPartToDelivery.xaml;AddPartToMachine.xaml;AddPartToModuleWindow.xaml;AddPartToOrderWindow.xaml;AddPartWindow.xaml;ArchivedModuleDetailsWindow.xaml;ArchiveWindow.xaml;ClientsWindow.xaml;CommonWindows\ConfirmWindow.xaml;CommonWindows\MessageWindow.xaml;ConnectingWindow.xaml;CraftPartWindow.xaml;DeleteClientWindow.xaml;DeleteDeliveryWindow.xaml;DeleteMachineWindow.xaml;DeleteOrderWindow.xaml;DeletingPartWindow.xaml;DeliveriesWindow.xaml;MachineModuleDetailsWindow.xaml;MachinesWindow.xaml;OrdersWindow.xaml;PartsWindow.xaml;PrintWindow.xaml;SaveFileWindow.xaml;TestWindow.xaml;Windows\ExceptionWindow.xaml;Windows\PartsRaportWindow.xaml;Windows\Searching\SearchClientsWindow.xaml;Windows\Searching\SearchDeliveriesWindow.xaml;Windows\Searching\SearchMachinesByName.xaml;Windows\Searching\SearchOrdersWindow.xaml;Windows\Searching\SearchPartsWindow.xaml;Windows\SendConfirmationWindow.xaml;Windows\WaitWindow.xaml;
 splashscreen2.png
 False
 

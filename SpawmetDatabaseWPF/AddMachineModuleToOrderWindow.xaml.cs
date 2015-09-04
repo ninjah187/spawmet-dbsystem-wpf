@@ -131,16 +131,14 @@ namespace SpawmetDatabaseWPF
                 }
                 _dbContext = new SpawmetDBContext();
 
-                try
+                Order = _dbContext.Orders
+                    .Include(o => o.Machine)
+                    .Include(o => o.Client)
+                    .FirstOrDefault(o => o.Id == _orderId);
+
+                if (Order == null)
                 {
-                    Order = _dbContext.Orders
-                        .Include(o => o.Machine)
-                        .Include(o => o.Client)
-                        .Single(o => o.Id == _orderId);
-                }
-                catch (InvalidOperationException exc)
-                {
-                    Application.Current.Dispatcher.Invoke(() => ExceptionWindow.Show(exc));
+                    Application.Current.Dispatcher.Invoke(Close);
                     return;
                 }
 

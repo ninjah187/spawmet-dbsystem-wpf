@@ -37,7 +37,6 @@ namespace SpawmetDatabaseWPF.ViewModel
         private OrdersWindow _window;
 
         private ObservableCollection<Order> _orders;
-
         public ObservableCollection<Order> Orders
         {
             get { return _orders; }
@@ -189,6 +188,8 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand GoToPartCommand { get; protected set; }
 
+        public ICommand GoToModuleCommand { get; protected set; }
+
         public ICommand ArchiveCommand { get; protected set; }
 
         private bool _arePartsLoading;
@@ -336,45 +337,6 @@ namespace SpawmetDatabaseWPF.ViewModel
                 //await changeStatusTask;
             });
 
-            //DeleteOrdersCommand = new Command(() =>
-            //{
-            //    var selected = GetSelectedOrders();
-            //    if (selected == null)
-            //    {
-            //        return;
-            //    }
-
-            //    string msg = selected.Count == 1
-            //        ? "Czy chcesz usunąć zaznaczone zamówienie?"
-            //        : "Czy chcesz usunąć zaznaczone zamówienia?";
-
-            //    var confirmWin = new ConfirmWindow(msg);
-            //    confirmWin.Confirmed += delegate
-            //    {
-            //        var win = new DeleteOrderWindow(DbContext, selected);
-            //        win.OrdersDeleted += (sender, orders) =>
-            //        {
-            //            foreach (var order in orders)
-            //            {
-            //                Orders.Remove(order);
-            //            }
-            //        };
-            //        win.WorkCompleted += delegate
-            //        {
-            //            AdditionalPartSet = null;
-
-            //            OnElementSelected(null);
-            //        };
-            //        win.ConnectionLost += (sender, exc) =>
-            //        {
-            //            IsConnected = false;
-            //        };
-            //        win.Owner = _window;
-            //        win.ShowDialog();
-            //    };
-            //    confirmWin.Show();
-            //});
-
             #region DeleteOrders
             DeleteOrdersCommand = new Command(() =>
             {
@@ -407,6 +369,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                         });
                         Orders.Remove(order);
                     }
+
+                    AdditionalPartSet = null;
+                    Modules = null;
 
                     Mediator.NotifyContextChange(this);
                     waitWin.Close();
@@ -853,6 +818,29 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
             });
 
+            #region GoToModule
+            GoToModuleCommand = new Command(() =>
+            {
+                var module = SelectedModule;
+                if (module == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<MachineModuleDetailsWindow>();
+                MachineModuleDetailsWindow window;
+                if ((window = windows.FirstOrDefault(w => w.Module.Id == module.Id)) != null)
+                {
+                    window.Focus();
+                }
+                else
+                {
+                    window = new MachineModuleDetailsWindow(module.Id);
+                    window.Show();
+                }
+            });
+            #endregion
+
             #region Archive
             ArchiveCommand = new Command(async () =>
             {
@@ -914,23 +902,37 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         private void LoadOrders()
         {
-            var orders = DbContext.Orders
+            List<Order> orders;
+            lock (DbContextLock)
+            {
+                orders = DbContext.Orders
                 .Include(o => o.Client)
                 .Include(o => o.Machine)
                 .ToList();
+            }
 
             Orders = new ObservableCollection<Order>(orders);
         }
 
         private void LoadClients()
         {
-            var clients = DbContext.Clients.ToList();
+            List<Client> clients;
+            //var clients = DbContext.Clients.ToList();
+            lock (DbContextLock)
+            {
+                clients = DbContext.Clients.ToList();
+            }
             Clients = new ObservableCollection<Client>(clients);
         }
 
         private void LoadMachines()
         {
-            var machines = DbContext.Machines.ToList();
+            //var machines = DbContext.Machines.ToList();
+            List<Machine> machines;
+            lock (DbContextLock)
+            {
+                machines = DbContext.Machines.ToList();
+            }
             Machines = new ObservableCollection<Machine>(machines);
         }
 
@@ -955,6 +957,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             var order = SelectedOrder;
             if (order == null)
             {
+                Modules = null;
                 return;
             }
 
@@ -983,7 +986,11 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override void SelectElement(IModelElement element)
         {
-            var order = Orders.Single(e => e.Id == element.Id);
+            var order = Orders.FirstOrDefault(o => o.Id == element.Id);
+            if (order == null)
+            {
+                return;
+            }
 
             SelectedOrder = order;
 

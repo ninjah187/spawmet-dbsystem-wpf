@@ -477,6 +477,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                                 {
                                     var moduleParts = module.MachineModulePartSet;
                                     DbContext.MachineModulePartSets.RemoveRange(moduleParts);
+
+                                    module.Orders.Clear();
                                 }
                                 var modules = machine.Modules;
                                 DbContext.MachineModules.RemoveRange(modules);
@@ -521,6 +523,10 @@ namespace SpawmetDatabaseWPF.ViewModel
                     //        DbContext.SaveChanges();
                     //    });
                     //}
+
+                    StandardPartSet = null;
+                    Orders = null;
+                    Modules = null;
 
                     Mediator.NotifyContextChange(this);
                     waitWin.Close();
@@ -961,6 +967,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             var machine = SelectedMachine;
             if (machine == null)
             {
+                Modules = null;
                 return;
             }
 

@@ -412,6 +412,10 @@ namespace SpawmetDatabaseWPF.ViewModel
                         Parts.Remove(part);
                     }
 
+                    Machines = null;
+                    Orders = null;
+                    Modules = null;
+
                     Mediator.NotifyContextChange(this);
                     waitWin.Close();
                 };
@@ -551,6 +555,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
             });
 
+            #region GoToModuleCommand
             GoToModuleCommand = new Command(() =>
             {
                 var module = SelectedModule;
@@ -571,6 +576,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     window.Show();
                 }
             });
+            #endregion
 
             PartsRaportCommand = new Command(() =>
             {
@@ -654,6 +660,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             var part = SelectedPart;
             if (part == null)
             {
+                Modules = null;
                 return;
             }
 

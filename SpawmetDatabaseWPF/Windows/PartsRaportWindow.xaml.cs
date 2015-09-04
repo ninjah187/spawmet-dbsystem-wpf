@@ -73,8 +73,6 @@ namespace SpawmetDatabaseWPF.Windows
 
             DataContext = this;
 
-            WithNewOrders = true;
-
             Loaded += async delegate
             {
                 await LoadAsync();

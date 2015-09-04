@@ -51,56 +51,6 @@ namespace SpawmetDatabaseWPF
             _viewModel = new OrdersWindowViewModel(this, config);
             DataContext = _viewModel;
 
-            _viewModel.ElementSelected += (sender, e) =>
-            {
-                //string id = "";
-                //string client = "";
-                //string machine = "";
-                //string startDate = "";
-                //string sendDate = "";
-                //string status = "";
-                //string remarks = "";
-
-                //if (e.Element != null)
-                //{
-                //    var order = (Order) e.Element;
-                //    id = order.Id.ToString();
-                //    client = order.Client != null ? order.Client.Name : "";
-                //    machine = order.Machine.Name;
-
-                //    startDate = order.StartDate != null
-                //    ? order.StartDate.Value.ToString("yyyy-MM-dd")
-                //    : "";
-
-                //    sendDate = order.SendDate != null
-                //    ? order.SendDate.Value.ToString("yyyy-MM-dd")
-                //    : "";
-
-                //    status = order.Status != null
-                //    ? order.Status.Value.GetDescription()
-                //    : "";
-
-                //    remarks = order.Remarks;
-                //}
-
-                //IdTextBlock.Text = id;
-                //ClientTextBlock.Text = client;
-                //MachineTextBlock.Text = machine;
-                //StartDateTextBlock.Text = startDate;
-                //SendDateTextBlock.Text = sendDate;
-                //StatusTextBlock.Text = status;
-                //RemarksTextBlock.Text = remarks;
-            };
-
-            //_viewModel.PartSetStartLoading += delegate
-            //{
-            //    AdditionalPartSetProgressBar.IsIndeterminate = true;
-            //};
-            //_viewModel.PartSetCompletedLoading += delegate
-            //{
-            //    AdditionalPartSetProgressBar.IsIndeterminate = false;
-            //};
-
             this.SizeChanged += delegate
             {
                 var binding = AdditionalPartSetDataGrid.GetBindingExpression(HeightProperty);
@@ -108,7 +58,15 @@ namespace SpawmetDatabaseWPF
 
                 binding = AdditionalPartSetDataGrid.GetBindingExpression(WidthProperty);
                 binding.UpdateTarget();
+
+                binding = ModulesListBox.GetBindingExpression(HeightProperty);
+                binding.UpdateTarget();
+
+                binding = ModulesListBox.GetBindingExpression(WidthProperty);
+                binding.UpdateTarget();
             };
+
+            
 
             this.Closed += delegate
             {
@@ -145,6 +103,22 @@ namespace SpawmetDatabaseWPF
 
                 _viewModel.ChangeStatus(oldStatus, newStatus);
             }
+        }
+
+        // had to do it this way because with EventTriggers there were problems with constantly running SaveDbStateCommand
+        private async void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //_viewModel.SaveDbStateCommand.Execute(null);
+            CommitEdit();
+            await Task.Run(() =>
+            {
+                _viewModel.IsSaving = true;
+                lock (_viewModel.DbContextLock)
+                {
+                    _viewModel.DbContext.SaveChanges();
+                }
+                _viewModel.IsSaving = false;
+            });
         }
     }
 }

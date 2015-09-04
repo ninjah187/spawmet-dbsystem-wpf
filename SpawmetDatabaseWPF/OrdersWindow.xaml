@@ -44,9 +44,6 @@
                         <MenuItem Header="Archiwum" Command="{Binding NewArchiveWindowCommand}"
                                   InputGestureText="Ctrl+5"></MenuItem>
                     </MenuItem>
-                    <MenuItem Header="Opcje">
-                        <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>
-                    </MenuItem>
                     <MenuItem Header="Narzędzia">
                         <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
                                   InputGestureText="Ctrl+F"></MenuItem>
@@ -162,13 +159,14 @@
                 <DataGridTemplateColumn Header="Data przyjęcia" SortMemberPath="StartDate" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" >
-                                <i:Interaction.Triggers>
+                            <DatePicker x:Name="StartDatePicker" SelectedDateChanged="DatePicker_OnSelectedDateChanged"
+                                SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0">
+                                <!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="SelectedDateChanged">
                                         <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                          AncestorType={x:Type Window}}, Path=DataContext.SaveDbStateCommand}" />
                                     </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                                </i:Interaction.Triggers>-->
                             </DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -177,13 +175,14 @@
                 <DataGridTemplateColumn Header="Data wysyłki" SortMemberPath="SendDate" CanUserSort="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding SendDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0">
-                                <i:Interaction.Triggers>
+                            <DatePicker x:Name="SendDatePicker" SelectedDateChanged="DatePicker_OnSelectedDateChanged"
+                                SelectedDate="{Binding SendDate, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0">
+                                <!--<i:Interaction.Triggers>
                                     <i:EventTrigger EventName="SelectedDateChanged">
                                         <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource FindAncestor,
                                                                          AncestorType={x:Type Window}}, Path=DataContext.SaveDbStateCommand}" />
                                     </i:EventTrigger>
-                                </i:Interaction.Triggers>
+                                </i:Interaction.Triggers>-->
                             </DatePicker>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -313,7 +312,7 @@
                         <ContextMenu>
                             <MenuItem Header="Dodaj" Command="{Binding AddMachineModuleCommand}"></MenuItem>
                             <MenuItem Header="Usuń" Command="{Binding DeleteMachineModuleCommand}"></MenuItem>
-                            <MenuItem Header="Szczegóły" Command="{Binding MachineModuleDetailsCommand}"></MenuItem>
+                            <MenuItem Header="Idź do" Command="{Binding GoToModuleCommand}"></MenuItem>
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>

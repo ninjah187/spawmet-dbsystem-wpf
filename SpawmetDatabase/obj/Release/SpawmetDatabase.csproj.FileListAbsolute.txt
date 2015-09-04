@@ -19,10 +19,6 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServ
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.xml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServer.xml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.EnumResources.resources
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.InitialCreate.resources
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.AddConfirmationSentBool.resources
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.PriceFromMachineToOrder.resources
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.AddOrderSerialNumber.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.OrderStatusResource.resources
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.exe
@@ -47,5 +43,3 @@ E:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.dll
 E:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServer.dll
 E:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.xml
 E:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\bin\Release\EntityFramework.SqlServer.xml
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.AddMachineModules.resources
-D:\Pisane\C#\SpawmetDatabase\SpawmetDatabase\obj\Release\SpawmetDatabase.Migrations.MachineModulesWithOrders.resources

@@ -337,3 +337,5 @@ F:\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.Properties.Re
 F:\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\SpawmetDatabaseWPF.csproj.GenerateResource.Cache
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ArchiveWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ArchiveWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ArchivedModuleDetailsWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Debug\ArchivedModuleDetailsWindow.g.cs

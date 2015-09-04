@@ -1,0 +1,33 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.ArchivedModuleDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Archiwum - moduł maszyny - szczegóły" SizeToContent="WidthAndHeight" Icon="icon2.ico" ResizeMode="CanMinimize"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <DockPanel Grid.Row="0">
+            <TextBlock Text="Maszyna:" FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Machine.Name}" Margin="5,0" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="Moduł:" FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Module.Name}" Margin="5,0" TextAlignment="Right" TextWrapping="Wrap"></TextBlock>
+        </DockPanel>
+
+        <TextBlock Grid.Row="2" Text="Części:" FontWeight="DemiBold"></TextBlock>
+        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" Width="400" Height="200"
+                  ItemsSource="{Binding Parts}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding PartName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

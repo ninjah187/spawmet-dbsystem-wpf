@@ -140,6 +140,11 @@
                                    Path=RowDefinitions[1].ActualHeight}"
                           Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
                                   Path=ColumnDefinitions[0].ActualWidth}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Szczegóły" Command="{Binding ModuleDetailsCommand}"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
                 </ListBox>
                 <ProgressBar Grid.Row="2" Grid.Column="2" Height="5" IsIndeterminate="{Binding AreModulesLoading}"></ProgressBar>
                 

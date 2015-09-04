@@ -40,7 +40,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         internal SpawmetDBContext DbContext = new SpawmetDBContext();
         private const string connectionStringName = "SpawmetDBContext";
-        protected object DbContextLock = new object();
+        internal object DbContextLock = new object();
 
         private Timer _connectionCheckTimer;
 

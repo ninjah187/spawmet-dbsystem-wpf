@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
@@ -145,6 +148,7 @@ namespace SpawmetDatabaseWPF.ViewModel
         }
 
         public ICommand DeleteOrderCommand { get; protected set; }
+        public ICommand ModuleDetailsCommand { get; protected set; }
 
         private ArchiveWindow _window;
 
@@ -205,8 +209,36 @@ namespace SpawmetDatabaseWPF.ViewModel
                     Modules = null;
                 });
                 Orders.Remove(order);
+
+                StandardPartSet = null;
+                AdditionalPartSet = null;
+                Modules = null;
+
                 waitWin.Close();
             });
+
+            #region ModuleDetails
+            ModuleDetailsCommand = new Command(() =>
+            {
+                var module = SelectedModule;
+                if (module == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<ArchivedModuleDetailsWindow>();
+                ArchivedModuleDetailsWindow window;
+                if ((window = windows.FirstOrDefault(w => w.Module.Id == module.Id)) != null)
+                {
+                    window.Focus();
+                }
+                else
+                {
+                    window = new ArchivedModuleDetailsWindow(module.Id);
+                    window.Show();
+                }
+            });
+            #endregion
         }
 
         // that's fucking nonsense!!! check out spaghetti code at loading data in SpawmetWindowViewModel
@@ -238,7 +270,10 @@ namespace SpawmetDatabaseWPF.ViewModel
             List<ArchivedOrder> orders = null;
             lock (DbContextLock)
             {
-                orders = DbContext.ArchivedOrders.ToList();
+                orders = DbContext.ArchivedOrders
+                    .Include(o => o.Machine)
+                    .Include(o => o.Client)
+                    .ToList();
             }
             Orders = new ObservableCollection<ArchivedOrder>(orders);
         }

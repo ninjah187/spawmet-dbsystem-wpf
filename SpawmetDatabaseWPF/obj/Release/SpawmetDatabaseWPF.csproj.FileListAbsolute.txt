@@ -226,3 +226,7 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPartToModuleWindo
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\MachineModuleDetailsWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\Windows\ExceptionWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\Windows\WaitWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\ArchivedModuleDetailsWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\ArchiveWindow.baml
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\ArchivedModuleDetailsWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\ArchiveWindow.g.cs

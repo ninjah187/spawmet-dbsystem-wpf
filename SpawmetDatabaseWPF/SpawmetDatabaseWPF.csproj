@@ -130,6 +130,9 @@
     <Compile Include="AddPartToOrderWindow.xaml.cs">
       <DependentUpon>AddPartToOrderWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ArchivedModuleDetailsWindow.xaml.cs">
+      <DependentUpon>ArchivedModuleDetailsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ArchiveWindow.xaml.cs">
       <DependentUpon>ArchiveWindow.xaml</DependentUpon>
     </Compile>
@@ -294,6 +297,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ArchivedModuleDetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

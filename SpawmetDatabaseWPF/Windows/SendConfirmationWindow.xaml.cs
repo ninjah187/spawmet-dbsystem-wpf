@@ -93,7 +93,8 @@ namespace SpawmetDatabaseWPF.Windows
             {
                 var fromAddress = new MailAddress("ninjah187@gmail.com");
                 var toAddress = new MailAddress("karolhnz@gmail.com");
-                var fromPassword = "hyp3rt0x1#c";
+                throw new Exception("ukryj hasło");
+                var fromPassword = "";
 
                 var smtp = new SmtpClient()
                 {

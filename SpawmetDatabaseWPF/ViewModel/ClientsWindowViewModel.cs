@@ -262,6 +262,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                         Clients.Remove(client);
                     }
 
+                    Orders = null;
+
                     Mediator.NotifyContextChange(this);
                     waitWin.Close();
                 };
