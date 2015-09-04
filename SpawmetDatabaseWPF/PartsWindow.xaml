@@ -232,10 +232,34 @@
             
             <StackPanel Grid.Row="5">
                 <ProgressBar x:Name="OrdersProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
-                <TextBlock Text="Dostawy:" FontWeight="DemiBold"></TextBlock>
+                <TextBlock Text="Moduły:" FontWeight="DemiBold"></TextBlock>
             </StackPanel>
             
             <StackPanel Grid.Row="6">
+                <DataGrid x:Name="ModulesDataGrid" 
+                          ItemsSource="{Binding Modules}" SelectedItem="{Binding SelectedModule}"
+                          AutoGenerateColumns="False" IsReadOnly="True"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[6].ActualHeight,
+                                  UpdateSourceTrigger=Explicit}" 
+                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=ColumnDefinitions[0].ActualWidth,
+                                 UpdateSourceTrigger=Explicit}"> 
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Idź do" Command="{Binding GoToModuleCommand}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine.Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Moduł" Binding="{Binding Name}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            
+            <StackPanel Grid.Row="7">
+                <ProgressBar IsIndeterminate="{Binding AreModulesLoading}"></ProgressBar>
+            </StackPanel>
+            
+            <!--<StackPanel Grid.Row="6">
                 <ListBox x:Name="DeliveriesListBox" DisplayMemberPath="Signature" ItemsSource="{Binding Deliveries}"
                          SelectedItem="{Binding SelectedDelivery}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=RowDefinitions[6].ActualHeight,
@@ -252,7 +276,7 @@
             
             <StackPanel Grid.Row="8">
                 <ProgressBar x:Name="DeliveriesProgressBar" Height="5" IsIndeterminate="False"></ProgressBar>
-            </StackPanel>
+            </StackPanel>-->
             
         </Grid>
     </Grid>

@@ -34,7 +34,21 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         private BackgroundWorker _machinesBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
-        private BackgroundWorker _deliveriesBackgroundWorker;
+        //private BackgroundWorker _deliveriesBackgroundWorker;
+
+        private bool _areModulesLoading;
+        public bool AreModulesLoading
+        {
+            get { return _areModulesLoading; }
+            set
+            {
+                if (_areModulesLoading != value)
+                {
+                    _areModulesLoading = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private PartsWindow _window;
 
@@ -66,7 +80,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     SelectedElement = _selectedPart;
                     LoadMachines();
                     LoadOrders();
-                    LoadDeliveries();
+                    LoadModulesAsync();
                 }
             }
         }
@@ -127,29 +141,29 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        private ObservableCollection<Delivery> _deliveries;
-        public ObservableCollection<Delivery> Deliveries
+        private ObservableCollection<MachineModule> _modules;
+        public ObservableCollection<MachineModule> Modules
         {
-            get { return _deliveries; }
+            get { return _modules; }
             set
             {
-                if (_deliveries != value)
+                if (_modules != value)
                 {
-                    _deliveries = value;
+                    _modules = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        private Delivery _selectedDelivery;
-        public Delivery SelectedDelivery
+        private MachineModule _selectedModule;
+        public MachineModule SelectedModule
         {
-            get { return _selectedDelivery; }
+            get { return _selectedModule; }
             set
             {
-                if (_selectedDelivery != value)
+                if (_selectedModule != value)
                 {
-                    _selectedDelivery = value;
+                    _selectedModule = value;
                     OnPropertyChanged();
                 }
             }
@@ -169,7 +183,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand GoToOrderCommand { get; protected set; }
 
-        public ICommand GoToDeliveryCommand { get; protected set; }
+        public ICommand GoToModuleCommand { get; protected set; }
 
         public ICommand PartsRaportCommand { get; protected set; }
 
@@ -195,7 +209,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     Parts = null;
                     Machines = null;
                     Orders = null;
-                    Deliveries = null;
+                    Modules = null;
                     OnElementSelected(null);
                 }
                 else
@@ -224,10 +238,10 @@ namespace SpawmetDatabaseWPF.ViewModel
             {
                 _ordersBackgroundWorker.Dispose();
             }
-            if (_deliveriesBackgroundWorker != null)
-            {
-                _deliveriesBackgroundWorker.Dispose();
-            }
+            //if (_deliveriesBackgroundWorker != null)
+            //{
+            //    _deliveriesBackgroundWorker.Dispose();
+            //}
         }
 
         private void InitializeBackgroundWorkers()
@@ -282,27 +296,27 @@ namespace SpawmetDatabaseWPF.ViewModel
                 OnOrdersCompletedLoading();
             };
 
-            _deliveriesBackgroundWorker = new BackgroundWorker();
-            _deliveriesBackgroundWorker.DoWork += (sender, e) =>
-            {
-                var partId = (int) e.Argument;
-                using (var context = new SpawmetDBContext())
-                {
-                    var result = context.DeliveryPartSets
-                        .Where(el => el.Part.Id == partId)
-                        .Select(el => el.Delivery)
-                        .OrderBy(d => d.Id)
-                        .ToList();
-                    e.Result = result;
-                }
-            };
-            _deliveriesBackgroundWorker.RunWorkerCompleted += (sender, e) =>
-            {
-                var source = (List<Delivery>) e.Result;
-                Deliveries = new ObservableCollection<Delivery>(source);
+            //_deliveriesBackgroundWorker = new BackgroundWorker();
+            //_deliveriesBackgroundWorker.DoWork += (sender, e) =>
+            //{
+            //    var partId = (int) e.Argument;
+            //    using (var context = new SpawmetDBContext())
+            //    {
+            //        var result = context.DeliveryPartSets
+            //            .Where(el => el.Part.Id == partId)
+            //            .Select(el => el.Delivery)
+            //            .OrderBy(d => d.Id)
+            //            .ToList();
+            //        e.Result = result;
+            //    }
+            //};
+            //_deliveriesBackgroundWorker.RunWorkerCompleted += (sender, e) =>
+            //{
+            //    var source = (List<Delivery>) e.Result;
+            //    Deliveries = new ObservableCollection<Delivery>(source);
 
-                OnDeliveriesCompletedLoading();
-            };
+            //    OnDeliveriesCompletedLoading();
+            //};
         }
 
         private void InitializeCommands()
@@ -361,7 +375,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             //    confirmWin.Show();
             //});
 
-            #region
+            #region DeleteParts
             DeletePartsCommand = new Command(() =>
             {
                 var parts = GetSelectedParts();
@@ -468,7 +482,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                     Machines = null;
                     Orders = null;
-                    Deliveries = null;
+                    Modules = null;
 
                     OnElementSelected(null);
 
@@ -537,31 +551,23 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
             });
 
-            GoToDeliveryCommand = new Command(() =>
+            GoToModuleCommand = new Command(() =>
             {
-                var delivery = SelectedDelivery;
-                if (delivery == null)
+                var module = SelectedModule;
+                if (module == null)
                 {
                     return;
                 }
 
-                var windows = Application.Current.Windows.OfType<DeliveriesWindow>();
-                if (windows.Any())
+                var windows = Application.Current.Windows.OfType<MachineModuleDetailsWindow>();
+                MachineModuleDetailsWindow window;
+                if ((window = windows.FirstOrDefault(w => w.Module.Id == module.Id)) != null)
                 {
-                    var window = windows.Single();
                     window.Focus();
-
-                    window.Select(delivery);
                 }
                 else
                 {
-                    var config = new WindowConfig()
-                    {
-                        Left = _window.Left + Offset,
-                        Top = _window.Top + Offset,
-                        SelectedElement = delivery
-                    };
-                    var window = new DeliveriesWindow(config);
+                    window = new MachineModuleDetailsWindow(module.Id);
                     window.Show();
                 }
             });
@@ -643,22 +649,36 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        public void LoadDeliveries()
+        public async Task LoadModulesAsync()
         {
             var part = SelectedPart;
-
             if (part == null)
             {
-                Deliveries = null;
                 return;
             }
 
-            if (_deliveriesBackgroundWorker.IsBusy == false)
-            {
-                _deliveriesBackgroundWorker.RunWorkerAsync(part.Id);
+            var partId = part.Id;
 
-                OnDeliveriesStartLoading();
-            }
+            AreModulesLoading = true;
+
+            await Task.Run(() =>
+            {
+                List<MachineModule> modules = null;
+                lock (DbContextLock)
+                {
+                    modules = DbContext.MachineModules
+                        .Where(m => m.MachineModulePartSet.Any(e => e.Part.Id == partId))
+                        .OrderBy(m => m.Name)
+                        .ToList();
+                }
+
+                if (part == SelectedPart)
+                {
+                    Modules = new ObservableCollection<MachineModule>(modules);
+                }
+            });
+
+            AreModulesLoading = false;
         }
 
         public override void SelectElement(IModelElement element)

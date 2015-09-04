@@ -98,15 +98,6 @@ namespace SpawmetDatabaseWPF
                 DisableUIElement(OrdersProgressBar);
             };
 
-            _viewModel.DeliveriesStartLoading += delegate
-            {
-                EnableUIElement(DeliveriesProgressBar);
-            };
-            _viewModel.DeliveriesCompletedLoading += delegate
-            {
-                DisableUIElement(DeliveriesProgressBar);
-            };
-
             this.SizeChanged += delegate
             {
                 var binding = MachinesListBox.GetBindingExpression(HeightProperty);
@@ -121,10 +112,10 @@ namespace SpawmetDatabaseWPF
                 binding = OrdersListBox.GetBindingExpression(WidthProperty);
                 binding.UpdateTarget();
 
-                binding = DeliveriesListBox.GetBindingExpression(HeightProperty);
+                binding = ModulesDataGrid.GetBindingExpression(HeightProperty);
                 binding.UpdateTarget();
 
-                binding = DeliveriesListBox.GetBindingExpression(WidthProperty);
+                binding = ModulesDataGrid.GetBindingExpression(WidthProperty);
                 binding.UpdateTarget();
             };
 
