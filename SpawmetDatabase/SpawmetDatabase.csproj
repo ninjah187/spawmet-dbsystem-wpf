@@ -101,6 +101,7 @@
     <Compile Include="Model\OrderStatus.cs" />
     <Compile Include="Model\Origin.cs" />
     <Compile Include="Model\Part.cs" />
+    <Compile Include="Model\Period.cs" />
     <Compile Include="Model\PropertyChangedNotifier.cs" />
     <Compile Include="Model\StandardPartSetElement.cs" />
     <Compile Include="Model\User.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace SpawmetDatabase.Model
 {
@@ -192,6 +193,19 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public virtual Period Period
+        {
+            get { return _period; }
+            set
+            {
+                if (_period != value)
+                {
+                    _period = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public string Signature
         {
             //get
@@ -227,8 +241,9 @@ namespace SpawmetDatabase.Model
         private Machine _machine;
         private ICollection<MachineModule> _machineModules;
         private ICollection<AdditionalPartSetElement> _additionalPartSet;
+        private Period _period;
 
-        protected void NotifyPropertyChanged(string propertyName)
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (PropertyChanged != null)
             {

@@ -40,6 +40,7 @@ namespace SpawmetDatabase
         public DbSet<DeliveryPartSetElement> DeliveryPartSets { get; set; }
         public DbSet<MachineModuleSetElement> MachineModulePartSets { get; set; }
         public DbSet<MachineModule> MachineModules { get; set; }
+        public DbSet<Period> Periods { get; set; }
 
         public DbSet<ArchivedOrder> ArchivedOrders { get; set; }
         public DbSet<ArchivedClient> ArchivedClients { get; set; }
