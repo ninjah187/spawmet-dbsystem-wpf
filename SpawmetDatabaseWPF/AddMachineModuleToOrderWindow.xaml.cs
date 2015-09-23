@@ -88,13 +88,13 @@ namespace SpawmetDatabaseWPF
             _winController = new WindowsEnablementController();
 
             Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            Mediator.ContextChanged += async (sender, notifier) =>
-            {
-                if (notifier != this)
-                {
-                    await LoadAsync();
-                }
-            };
+            //Mediator.ContextChanged += async (sender, notifier) =>
+            //{
+            //    if (notifier != this)
+            //    {
+            //        await LoadAsync();
+            //    }
+            //};
 
             Loaded += async delegate
             {
@@ -131,10 +131,17 @@ namespace SpawmetDatabaseWPF
                 }
                 _dbContext = new SpawmetDBContext();
 
-                Order = _dbContext.Orders
-                    .Include(o => o.Machine)
-                    .Include(o => o.Client)
-                    .FirstOrDefault(o => o.Id == _orderId);
+                //try
+                //{
+                    Order = _dbContext.Orders
+                        .Include(o => o.Machine)
+                        .Include(o => o.Client)
+                        .FirstOrDefault(o => o.Id == _orderId);
+                //}
+                //catch (InvalidOperationException)
+                //{
+                //    Application.Current.Dispatcher.Invoke(Close);
+                //}
 
                 if (Order == null)
                 {

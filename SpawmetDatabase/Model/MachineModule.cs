@@ -39,6 +39,19 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public decimal Price
+        {
+            get { return _price; }
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
         public virtual Machine Machine
         {
             get { return _machine; }
@@ -80,6 +93,7 @@ namespace SpawmetDatabase.Model
 
         private int _id;
         private string _name;
+        private decimal _price;
 
         private Machine _machine;
         private ICollection<MachineModuleSetElement> _machineModulePartSet;

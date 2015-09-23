@@ -223,7 +223,7 @@
                 <DataGridCheckBoxColumn Header="Potwierdzono"
                                         Binding="{Binding ConfirmationSent}"></DataGridCheckBoxColumn>
 
-                <DataGridTextColumn Header="Cena" Binding="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Cena" Binding="{Binding Price, Mode=OneWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
 
                 <DataGridTextColumn Header="Uwagi" Binding="{Binding Remarks}" Width="SizeToCells" />
             </DataGrid.Columns>

@@ -119,6 +119,7 @@ namespace SpawmetDatabaseWPF
                 }
                 _viewModel.IsSaving = false;
             });
+            _viewModel.Mediator.NotifyContextChange(_viewModel);
         }
     }
 }

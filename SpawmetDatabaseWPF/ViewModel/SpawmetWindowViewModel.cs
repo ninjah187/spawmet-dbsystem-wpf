@@ -198,7 +198,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public virtual void Dispose()
         {
-            DbContext.Dispose();
+            lock (DbContextLock)
+            {
+                DbContext.Dispose();
+            }
 
             _connectionCheckTimer.Stop();
             _connectionCheckTimer.Close();

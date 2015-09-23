@@ -68,33 +68,7 @@ namespace SpawmetDatabaseWPF
             _viewModel = new MachinesWindowViewModel(this, config);
             DataContext = _viewModel;
 
-            _viewModel.ElementSelected += (sender, e) =>
-            {
-                //string id = "";
-                //string name = "";
-                //string price = "";
-
-                //if (e.Element != null)
-                //{
-                //    var machine = (Machine) e.Element;
-
-                //    id = machine.Id.ToString();
-                //    name = machine.Name;
-                //    //price = machine.Price.ToString();
-                //}
-
-                //IdTextBlock.Text = id;
-                //NameTextBlock.Text = name;
-                ////PriceTextBlock.Text = price;
-            };
-
-            //viewModel.ConnectionChanged += (sender, state) =>
-            //{
-            //    //if (state == ConnectionState.Lost)
-            //    //{
-            //    //    MessageBox.Show("");
-            //    //}
-            //};
+            ModulesDataGrid.RowEditEnding += RowEditEndingHandler;
 
             _viewModel.PartSetStartLoading += delegate
             {
@@ -136,10 +110,10 @@ namespace SpawmetDatabaseWPF
                 var standardPartSetGridWidthBinding = StandardPartSetDataGrid.GetBindingExpression(DataGrid.WidthProperty);
                 standardPartSetGridWidthBinding.UpdateTarget();
 
-                var binding = ModulesListBox.GetBindingExpression(HeightProperty);
+                var binding = ModulesDataGrid.GetBindingExpression(HeightProperty);
                 binding.UpdateTarget();
 
-                binding = ModulesListBox.GetBindingExpression(WidthProperty);
+                binding = ModulesDataGrid.GetBindingExpression(WidthProperty);
                 binding.UpdateTarget();
 
                 var ordersListBoxHeightBinding = OrdersListBox.GetBindingExpression(HeightProperty);
@@ -170,11 +144,40 @@ namespace SpawmetDatabaseWPF
         {
             MainDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
             StandardPartSetDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
+            ModulesDataGrid.CommitEdit(DataGridEditingUnit.Row, true);
         }
 
         public void Select(Machine machine)
         {
             _viewModel.SelectElement(machine);
+        }
+
+        protected async void RowEditEndingHandler(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            ModulesDataGrid.RowEditEnding -= RowEditEndingHandler;
+            //if (e.EditAction == DataGridEditAction.Commit)
+            //{
+            //    OnDataGridEditCommited();
+            //}
+            //else // DataGridEditAction.Cancel
+            //{
+            //    OnDataGridEditCanceled();
+            //}
+            //throw new Exception("row edit ending");
+            CommitEdit();
+            await Task.Run(() =>
+            {
+                _viewModel.IsSaving = true;
+                lock (_viewModel.DbContextLock)
+                {
+                    _viewModel.DbContext.SaveChanges();
+                }
+                _viewModel.IsSaving = false;
+            });
+            
+            _viewModel.Mediator.NotifyContextChange(_viewModel);
+
+            ModulesDataGrid.RowEditEnding += RowEditEndingHandler;
         }
     }
 }

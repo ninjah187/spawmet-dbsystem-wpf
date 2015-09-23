@@ -110,8 +110,9 @@
             </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" Width="SizeToCells" />
-                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
+                <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Nazwa" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+                <DataGridTextColumn Header="Cena" Binding="{Binding Price}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -189,7 +190,7 @@
                 <TextBlock Text="Moduły:" FontWeight="DemiBold" />
             </StackPanel>
             
-            <StackPanel Grid.Row="4">
+            <!--<StackPanel Grid.Row="4">
                 <ListBox x:Name="ModulesListBox" DisplayMemberPath="Name"
                          ItemsSource="{Binding Modules}" SelectedItem="{Binding SelectedModule}"
                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
@@ -204,6 +205,28 @@
                         </ContextMenu>
                     </ListBox.ContextMenu>
                 </ListBox>
+            </StackPanel>-->
+            
+            <StackPanel Grid.Row="4">
+                <DataGrid x:Name="ModulesDataGrid"
+                          AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                          ItemsSource="{Binding Modules}" SelectedItem="{Binding SelectedModule}"
+                          Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
+                                  Path=RowDefinitions[4].ActualHeight}"
+                          Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}},
+                                  Path=ColumnDefinitions[0].ActualWidth}">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Dodaj" Command="{Binding AddMachineModuleCommand}"></MenuItem>
+                            <MenuItem Header="Usuń" Command="{Binding DeleteMachineModuleCommand}"></MenuItem>
+                            <MenuItem Header="Szczegóły" Command="{Binding MachineModuleDetailsCommand}"></MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
             
             <StackPanel Grid.Row="5">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace SpawmetDatabase.Model
 {
@@ -108,15 +109,22 @@ namespace SpawmetDatabase.Model
 
         public decimal Price
         {
-            get { return _price; }
-            set
+            get
             {
-                if (_price != value)
-                {
-                    _price = value;
-                    NotifyPropertyChanged("Price");
-                }
+                //decimal sum = 0;
+                //sum += Machine.Price;
+                //sum += MachineModules.ToList().Sum(module => module.Price);
+                //return sum;
+                return 0;
             }
+            //set
+            //{
+            //    if (_price != value)
+            //    {
+            //        _price = value;
+            //        NotifyPropertyChanged("Price");
+            //    }
+            //}
         }
 
         public string SerialNumber

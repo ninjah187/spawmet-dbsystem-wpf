@@ -41,6 +41,19 @@ namespace SpawmetDatabase.Model
             }
         }
 
+        public decimal Price
+        {
+            get { return _price; }
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    NotifyPropertyChanged("Price");
+                }
+            }
+        }
+
         public virtual ICollection<Order> Orders
         {
             get { return _orders; }
@@ -83,6 +96,7 @@ namespace SpawmetDatabase.Model
 
         private int _id;
         private string _name;
+        private decimal _price;
 
         private ICollection<Order> _orders;
         private ICollection<StandardPartSetElement> _standardPartSet;

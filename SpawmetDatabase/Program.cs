@@ -26,7 +26,7 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            //CreateDb();
+            CreateDb();
 
             //Console.Write("Podaj ścieżkę dostępu: ");
             //string path = Console.ReadLine();

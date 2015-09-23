@@ -252,6 +252,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override void Dispose()
         {
+            
             base.Dispose();
             DisposeBackgroundWorkers();
         }
