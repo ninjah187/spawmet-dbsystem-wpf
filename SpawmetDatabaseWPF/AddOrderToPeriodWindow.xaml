@@ -1,0 +1,48 @@
+﻿<Window x:Class="SpawmetDatabaseWPF.AddOrderToPeriodWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:converters="clr-namespace:SpawmetDatabaseWPF.Converters"
+        Title="Dodaj zamówienia" SizeToContent="WidthAndHeight"
+        Icon="icon2.ico"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid Margin="10">
+        <Grid.Resources>
+            <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter" />
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <DockPanel Grid.Row="0">
+            <TextBlock Text="Od: " FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Period.Start, Converter={StaticResource DateTimeToStringConverter}}"
+                       TextWrapping="Wrap" TextAlignment="Right"></TextBlock>
+        </DockPanel>
+
+        <DockPanel Grid.Row="1">
+            <TextBlock Text="Do: " FontWeight="DemiBold" />
+            <TextBlock Text="{Binding Period.End, Converter={StaticResource DateTimeToStringConverter}}"
+                       TextWrapping="Wrap" TextAlignment="Right"></TextBlock>
+        </DockPanel>
+        
+        <DataGrid Grid.Row="2" x:Name="OrdersDataGrid" Width="400" Height="200"
+                  IsReadOnly="True" AutoGenerateColumns="False"
+                  ItemsSource="{Binding Orders}" SelectedItem="{Binding SelectedOrder}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Klient" Binding="{Binding Client.Name}" />
+                <DataGridTextColumn Header="Maszyna" Binding="{Binding Machine.Name}" />
+                <DataGridTextColumn Header="Nr fabryczny" Binding="{Binding SerialNumber}" />
+                <DataGridTextColumn Header="Data przyjęcia" Binding="{Binding StartDate}" />
+                <DataGridTextColumn Header="Uwagi" Binding="{Binding Remarks}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="3" Width="60" Height="15" Margin="0,10,0,0" Click="AddButton_OnClick">Dodaj</Button>
+        
+    </Grid>
+</Window>

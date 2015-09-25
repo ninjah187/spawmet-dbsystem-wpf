@@ -106,6 +106,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand NewDeliveriesWindowCommand { get; protected set; }
 
         public ICommand NewArchiveWindowCommand { get; protected set; }
+        
+        public ICommand NewPeriodsWindowCommand { get; protected set; }
 
         public virtual ICommand RefreshCommand { get; protected set; }
 
@@ -191,6 +193,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     return;
                 }
+                Mediator.NotifyContextChange(this);
+                //throw new Exception();
 
                 await ReloadContextAsync(SelectedElement);
             };
@@ -214,17 +218,22 @@ namespace SpawmetDatabaseWPF.ViewModel
             {
                 _window.CommitEdit();
 
+                //int rowsChangedCount = 0;
                 IsSaving = true;
                 await Task.Run(() =>
                 {
                     lock (DbContextLock) // otherwise there's big chance to InvalidOperationException be thrown (unexpected connection state)
                     {
+                        //rowsChangedCount = DbContext.SaveChanges();
                         DbContext.SaveChanges();
                     }
                 });
                 IsSaving = false;
 
-                Mediator.NotifyContextChange(this);
+                //if (rowsChangedCount != 0)
+                //{
+                //    Mediator.NotifyContextChange(this);
+                //}
                 //IsSaving = true;
                 //var saveTask = DbContext.SaveChangesAsync();
                 //await saveTask;
@@ -322,6 +331,19 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
             });
 
+            NewPeriodsWindowCommand = new Command(() =>
+            {
+                var window = Application.Current.Windows.OfType<PeriodsWindow>().FirstOrDefault();
+                if (window != null)
+                {
+                    window.Focus();
+                }
+                else
+                {
+                    new PeriodsWindow().Show();
+                }
+            });
+
             //CellEditEndingCommand = new Command(() =>
             //{
             //    var command = CellEditEndingCommand;
@@ -383,7 +405,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             SelectElement(element);
         }
 
-        public async Task ReloadContextAsync(IModelElement element)
+        public virtual async Task ReloadContextAsync(IModelElement element)
         {
             await ReloadContextAsync();
 

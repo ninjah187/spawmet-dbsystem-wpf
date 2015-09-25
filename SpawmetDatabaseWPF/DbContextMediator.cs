@@ -28,5 +28,11 @@ namespace SpawmetDatabaseWPF
                 ContextChanged(this, notifier);
             }
         }
+
+        public void NotifyContextChange(IDbContextChangesNotifier notifier, params Type[] ignoredTypes)
+        {
+            // http://blogs.msdn.com/b/vancem/archive/2006/10/01/779503.aspx
+            
+        }
     }
 }

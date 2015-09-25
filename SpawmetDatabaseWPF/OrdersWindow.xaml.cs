@@ -109,6 +109,10 @@ namespace SpawmetDatabaseWPF
         private async void DatePicker_OnSelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             //_viewModel.SaveDbStateCommand.Execute(null);
+
+            //var datePicker = (DatePicker) sender;
+            //datePicker.SelectedDateChanged -= DatePicker_OnSelectedDateChanged;
+
             CommitEdit();
             await Task.Run(() =>
             {
@@ -120,6 +124,8 @@ namespace SpawmetDatabaseWPF
                 _viewModel.IsSaving = false;
             });
             _viewModel.Mediator.NotifyContextChange(_viewModel);
+
+            //sdatePicker.SelectedDateChanged -= DatePicker_OnSelectedDateChanged;
         }
     }
 }

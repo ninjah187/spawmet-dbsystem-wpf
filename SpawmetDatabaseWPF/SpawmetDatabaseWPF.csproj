@@ -115,6 +115,9 @@
     <Compile Include="AddMachineWindow.xaml.cs">
       <DependentUpon>AddMachineWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddOrderToPeriodWindow.xaml.cs">
+      <DependentUpon>AddOrderToPeriodWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddOrderWindow.xaml.cs">
       <DependentUpon>AddOrderWindow.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,9 @@
     </Compile>
     <Compile Include="AddPartToOrderWindow.xaml.cs">
       <DependentUpon>AddPartToOrderWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddPeriodWindow.xaml.cs">
+      <DependentUpon>AddPeriodWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ArchivedModuleDetailsWindow.xaml.cs">
       <DependentUpon>ArchivedModuleDetailsWindow.xaml</DependentUpon>
@@ -185,6 +191,7 @@
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EnumToFriendlyNameConverter.cs" />
+    <Compile Include="Events\DbContextChangedEventArgs.cs" />
     <Compile Include="Events\ElementSelectedEventArgs.cs" />
     <Compile Include="Events\ElementSelectedEventHandler.cs" />
     <Compile Include="Events\PartCraftedEventArgs.cs" />
@@ -206,6 +213,9 @@
     <Compile Include="PartsWindow.xaml.cs">
       <DependentUpon>PartsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PeriodsWindow.xaml.cs">
+      <DependentUpon>PeriodsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PrintWindow.xaml.cs">
       <DependentUpon>PrintWindow.xaml</DependentUpon>
     </Compile>
@@ -216,12 +226,14 @@
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\IDbContextMediator.cs" />
     <Compile Include="ViewModel\ArchiveWindowViewModel.cs" />
     <Compile Include="ViewModel\ClientsWindowViewModel.cs" />
     <Compile Include="ViewModel\DeliveriesWindowViewModel.cs" />
     <Compile Include="ViewModel\MachinesWindowViewModel.cs" />
     <Compile Include="ViewModel\OrdersWindowViewModel.cs" />
     <Compile Include="ViewModel\PartsWindowViewModel.cs" />
+    <Compile Include="ViewModel\PeriodsWindowViewModel.cs" />
     <Compile Include="ViewModel\SpawmetWindowViewModel.cs" />
     <Compile Include="ViewModel\UtilityWindowViewModel.cs" />
     <Compile Include="WindowsEnablementController.cs" />
@@ -276,6 +288,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddOrderToPeriodWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddOrderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -297,6 +313,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddPartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddPeriodWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -372,6 +392,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PartsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PeriodsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -489,6 +513,7 @@
   <ItemGroup>
     <Resource Include="save icon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

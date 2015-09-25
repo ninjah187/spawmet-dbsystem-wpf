@@ -20,6 +20,7 @@
         <KeyBinding Gesture="CTRL+3" Command="{Binding NewOrdersWindowCommand}"></KeyBinding>
         <KeyBinding Gesture="CTRL+4" Command="{Binding NewClientsWindowCommand}"></KeyBinding>
         <KeyBinding Gesture="CTRL+5" Command="{Binding NewArchiveWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+6" Command="{Binding NewPeriodsWindowCommand}"></KeyBinding>
     </Window.InputBindings>
     
     <Grid>

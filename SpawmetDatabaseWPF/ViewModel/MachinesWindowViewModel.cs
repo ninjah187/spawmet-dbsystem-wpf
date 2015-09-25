@@ -38,7 +38,7 @@ namespace SpawmetDatabaseWPF.ViewModel
         private BackgroundWorker _partsBackgroundWorker;
         private BackgroundWorker _ordersBackgroundWorker;
 
-        private MachinesWindow _window;
+        private readonly MachinesWindow _window;
 
         private ObservableCollection<Machine> _machines;
         public ObservableCollection<Machine> Machines

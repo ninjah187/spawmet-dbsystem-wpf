@@ -19,7 +19,7 @@ namespace SpawmetDatabaseWPF.Windows
     /// </summary>
     public partial class WaitWindow : Window
     {
-        private WindowsEnablementController _winController;
+        private readonly WindowsEnablementController _winController;
 
         public WaitWindow(string message)
             : this(message, "Wykonywanie operacji")

@@ -54,7 +54,7 @@ namespace SpawmetDatabaseWPF
 
         private async void AddButtonOnClick(object sender, RoutedEventArgs e)
         {
-            AddModuleAsync();
+            await AddModuleAsync();
         }
 
         private async Task AddModuleAsync()
@@ -75,19 +75,19 @@ namespace SpawmetDatabaseWPF
 
                 using (var context = new SpawmetDBContext())
                 {
-                    try
-                    {
+                    //try
+                    //{
                         var machine = context.Machines.Single(m => m.Id == _targetId);
 
                         module.Machine = machine;
 
                         context.MachineModules.Add(module);
                         context.SaveChanges();
-                    }
-                    catch (EntityException exc)
-                    {
-                        MessageWindow.Show("Błąd połączenia." + exc.Message + "\ninner exception: " + exc.InnerException.Message, "Błąd");
-                    }
+                    //}
+                    //catch (EntityException exc)
+                    //{
+                    //    MessageWindow.Show("Błąd połączenia." + exc.Message + "\ninner exception: " + exc.InnerException.Message, "Błąd");
+                    //}
                 }
             });
 
