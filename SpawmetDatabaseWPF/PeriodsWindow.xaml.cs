@@ -73,21 +73,27 @@ namespace SpawmetDatabaseWPF
             //datePicker.SelectedDateChanged -= DatePicker_OnSelectedDateChanged;
 
             CommitEdit();
-            
+
+            int rowsChangedCount = 0;
             await Task.Run(() =>
             {
                 _viewModel.IsSaving = true;
                 lock (_viewModel.DbContextLock)
                 {
-                    _viewModel.DbContext.SaveChanges();
+                    rowsChangedCount = _viewModel.DbContext.SaveChanges();
                 }
                 _viewModel.IsSaving = false;
             });
-            _viewModel.Mediator.NotifyContextChange(_viewModel);
+
+            if (rowsChangedCount != 0)
+            {
+                _viewModel.DbContextMediator.NotifyContextChanged(_viewModel);
+            }
 
             //datePicker.SelectedDateChanged += DatePicker_OnSelectedDateChanged;
 
             //StartCalendar.OnApplyTemplate();
         }
+
     }
 }

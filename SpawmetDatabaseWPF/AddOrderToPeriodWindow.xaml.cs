@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
 
 namespace SpawmetDatabaseWPF
@@ -98,7 +99,9 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        //private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         private SpawmetDBContext _dbContext;
 
@@ -110,16 +113,8 @@ namespace SpawmetDatabaseWPF
 
             _periodId = periodId;
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            Mediator.ContextChanged += async (sender, notifier) =>
-            {
-                if (notifier == this)
-                {
-                    return;
-                }
-
-                await LoadAsync();
-            };
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
 
             Loaded += async delegate
             {
@@ -132,7 +127,8 @@ namespace SpawmetDatabaseWPF
                 {
                     _dbContext.Dispose();
                 }
-                Mediator = null;
+
+                DbContextMediator.Subscribers.Remove(this);
             };
         }
 
@@ -180,7 +176,7 @@ namespace SpawmetDatabaseWPF
                 });
             }
 
-            Mediator.NotifyContextChange(this);
+            DbContextMediator.NotifyContextChanged(this);
             waitWin.Close();
 
             Close();

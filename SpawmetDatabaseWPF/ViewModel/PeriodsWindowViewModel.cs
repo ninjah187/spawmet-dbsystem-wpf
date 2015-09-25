@@ -39,8 +39,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                 if (_selectedPeriod != value)
                 {
                     _selectedPeriod = value;
-                    LoadOrdersAsync();
                     OnPropertyChanged();
+                    SelectedElement = _selectedPeriod;
+                    LoadOrdersAsync();
                 }
             }
         }
@@ -143,9 +144,9 @@ namespace SpawmetDatabaseWPF.ViewModel
                         Periods.Remove(period);
                     }
 
-                    Orders = null;
+                    SelectElement(null);
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                     waitWin.Close();
                 };
 
@@ -165,11 +166,46 @@ namespace SpawmetDatabaseWPF.ViewModel
                 new AddOrderToPeriodWindow(period.Id).Show();
             });
             #endregion
+
+            #region DeleteOrders
+            DeleteOrdersCommand = new Command(() =>
+            {
+                var orders = GetSelectedOrders();
+                if (orders == null)
+                {
+                    return;
+                }
+
+                var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczone zamówienia?");
+                confirmWin.Confirmed += async delegate
+                {
+                    var waitWin = new WaitWindow("Proszę czekać, trwa usuwanie...");
+                    waitWin.Show();
+
+                    foreach (var order in orders)
+                    {
+                        await Task.Run(() =>
+                        {
+                            lock (DbContextLock)
+                            {
+                                order.Period = null;
+                                DbContext.SaveChanges();
+                            }
+                        });
+                        Orders.Remove(order);
+                    }
+
+                    DbContextMediator.NotifyContextChanged(this);
+                    waitWin.Close();
+                };
+                confirmWin.Show();
+            });
+            #endregion
         }
 
         public override void Load()
         {
-            
+            LoadPeriods();
         }
 
         public override async Task LoadAsync()
@@ -219,23 +255,23 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        public override async Task ReloadContextAsync(IModelElement element)
-        {
-            lock (DbContextLock)
-            {
-                DbContext.Dispose();
-                DbContext = new SpawmetDBContext();
-            }
+        //public override async Task ReloadContextAsync(IModelElement element)
+        //{
+        //    lock (DbContextLock)
+        //    {
+        //        DbContext.Dispose();
+        //        DbContext = new SpawmetDBContext();
+        //    }
 
-            await LoadPeriodsAsync();
+        //    await LoadPeriodsAsync();
 
-            IsConnected = true;
+        //    IsConnected = true;
 
-            if (element != null)
-            {
-                SelectElement(element);
-            }
-        }
+        //    if (element != null)
+        //    {
+        //        SelectElement(element);
+        //    }
+        //}
 
         public override void SelectElement(IModelElement element)
         {
@@ -267,6 +303,22 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
 
             return selected;
+        }
+
+        private List<Order> GetSelectedOrders()
+        {
+            if (_window.OrdersDataGrid.SelectedItems.Count == 0)
+            {
+                return null;
+            }
+
+            var orders = new List<Order>();
+            foreach (var o in _window.OrdersDataGrid.SelectedItems)
+            {
+                orders.Add((Order) o);
+            }
+
+            return orders;
         }
     }
 }

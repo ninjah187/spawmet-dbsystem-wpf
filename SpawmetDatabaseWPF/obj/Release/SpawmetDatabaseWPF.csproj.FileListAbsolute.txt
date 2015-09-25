@@ -236,3 +236,4 @@ D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPeriodWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddPeriodWindow.g.cs
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddOrderToPeriodWindow.baml
 D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\obj\Release\AddOrderToPeriodWindow.g.cs
+D:\Pisane\C#\SpawmetDatabase\SpawmetDatabaseWPF\bin\Release\SpawmetDatabaseWPFDocumentation.XML

@@ -181,6 +181,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.ClientAdded += (sender, client) =>
                 {
                     Clients.Add(client);
+
+                    DbContextMediator.NotifyContextChanged(this, typeof(OrdersWindowViewModel));
                 };
                 win.Show();
             });
@@ -264,7 +266,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                     Orders = null;
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                     waitWin.Close();
                 };
 
@@ -349,7 +351,7 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             LoadClients();
 
-            FinishLoading();
+            IsConnected = true;
         }
 
         public override async Task LoadAsync()
@@ -359,7 +361,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 LoadClients();
             });
 
-            FinishLoading();
+            IsConnected = true;
         }
 
         private void LoadClients()
@@ -393,6 +395,12 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override void SelectElement(IModelElement element)
         {
+            if (element == null)
+            {
+                Orders = null;
+                return;
+            }
+
             var client = Clients.Single(e => e.Id == element.Id);
 
             SelectedClient = client;

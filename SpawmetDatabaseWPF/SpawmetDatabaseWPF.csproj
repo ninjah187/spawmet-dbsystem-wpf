@@ -47,6 +47,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SpawmetDatabaseWPFDocumentation.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon2.ico</ApplicationIcon>
@@ -171,7 +172,6 @@
     <Compile Include="CraftPartWindow.xaml.cs">
       <DependentUpon>CraftPartWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DbContextMediator.cs" />
     <Compile Include="DeleteClientWindow.xaml.cs">
       <DependentUpon>DeleteClientWindow.xaml</DependentUpon>
     </Compile>
@@ -191,13 +191,11 @@
       <DependentUpon>DeliveriesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="EnumToFriendlyNameConverter.cs" />
-    <Compile Include="Events\DbContextChangedEventArgs.cs" />
     <Compile Include="Events\ElementSelectedEventArgs.cs" />
     <Compile Include="Events\ElementSelectedEventHandler.cs" />
     <Compile Include="Events\PartCraftedEventArgs.cs" />
     <Compile Include="Events\PartCraftedEventHandler.cs" />
     <Compile Include="Exceptions\ConnectionLostException.cs" />
-    <Compile Include="IDbContextChangesNotifier.cs" />
     <Compile Include="IMainWindow.cs" />
     <Compile Include="ISpawmetWindow.cs" />
     <Compile Include="MachineModuleDetailsWindow.xaml.cs">
@@ -226,6 +224,9 @@
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ContextChangedHandler.cs" />
+    <Compile Include="Utilities\DbContextMediator.cs" />
+    <Compile Include="Utilities\IDbContextChangesNotifier.cs" />
     <Compile Include="Utilities\IDbContextMediator.cs" />
     <Compile Include="ViewModel\ArchiveWindowViewModel.cs" />
     <Compile Include="ViewModel\ClientsWindowViewModel.cs" />

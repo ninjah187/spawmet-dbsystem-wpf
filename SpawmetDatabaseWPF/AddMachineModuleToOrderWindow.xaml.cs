@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Common;
 
@@ -71,7 +72,9 @@ namespace SpawmetDatabaseWPF
             }
         }
 
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        //private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         private SpawmetDBContext _dbContext;
 
@@ -87,7 +90,8 @@ namespace SpawmetDatabaseWPF
 
             _winController = new WindowsEnablementController();
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
             //Mediator.ContextChanged += async (sender, notifier) =>
             //{
             //    if (notifier != this)
@@ -107,7 +111,8 @@ namespace SpawmetDatabaseWPF
                 {
                     _dbContext.Dispose();
                 }
-                Mediator = null;
+
+                DbContextMediator.Subscribers.Remove(this);
             };
 
             SizeChanged += delegate
@@ -196,7 +201,7 @@ namespace SpawmetDatabaseWPF
                 //_winController.EnableWindows();
             }
 
-            Mediator.NotifyContextChange(this);
+            DbContextMediator.NotifyContextChanged(this);
 
             //OnModuleAdded(module);
 

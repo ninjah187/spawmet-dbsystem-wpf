@@ -110,14 +110,7 @@ namespace SpawmetDatabase.Model
 
         public decimal Price
         {
-            get
-            {
-                //decimal sum = 0;
-                //sum += Machine.Price;
-                //sum += MachineModules.ToList().Sum(module => module.Price);
-                //return sum;
-                return 0;
-            }
+            get { return _price; }
             //set
             //{
             //    if (_price != value)
@@ -235,6 +228,7 @@ namespace SpawmetDatabase.Model
         private DateTime? _sendDate;
         private bool _confirmationSent;
         private decimal _price;
+        private decimal _discount;
         private string _serialNumber;
 
         private Client _client;

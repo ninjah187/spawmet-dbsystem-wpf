@@ -343,6 +343,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.MachineAdded += (sender, e) =>
                 {
                     Machines.Add(e);
+
+                    DbContextMediator.NotifyContextChanged(this, typeof(OrdersWindowViewModel));
                 };
                 win.Show();
             });
@@ -367,7 +369,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 LoadStandardPartSet();
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
 
                 string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
                 MessageWindow.Show(txt, "Wypalono część", _window);
@@ -395,7 +397,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     LoadStandardPartSet();
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
 
                     string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
                     MessageWindow.Show(txt, "Wypalono część", _window);
@@ -528,7 +530,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     Orders = null;
                     Modules = null;
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                     waitWin.Close();
                 };
                 confirmWin.Show();
@@ -657,7 +659,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 IsSaving = false;
                 waitWin.Close();
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
 
                 //var element = DbContext.StandardPartSets
                 //    .Single(el => el.Part.Id == SelectedPartSetElement.Part.Id
@@ -770,7 +772,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 Modules.Remove(SelectedModule);
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
                 _window.IsEnabled = true;
             });
             #endregion
@@ -888,11 +890,11 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             IsConnected = true;
 
-            // if some element were previously selected; needed in refreshing window
-            if (WindowConfig.SelectedElement != null)
-            {
-                SelectElement(WindowConfig.SelectedElement);
-            }
+            //// if some element were previously selected; needed in refreshing window
+            //if (WindowConfig.SelectedElement != null)
+            //{
+            //    SelectElement(WindowConfig.SelectedElement);
+            //}
         }
 
         public override async Task LoadAsync()
@@ -901,10 +903,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             IsConnected = true;
 
-            if (WindowConfig.SelectedElement != null)
-            {
-                SelectElement(WindowConfig.SelectedElement);
-            }
+            //if (WindowConfig.SelectedElement != null)
+            //{
+            //    SelectElement(WindowConfig.SelectedElement);
+            //}
         }
 
         public void LoadMachines()

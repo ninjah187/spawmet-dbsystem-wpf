@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
 
 namespace SpawmetDatabaseWPF
@@ -27,7 +28,9 @@ namespace SpawmetDatabaseWPF
 
         public ObservableCollection<Part> ListBoxItemsSource { get; set; }
 
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        //private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         //private readonly MachinesWindow _parentWindow;
         private readonly SpawmetDBContext _dbContext;
@@ -37,7 +40,7 @@ namespace SpawmetDatabaseWPF
         {
             InitializeComponent();
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
 
             //_parentWindow = parentWindow;
             _dbContext = dbContext;
@@ -154,7 +157,7 @@ namespace SpawmetDatabaseWPF
 
             OnPartAdded(partSetElement);
 
-            Mediator.NotifyContextChange(this);
+            DbContextMediator.NotifyContextChanged(this);
 
             //foreach (var order in _machine.Orders)
             //{

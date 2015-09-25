@@ -416,7 +416,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     Orders = null;
                     Modules = null;
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                     waitWin.Close();
                 };
                 confirmWin.Show();
@@ -468,7 +468,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     LoadParts(); // to update MainDataGrid
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
 
                     string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
                     MessageWindow.Show(txt, "Wypalono część", _window);
@@ -592,7 +592,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             LoadParts();
 
-            FinishLoading();
+            IsConnected = true;
+            //FinishLoading();
         }
 
         public override async Task LoadAsync()
@@ -602,7 +603,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                 LoadParts();
             });
 
-            FinishLoading();
+            IsConnected = true;
+            //FinishLoading();
         }
 
         public void LoadParts()
@@ -690,6 +692,14 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override void SelectElement(IModelElement element)
         {
+            if (element == null)
+            {
+                Machines = null;
+                Orders = null;
+                Modules = null;
+                return;
+            }
+
             var part = Parts.Single(e => e.Id == element.Id);
 
             SelectedPart = part;

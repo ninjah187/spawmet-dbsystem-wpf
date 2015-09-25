@@ -1,0 +1,644 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SpawmetDatabaseWPF</name>
+    </assembly>
+    <members>
+        <member name="T:SpawmetDatabaseWPF.AddClientWindow">
+            <summary>
+            Interaction logic for AddClientWindow.xaml
+            </summary>
+            <summary>
+            AddClientWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddClientWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddDeliveryWindow">
+            <summary>
+            Interaction logic for AddDeliveryWindow.xaml
+            </summary>
+            <summary>
+            AddDeliveryWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddDeliveryWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddMachineModuleToOrderWindow">
+            <summary>
+            Interaction logic for AddMachineModuleToOrderWindow.xaml
+            </summary>
+            <summary>
+            AddMachineModuleToOrderWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddMachineModuleToOrderWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddMachineModuleWindow">
+            <summary>
+            Interaction logic for AddMachineModuleWindow.xaml
+            </summary>
+            <summary>
+            AddMachineModuleWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddMachineModuleWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddMachinesFromDirectory">
+            <summary>
+            Interaction logic for AddMachinesFromDirectory.xaml
+            </summary>
+            <summary>
+            AddMachinesFromDirectory
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddMachinesFromDirectory.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddMachineWindow">
+            <summary>
+            Interaction logic for AddMachineWindow.xaml
+            </summary>
+            <summary>
+            AddMachineWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddMachineWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddOrderToPeriodWindow">
+            <summary>
+            Interaction logic for AddOrderToPeriodWindow.xaml
+            </summary>
+            <summary>
+            AddOrderToPeriodWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddOrderToPeriodWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddOrderWindow">
+            <summary>
+            Interaction logic for AddOrderWindow.xaml
+            </summary>
+            <summary>
+            AddOrderWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddOrderWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPartToDelivery">
+            <summary>
+            Interaction logic for AddPartToDelivery.xaml
+            </summary>
+            <summary>
+            AddPartToDelivery
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPartToDelivery.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPartToMachine">
+            <summary>
+            Interaction logic for AddPartToMachine.xaml
+            </summary>
+            <summary>
+            AddPartToMachine
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPartToMachine.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPartToModuleWindow">
+            <summary>
+            Interaction logic for AddPartToModuleWindow.xaml
+            </summary>
+            <summary>
+            AddPartToModuleWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPartToModuleWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPartToOrderWindow">
+            <summary>
+            Interaction logic for AddPartToOrderWindow.xaml
+            </summary>
+            <summary>
+            AddPartToOrderWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPartToOrderWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPeriodWindow">
+            <summary>
+            Interaction logic for AddPeriodWindow.xaml
+            </summary>
+            <summary>
+            AddPeriodWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPeriodWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.ArchivedModuleDetailsWindow">
+            <summary>
+            Interaction logic for ArchivedModuleDetailsWindow.xaml
+            </summary>
+            <summary>
+            ArchivedModuleDetailsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.ArchivedModuleDetailsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.ArchiveWindow">
+            <summary>
+            Interaction logic for ArchiveWindow.xaml
+            </summary>
+            <summary>
+            ArchiveWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.ArchiveWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.ClientsWindow">
+            <summary>
+            ClientsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.ClientsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.CommonWindows.ConfirmWindow">
+            <summary>
+            Interaction logic for ConfirmWindow.xaml
+            </summary>
+            <summary>
+            ConfirmWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.CommonWindows.ConfirmWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.CommonWindows.MessageWindow">
+            <summary>
+            Interaction logic for MessageWindow.xaml
+            </summary>
+            <summary>
+            MessageWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.CommonWindows.MessageWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.ConnectingWindow">
+            <summary>
+            Interaction logic for ConnectingWindow.xaml
+            </summary>
+            <summary>
+            ConnectingWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.ConnectingWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.CraftPartWindow">
+            <summary>
+            Interaction logic for CraftPartWindow.xaml
+            </summary>
+            <summary>
+            CraftPartWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.CraftPartWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeleteClientWindow">
+            <summary>
+            Interaction logic for DeleteClientWindow.xaml
+            </summary>
+            <summary>
+            DeleteClientWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeleteClientWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeleteDeliveryWindow">
+            <summary>
+            Interaction logic for DeleteDeliveryWindow.xaml
+            </summary>
+            <summary>
+            DeleteDeliveryWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeleteDeliveryWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeleteMachineWindow">
+            <summary>
+            Interaction logic for DeleteMachineWindow.xaml
+            </summary>
+            <summary>
+            DeleteMachineWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeleteMachineWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeleteOrderWindow">
+            <summary>
+            Interaction logic for DeleteOrderWindow.xaml
+            </summary>
+            <summary>
+            DeleteOrderWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeleteOrderWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeletingPartWindow">
+            <summary>
+            Interaction logic for DeletingPartWindow.xaml
+            </summary>
+            <summary>
+            DeletingPartWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeletingPartWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.DeliveriesWindow">
+            <summary>
+            DeliveriesWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.DeliveriesWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.MachineModuleDetailsWindow">
+            <summary>
+            Interaction logic for MachineModuleDetailsWindow.xaml
+            </summary>
+            <summary>
+            MachineModuleDetailsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.MachineModuleDetailsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.MachinesWindow">
+            <summary>
+            MachinesWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.MachinesWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.OrdersWindow">
+            <summary>
+            OrdersWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.OrdersWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.PartsWindow">
+            <summary>
+            PartsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.PartsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.PeriodsWindow">
+            <summary>
+            Interaction logic for PeriodsWindow.xaml
+            </summary>
+            <summary>
+            PeriodsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.PeriodsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.PrintWindow">
+            <summary>
+            Interaction logic for PrintWindow.xaml
+            </summary>
+            <summary>
+            PrintWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.PrintWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.SaveFileWindow">
+            <summary>
+            Interaction logic for SaveFileWindow.xaml
+            </summary>
+            <summary>
+            SaveFileWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.SaveFileWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.TestWindow">
+            <summary>
+            Interaction logic for TestWindow.xaml
+            </summary>
+            <summary>
+            TestWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.TestWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Utilities.DbContextMediator">
+            <summary>
+            Class that handles passing info between IDbContextChangesNotifier instances about need of update DbContext.
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Utilities.DbContextMediator.NotifyContextChanged(SpawmetDatabaseWPF.Utilities.IDbContextChangesNotifier)">
+            <summary>
+            Notifies all subscribers except notifier that DbContext has changed. 
+            </summary>
+            <param name="notifier">Object which notifies that it changed the context.</param>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Utilities.DbContextMediator.NotifyContextChanged(SpawmetDatabaseWPF.Utilities.IDbContextChangesNotifier,System.Type[])">
+            <summary>
+            Notifies only subscribers which are of types targetTypes.
+            </summary>
+            <param name="notifier">Object which notifies that it changed the context.</param>
+            <param name="targetTypes">Types to be notified.</param>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Common.ExceptionWindow">
+            <summary>
+            Interaction logic for ExceptionWindow.xaml
+            </summary>
+            <summary>
+            ExceptionWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Common.ExceptionWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.PartsRaportWindow">
+            <summary>
+            Interaction logic for PartsRaportWindow.xaml
+            </summary>
+            <summary>
+            PartsRaportWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.PartsRaportWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Searching.SearchClientsWindow">
+            <summary>
+            Interaction logic for SearchClientsWindow.xaml
+            </summary>
+            <summary>
+            SearchClientsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Searching.SearchClientsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Searching.SearchDeliveriesWindow">
+            <summary>
+            SearchDeliveriesWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Searching.SearchDeliveriesWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Searching.SearchMachinesByName">
+            <summary>
+            Interaction logic for SearchMachinesByName.xaml
+            </summary>
+            <summary>
+            SearchMachinesByName
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Searching.SearchMachinesByName.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Searching.SearchOrdersWindow">
+            <summary>
+            Interaction logic for SearchOrdersWindow.xaml
+            </summary>
+            <summary>
+            SearchOrdersWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Searching.SearchOrdersWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.Searching.SearchPartsWindow">
+            <summary>
+            Interaction logic for SearchPartsWindow.xaml
+            </summary>
+            <summary>
+            SearchPartsWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.Searching.SearchPartsWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.SendConfirmationWindow">
+            <summary>
+            Interaction logic for SendConfirmationWindow.xaml
+            </summary>
+            <summary>
+            SendConfirmationWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.SendConfirmationWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Windows.WaitWindow">
+            <summary>
+            Interaction logic for WaitWindow.xaml
+            </summary>
+            <summary>
+            WaitWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.Windows.WaitWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.AddPartWindow">
+            <summary>
+            Interaction logic for AddPartWindow.xaml
+            </summary>
+            <summary>
+            AddPartWindow
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.AddPartWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:SpawmetDatabaseWPF.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:SpawmetDatabaseWPF.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SpawmetDatabaseWPF.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SpawmetDatabaseWPF.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
+        </member>
+    </members>
+</doc>

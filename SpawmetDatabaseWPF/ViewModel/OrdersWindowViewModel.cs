@@ -316,7 +316,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                             break;
                     }
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                 };
                 win.Show();
             });
@@ -374,7 +374,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     AdditionalPartSet = null;
                     Modules = null;
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
                     waitWin.Close();
                 };
                 confirmWin.Show();
@@ -441,7 +441,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                         LoadAdditionalPartSet();
 
-                        Mediator.NotifyContextChange(this);
+                        DbContextMediator.NotifyContextChanged(this);
                     }
                 };
                 win.Show();
@@ -465,7 +465,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 LoadAdditionalPartSet();
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
 
                 string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
                 MessageWindow.Show(txt, "Wypalono część", _window);
@@ -491,7 +491,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     LoadAdditionalPartSet();
 
-                    Mediator.NotifyContextChange(this);
+                    DbContextMediator.NotifyContextChanged(this);
 
                     string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
                     MessageWindow.Show(txt, "Wypalono część", _window);
@@ -555,7 +555,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 LoadAdditionalPartSet();
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
             });
 
             PrintDialogCommand = new Command(() =>
@@ -685,7 +685,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                             }
                         });
 
-                        Mediator.NotifyContextChange(this);
+                        DbContextMediator.NotifyContextChanged(this);
 
                         IsSaving = false;
                     }
@@ -723,7 +723,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     }
                 });
 
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
 
                 Modules.Remove(module);
                 IsSaving = false;
@@ -862,8 +862,8 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                     DbContext.SaveChanges();
                 });
-                
-                Mediator.NotifyContextChange(this);
+
+                DbContextMediator.NotifyContextChanged(this);
 
                 waitWin.Close();
             });
@@ -878,10 +878,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             IsConnected = true;
 
-            if (WindowConfig.SelectedElement != null)
-            {
-                SelectElement(WindowConfig.SelectedElement);
-            }
+            //if (WindowConfig.SelectedElement != null)
+            //{
+            //    SelectElement(WindowConfig.SelectedElement);
+            //}
         }
 
         public override async Task LoadAsync()
@@ -895,10 +895,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
             IsConnected = true;
 
-            if (WindowConfig.SelectedElement != null)
-            {
-                SelectElement(WindowConfig.SelectedElement);
-            }
+            //if (WindowConfig.SelectedElement != null)
+            //{
+            //    SelectElement(WindowConfig.SelectedElement);
+            //}
         }
 
         private void LoadOrders()
@@ -987,11 +987,14 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public override void SelectElement(IModelElement element)
         {
-            var order = Orders.FirstOrDefault(o => o.Id == element.Id);
-            if (order == null)
+            if (element == null)
             {
+                AdditionalPartSet = null;
+                Modules = null;
                 return;
             }
+
+            var order = Orders.Single(o => o.Id == element.Id);
 
             SelectedOrder = order;
 
@@ -1036,14 +1039,14 @@ namespace SpawmetDatabaseWPF.ViewModel
                     {
                         case OrderStatus.InProgress:
                             await ApplyPartSetsAsync(SelectedOrder);
-                            Mediator.NotifyContextChange(this);
+                            DbContextMediator.NotifyContextChanged(this);
                             // zamiast async metody i await, powinno wystarczyć
                             // Task.Run(() => { ApplyPartSets(SelectedOrder) });
                             break;
 
                         case OrderStatus.Done:
                             await ApplyPartSetsAsync(SelectedOrder);
-                            Mediator.NotifyContextChange(this);
+                            DbContextMediator.NotifyContextChanged(this);
                             break;
 
                         default:
@@ -1056,7 +1059,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     {
                         case OrderStatus.New:
                             await UndoApplyPartSetsAsync(SelectedOrder);
-                            Mediator.NotifyContextChange(this);
+                            DbContextMediator.NotifyContextChanged(this);
                             break;
 
                         case OrderStatus.Done:
@@ -1072,7 +1075,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     {
                         case OrderStatus.New:
                             await UndoApplyPartSetsAsync(SelectedOrder);
-                            Mediator.NotifyContextChange(this);
+                            DbContextMediator.NotifyContextChanged(this);
                             break;
 
                         case OrderStatus.InProgress:

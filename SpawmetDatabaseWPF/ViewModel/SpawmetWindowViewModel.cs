@@ -18,6 +18,7 @@ using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Events;
+using SpawmetDatabaseWPF.Utilities;
 
 namespace SpawmetDatabaseWPF.ViewModel
 {
@@ -31,8 +32,6 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public event EventHandler DataGridEditCanceled;
         public event EventHandler DataGridEditCommited;
-
-        public event EventHandler DbContextChanged;
 
         private ISpawmetWindow _window;
         protected WindowConfig WindowConfig { get; private set; }
@@ -91,7 +90,8 @@ namespace SpawmetDatabaseWPF.ViewModel
             }
         }
 
-        public DbContextMediator Mediator { get; set; } // observes and notifies to other windows any changes occured in DbContext
+        public IDbContextMediator DbContextMediator { get; set; } // observes and notifies to other windows any changes occured in DbContext
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
 
         public ICommand SaveDbStateCommand { get; protected set; }
 
@@ -186,22 +186,18 @@ namespace SpawmetDatabaseWPF.ViewModel
                 }
             };
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            Mediator.ContextChanged += async (sender, notifier) =>
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
+            ContextChangedHandler = async delegate
             {
-                if (notifier == this)
-                {
-                    return;
-                }
-                Mediator.NotifyContextChange(this);
-                //throw new Exception();
-
                 await ReloadContextAsync(SelectedElement);
             };
         }
 
         public virtual void Dispose()
         {
+            DbContextMediator.Subscribers.Remove(this);
+
             lock (DbContextLock)
             {
                 DbContext.Dispose();
@@ -229,6 +225,8 @@ namespace SpawmetDatabaseWPF.ViewModel
                     }
                 });
                 IsSaving = false;
+
+                DbContextMediator.NotifyContextChanged(this);
 
                 //if (rowsChangedCount != 0)
                 //{
@@ -409,10 +407,7 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             await ReloadContextAsync();
 
-            if (element != null)
-            {
-                SelectElement(element);
-            }
+            SelectElement(element);
         }
 
         public bool IsDatabaseServerAvailable()
@@ -508,14 +503,6 @@ namespace SpawmetDatabaseWPF.ViewModel
             if (DataGridEditCommited != null)
             {
                 DataGridEditCommited(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnDbContextChanged()
-        {
-            if (DbContextChanged != null)
-            {
-                DbContextChanged(this, EventArgs.Empty);
             }
         }
     }

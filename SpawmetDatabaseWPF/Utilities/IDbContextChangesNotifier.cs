@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SpawmetDatabaseWPF
+namespace SpawmetDatabaseWPF.Utilities
 {
     public interface IDbContextChangesNotifier
     {
-        DbContextMediator Mediator { get; set; }
+        IDbContextMediator DbContextMediator { get; set; }
+
+        DbContextChangedHandler ContextChangedHandler { get; set; }
     }
 }

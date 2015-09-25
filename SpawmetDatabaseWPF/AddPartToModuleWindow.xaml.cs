@@ -21,6 +21,7 @@ using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Common;
 
@@ -77,7 +78,9 @@ namespace SpawmetDatabaseWPF
 
         public ICommand AddPartCommand { get; set; }
 
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         private SpawmetDBContext _dbContext;
 
@@ -89,14 +92,10 @@ namespace SpawmetDatabaseWPF
 
             _moduleId = moduleId;
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            Mediator.ContextChanged += async (sender, notifier) =>
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
+            ContextChangedHandler = async delegate
             {
-                if (notifier == this)
-                {
-                    return;
-                }
-
                 await LoadAsync();
             };
 
@@ -111,7 +110,8 @@ namespace SpawmetDatabaseWPF
                 {
                     _dbContext.Dispose();
                 }
-                Mediator = null;
+
+                DbContextMediator.Subscribers.Remove(this);
             };
 
             SizeChanged += delegate
@@ -217,7 +217,7 @@ namespace SpawmetDatabaseWPF
             });
             IsEnabled = false;
             await task;
-            Mediator.NotifyContextChange(this);
+            DbContextMediator.NotifyContextChanged(this);
             
             waitWin.Close();
 

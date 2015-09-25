@@ -19,6 +19,7 @@ using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.Config;
+using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
 
 namespace SpawmetDatabaseWPF
@@ -90,7 +91,9 @@ namespace SpawmetDatabaseWPF
         public ICommand DeletePartCommand { get; set; }
         public ICommand GoToPartCommand { get; set; }
 
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         private SpawmetDBContext _dbContext;
         private object _dbContextLock = new object();
@@ -103,14 +106,8 @@ namespace SpawmetDatabaseWPF
 
             _moduleId = moduleId;
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            Mediator.ContextChanged += async (sender, notifier) =>
-            {
-                if (notifier != this)
-                {
-                    await LoadAsync();
-                }
-            };
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            
             
             Loaded += async delegate
             {
@@ -191,7 +188,7 @@ namespace SpawmetDatabaseWPF
                     _dbContext.SaveChanges();
                 });
                 Parts.Remove(SelectedPartSetElement);
-                Mediator.NotifyContextChange(this);
+                DbContextMediator.NotifyContextChanged(this);
 
                 waitWin.Close();
                 //IsEnabled = true;

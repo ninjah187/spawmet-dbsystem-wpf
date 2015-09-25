@@ -175,7 +175,7 @@ namespace SpawmetDatabaseWPF
                 _viewModel.IsSaving = false;
             });
             
-            _viewModel.Mediator.NotifyContextChange(_viewModel);
+            _viewModel.DbContextMediator.NotifyContextChanged(_viewModel);
 
             ModulesDataGrid.RowEditEnding += RowEditEndingHandler;
         }

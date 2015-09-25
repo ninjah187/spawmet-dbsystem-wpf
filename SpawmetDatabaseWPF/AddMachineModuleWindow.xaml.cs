@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.CommonWindows;
+using SpawmetDatabaseWPF.Utilities;
 
 namespace SpawmetDatabaseWPF
 {
@@ -23,7 +24,9 @@ namespace SpawmetDatabaseWPF
     /// </summary>
     public partial class AddMachineModuleWindow : Window, IDbContextChangesNotifier
     {
-        public DbContextMediator Mediator { get; set; }
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        //private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
 
         private int _targetId;
 
@@ -33,7 +36,8 @@ namespace SpawmetDatabaseWPF
 
             _targetId = machineId;
 
-            Mediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
 
             NameTextBox.Focus();
 
@@ -49,6 +53,11 @@ namespace SpawmetDatabaseWPF
                         Close();
                         break;
                 }
+            };
+
+            Closed += delegate
+            {
+                DbContextMediator.Subscribers.Remove(this);
             };
         }
 
@@ -95,7 +104,7 @@ namespace SpawmetDatabaseWPF
 
             await task;
 
-            Mediator.NotifyContextChange(this);
+            DbContextMediator.NotifyContextChanged(this);
 
             Close();
         }
