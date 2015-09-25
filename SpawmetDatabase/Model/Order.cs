@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.Office.Interop.Word;
 
 namespace SpawmetDatabase.Model
 {
@@ -111,14 +112,27 @@ namespace SpawmetDatabase.Model
         public decimal Price
         {
             get { return _price; }
-            //set
-            //{
-            //    if (_price != value)
-            //    {
-            //        _price = value;
-            //        NotifyPropertyChanged("Price");
-            //    }
-            //}
+            set
+            {
+                if (_price != value)
+                {
+                    _price = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public decimal Discount
+        {
+            get { return _discount; }
+            set
+            {
+                if (_discount != value)
+                {
+                    _discount = value;
+                    NotifyPropertyChanged();
+                }
+            }
         }
 
         public string SerialNumber
