@@ -192,6 +192,8 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand ArchiveCommand { get; protected set; }
 
+        public ICommand OrderPriceCalculatorCommand { get; protected set; }
+
         private bool _arePartsLoading;
         public bool ArePartsLoading
         {
@@ -866,6 +868,18 @@ namespace SpawmetDatabaseWPF.ViewModel
                 DbContextMediator.NotifyContextChanged(this);
 
                 waitWin.Close();
+            });
+            #endregion
+
+            #region OrderPriceCalculator
+            OrderPriceCalculatorCommand = new Command(() =>
+            {
+                if (SelectedOrder == null)
+                {
+                    return;
+                }
+
+                new OrderPriceCalculatorWindow(SelectedOrder.Id).Show();
             });
             #endregion
         }

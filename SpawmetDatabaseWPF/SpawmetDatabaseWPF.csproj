@@ -47,7 +47,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\SpawmetDatabaseWPFDocumentation.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon2.ico</ApplicationIcon>
@@ -205,6 +206,9 @@
       <DependentUpon>MachinesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ModelElementComparer.cs" />
+    <Compile Include="OrderPriceCalculatorWindow.xaml.cs">
+      <DependentUpon>OrderPriceCalculatorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="OrdersWindow.xaml.cs">
       <DependentUpon>OrdersWindow.xaml</DependentUpon>
     </Compile>
@@ -388,6 +392,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="OrderPriceCalculatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="OrdersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

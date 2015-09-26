@@ -106,6 +106,7 @@
                     <MenuItem Header="Drukuj" Command="{Binding PrintDialogCommand}"></MenuItem>
                     <MenuItem Header="Potwierdzenie" Command="{Binding SendMailToClientCommand}"></MenuItem>
                     <MenuItem Header="Archiwizuj" Command="{Binding ArchiveCommand}"></MenuItem>
+                    <MenuItem Header="Kalkulator" Command="{Binding OrderPriceCalculatorCommand}"></MenuItem>
                     <MenuItem Header="Idź do">
                         <MenuItem Header="Maszyna" Command="{Binding GoToMachineCommand}"></MenuItem>
                         <MenuItem Header="Klient" Command="{Binding GoToClientCommand}"></MenuItem>
@@ -223,7 +224,13 @@
                 <DataGridCheckBoxColumn Header="Potwierdzono"
                                         Binding="{Binding ConfirmationSent}"></DataGridCheckBoxColumn>
 
-                <DataGridTextColumn Header="Cena" Binding="{Binding Price, Mode=OneWay, UpdateSourceTrigger=LostFocus}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Cena podst." Binding="{Binding Price}" Width="SizeToCells" />
+                
+                <DataGridTextColumn Header="Rabat" Binding="{Binding Discount}" />
+                
+                <DataGridTextColumn Header="Rabat [%]" />
+                
+                <DataGridTextColumn Header="Cena wyj." />
 
                 <DataGridTextColumn Header="Uwagi" Binding="{Binding Remarks}" Width="SizeToCells" />
             </DataGrid.Columns>
