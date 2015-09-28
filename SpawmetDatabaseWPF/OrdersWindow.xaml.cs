@@ -132,5 +132,10 @@ namespace SpawmetDatabaseWPF
 
             //sdatePicker.SelectedDateChanged -= DatePicker_OnSelectedDateChanged;
         }
+
+        private void OrderPriceCalculatorDataGridCell_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            _viewModel.OrderPriceCalculatorCommand.Execute(null);
+        }
     }
 }

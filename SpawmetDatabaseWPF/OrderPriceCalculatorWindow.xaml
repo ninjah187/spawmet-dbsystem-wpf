@@ -1,60 +1,144 @@
 ﻿<Window x:Class="SpawmetDatabaseWPF.OrderPriceCalculatorWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Kalkulator cen" Height="300" Width="300"
+        xmlns:converters="clr-namespace:SpawmetDatabaseWPF.Converters"
+        Title="Kalkulator cen" Width="450" Height="350"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <Grid Grid.Row="0">
-            <DockPanel>
-                <TextBlock Text="Zamówienie: " FontWeight="DemiBold"></TextBlock>
-                <TextBlock Text="{Binding Order.Signature}" TextAlignment="Right" Margin="5,0,0,0"></TextBlock>
-            </DockPanel>
+
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="Zamówienie: " FontWeight="DemiBold" />
+                <DockPanel>
+                    <TextBlock Text="Klient: " FontWeight="DemiBold" />
+                    <TextBlock Text="{Binding Order.Client.Name}" TextAlignment="Right" TextWrapping="Wrap" Margin="5,0,0,0" />
+                </DockPanel>
+                <DockPanel>
+                    <TextBlock Text="Maszyna: " FontWeight="DemiBold" />
+                    <TextBlock Text="{Binding Order.Machine.Name}" TextAlignment="Right" TextWrapping="Wrap" Margin="5,0,0,0" />
+                </DockPanel>
+                <DockPanel>
+                    <DockPanel.Resources>
+                        <converters:NullableDateTimeToStringConverter x:Key="NullableDateTimeToStringConverter" />
+                    </DockPanel.Resources>
+                    <TextBlock Text="Data przyjęcia: " FontWeight="DemiBold" />
+                    <TextBlock Text="{Binding Order.StartDate, Converter={StaticResource NullableDateTimeToStringConverter}}" TextAlignment="Right" TextWrapping="Wrap" Margin="5,0,0,0" />
+                </DockPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" Margin="20,30,30,30">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Height="Auto" VerticalAlignment="Bottom" Margin="0,10">
+                        <TextBox x:Name="InPriceTextBox" Text="{Binding InPrice, UpdateSourceTrigger=PropertyChanged}" Margin="10,0"
+                                 TextAlignment="Center" Padding="6" />
+                    <TextBlock Text="Cena podst."
+                           Height="Auto" FontWeight="DemiBold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Height="Auto" VerticalAlignment="Bottom" Margin="0,10">
+                        <TextBox x:Name="OutPriceTextBox" Text="{Binding OutPrice, UpdateSourceTrigger=PropertyChanged}" Margin="10,0"
+                             TextAlignment="Center" Padding="6" />
+                    <TextBlock Text="Cena wyj."
+                           Height="Auto" FontWeight="DemiBold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="0" Height="Auto" VerticalAlignment="Top" Margin="0,10">
+                        <TextBox x:Name="DiscountPriceTextBox" Text="{Binding Discount, UpdateSourceTrigger=PropertyChanged}" Margin="10,0"
+                             TextAlignment="Center" Height="30" Padding="6" />
+                    <TextBlock Text="Rabat"
+                           Height="Auto" FontWeight="DemiBold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Grid.Column="1" Height="Auto" VerticalAlignment="Top" Margin="0,10">
+                        <TextBox x:Name="DiscountPercentageTextBox" Text="{Binding DiscountPercentage, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="10,0" TextAlignment="Center" Height="30" Padding="6" />
+                    <TextBlock Text="Rabat [%]"
+                           Height="Auto" FontWeight="DemiBold"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </StackPanel>
+
+            </Grid>
+            
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Ceny domyślne:" FontWeight="DemiBold" />
+                    <DockPanel>
+                        <TextBlock Text="Maszyna: " FontWeight="DemiBold" />
+                        <TextBlock Text="{Binding Order.Machine.Price}" TextAlignment="Right" TextWrapping="Wrap" Margin="5,0,0,0" />
+                    </DockPanel>
+                    <TextBlock Text="Moduły: " FontWeight="DemiBold" />
+                </StackPanel>
+                
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding Modules}"
+                          IsReadOnly="True" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}" />
+                        <DataGridTextColumn Header="Cena" Binding="{Binding Price}" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <StackPanel Grid.Row="2">
+                    <DockPanel>
+                        <TextBlock Text="Domyślna cena: " FontWeight="DemiBold" />
+                        <TextBlock Text="{Binding DefaultPrice}" TextAlignment="Right" TextWrapping="Wrap"
+                                   Margin="5,0,0,0" />
+                    </DockPanel>
+                </StackPanel>
+                
+                <StackPanel Grid.Row="3">
+                    <DockPanel>
+                        <TextBlock Text="Podst. - domyśl. = " FontWeight="DemiBold" />
+                        <TextBlock Text="{Binding DefaultInDifference}" TextAlignment="Right" TextWrapping="Wrap"
+                                   Margin="5,0,0,0" />
+                    </DockPanel>
+                </StackPanel>
+                
+                <Button Grid.Row="4" Height="20" Width="60" Margin="0,5" Click="ResetInPriceButton_OnClick">Resetuj</Button>
+            </Grid>
         </Grid>
         
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             
-            <StackPanel Grid.Row="0" Grid.Column="0" Height="Auto">
-                <TextBox Text="{Binding InPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:C}}" Margin="10,0" TextAlignment="Center" />
-                <TextBlock Text="Cena podstawowa"
-                           Height="Auto" FontWeight="DemiBold"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="0" Grid.Column="1" Height="Auto">
-                <TextBox Text="{Binding OutPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:C}}" Margin="10,0" TextAlignment="Center" />
-                <TextBlock Text="Cena wyjściowa"
-                           Height="Auto" FontWeight="DemiBold"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="1" Grid.Column="0" Height="Auto">
-                <TextBox Text="{Binding Discount, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:C}}" Margin="10,0" TextAlignment="Center" />
-                <TextBlock Text="Rabat"
-                           Height="Auto" FontWeight="DemiBold"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </StackPanel>
-
-            <StackPanel Grid.Row="1" Grid.Column="1" Height="Auto">
-                <TextBox Text="{Binding DiscountPercentage, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:P}}" Margin="10,0" TextAlignment="Center" />
-                <TextBlock Text="Rabat [%]"
-                           Height="Auto" FontWeight="DemiBold"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </StackPanel>
-
+            <Button Grid.Column="0" Height="20" Width="60" HorizontalAlignment="Right" Margin="0,10,20,0"
+                    Click="SaveButton_OnClick">Zapisz</Button>
+            <Button Grid.Column="1" Height="20" Width="60" HorizontalAlignment="Left" Margin="20,10,0,0"
+                    Click="CancelButton_OnClick">Anuluj</Button>
         </Grid>
-        
     </Grid>
 </Window>

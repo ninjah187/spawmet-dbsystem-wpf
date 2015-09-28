@@ -95,6 +95,10 @@
                 </ObjectDataProvider>
 
                 <spawmetDatabaseWpf:OrderStatusToStringConverter x:Key="enumItemsConverter" />
+                
+                <Style x:Key="CalculatorDataGridCellStyle" TargetType="DataGridCell">
+                    <EventSetter Event="MouseDoubleClick" Handler="OrderPriceCalculatorDataGridCell_OnMouseDoubleClick" />
+                </Style>
             </DataGrid.Resources>
 
             <DataGrid.ContextMenu>
@@ -224,13 +228,17 @@
                 <DataGridCheckBoxColumn Header="Potwierdzono"
                                         Binding="{Binding ConfirmationSent}"></DataGridCheckBoxColumn>
 
-                <DataGridTextColumn Header="Cena podst." Binding="{Binding Price}" Width="SizeToCells" />
+                <DataGridTextColumn Header="Cena podst." Binding="{Binding InPrice}"
+                                    CellStyle="{StaticResource CalculatorDataGridCellStyle}" IsReadOnly="True" />
+
+                <DataGridTextColumn Header="Rabat" Binding="{Binding Discount}"
+                                    CellStyle="{StaticResource CalculatorDataGridCellStyle}" IsReadOnly="True" />
                 
-                <DataGridTextColumn Header="Rabat" Binding="{Binding Discount}" />
+                <DataGridTextColumn Header="Rabat [%]" Binding="{Binding DiscountPercentage}"
+                                    CellStyle="{StaticResource CalculatorDataGridCellStyle}" IsReadOnly="True" />
                 
-                <DataGridTextColumn Header="Rabat [%]" />
-                
-                <DataGridTextColumn Header="Cena wyj." />
+                <DataGridTextColumn Header="Cena wyj." Binding="{Binding OutPrice}"
+                                    CellStyle="{StaticResource CalculatorDataGridCellStyle}" IsReadOnly="True" />
 
                 <DataGridTextColumn Header="Uwagi" Binding="{Binding Remarks}" Width="SizeToCells" />
             </DataGrid.Columns>

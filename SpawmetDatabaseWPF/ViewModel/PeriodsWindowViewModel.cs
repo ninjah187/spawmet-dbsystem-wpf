@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
@@ -81,6 +82,8 @@ namespace SpawmetDatabaseWPF.ViewModel
         public ICommand AddOrdersCommand { get; protected set; }
 
         public ICommand DeleteOrdersCommand { get; protected set; }
+
+        public ICommand GoToOrderCommand { get; protected set; }
 
         private readonly PeriodsWindow _window;
 
@@ -199,6 +202,35 @@ namespace SpawmetDatabaseWPF.ViewModel
                     waitWin.Close();
                 };
                 confirmWin.Show();
+            });
+            #endregion
+
+            #region GoToOrder
+            GoToOrderCommand = new Command(() =>
+            {
+                var order = SelectedOrder;
+                if (order == null)
+                {
+                    return;
+                }
+
+                var windows = Application.Current.Windows.OfType<OrdersWindow>();
+                if (windows.Any())
+                {
+                    var window = windows.Single();
+                    window.Focus();
+
+                    window.Select(order);
+                }
+                else
+                {
+                    var config = new WindowConfig()
+                    {
+                        SelectedElement = order
+                    };
+                    var window = new OrdersWindow(config);
+                    window.Show();
+                }
             });
             #endregion
         }

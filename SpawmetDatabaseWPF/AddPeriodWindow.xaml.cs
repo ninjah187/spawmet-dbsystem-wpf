@@ -15,6 +15,7 @@ using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Utilities;
+using SpawmetDatabaseWPF.ViewModel;
 
 namespace SpawmetDatabaseWPF
 {
@@ -25,16 +26,22 @@ namespace SpawmetDatabaseWPF
     {
         public IDbContextMediator DbContextMediator { get; set; }
         public DbContextChangedHandler ContextChangedHandler { get; set; }
-        private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindow) };
+        private readonly Type[] _contextChangeInfluencedTypes = { typeof(PeriodsWindowViewModel) };
 
         public AddPeriodWindow()
         {
             InitializeComponent();
 
             DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
 
             StartDatePicker.SelectedDate = DateTime.Today;
             EndDatePicker.SelectedDate = DateTime.Today;
+
+            Closed += delegate
+            {
+                DbContextMediator.Subscribers.Remove(this);
+            };
         }
 
         private async void AddButton_OnClick(object sender, RoutedEventArgs e)

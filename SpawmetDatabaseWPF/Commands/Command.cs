@@ -25,7 +25,7 @@ namespace SpawmetDatabaseWPF.Commands
             _whenExecute = when;
         }
 
-        public void Execute(object parameter)
+        public void Execute(object parameter = null)
         {
             if (CanExecute(parameter))
             {
@@ -33,7 +33,7 @@ namespace SpawmetDatabaseWPF.Commands
             }
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object parameter = null)
         {
             if (_whenExecute == null)
             {

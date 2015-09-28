@@ -157,6 +157,7 @@
                     <ContextMenu>
                         <MenuItem Header="Dodaj" Command="{Binding AddOrdersCommand}"></MenuItem>
                         <MenuItem Header="Usuń" Command="{Binding DeleteOrdersCommand}"></MenuItem>
+                        <MenuItem Header="Idź do" Command="{Binding GoToOrderCommand}"></MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 

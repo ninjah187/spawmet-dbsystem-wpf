@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Entity.ModelConfiguration.Configuration;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Office.Interop.Word;
@@ -109,14 +110,14 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public decimal Price
+        public decimal InPrice
         {
-            get { return _price; }
+            get { return _inPrice; }
             set
             {
-                if (_price != value)
+                if (_inPrice != value)
                 {
-                    _price = value;
+                    _inPrice = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -130,6 +131,32 @@ namespace SpawmetDatabase.Model
                 if (_discount != value)
                 {
                     _discount = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public decimal DiscountPercentage
+        {
+            get { return _discountPercentage; }
+            set
+            {
+                if (_discountPercentage != value)
+                {
+                    _discountPercentage = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public decimal OutPrice
+        {
+            get { return _outPrice; }
+            set
+            {
+                if (_outPrice != value)
+                {
+                    _outPrice = value;
                     NotifyPropertyChanged();
                 }
             }
@@ -241,8 +268,10 @@ namespace SpawmetDatabase.Model
         private DateTime? _startDate;
         private DateTime? _sendDate;
         private bool _confirmationSent;
-        private decimal _price;
+        private decimal _inPrice;
         private decimal _discount;
+        private decimal _discountPercentage;
+        private decimal _outPrice;
         private string _serialNumber;
 
         private Client _client;

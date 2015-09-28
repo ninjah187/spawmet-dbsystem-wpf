@@ -167,11 +167,11 @@ namespace SpawmetDatabaseWPF.Windows
                                  "<td>" + _order.Client.Address + "</td>" +
                                  "</tr>";
                         }
-                        if (_order.Price != 0)
+                        if (_order.InPrice != 0)
                         {
                             _body += "<tr>" +
                                      "<td>do zapłaty:</td>" +
-                                     "<td>" + _order.Price + "</td>" +
+                                     "<td>" + _order.InPrice + "</td>" +
                                      "</tr>";
                         }
                     _body += "</table>";
@@ -212,11 +212,11 @@ namespace SpawmetDatabaseWPF.Windows
                              "<td>" + _order.Client.Address + "</td>" +
                              "</tr>";
                     }
-                    if (_order.Price != 0)
+                    if (_order.InPrice != 0)
                     {
                         _body += "<tr>" +
                                  "<td>payment:</td>" +
-                                 "<td>" + _order.Price + "</td>" +
+                                 "<td>" + _order.InPrice + "</td>" +
                                  "</tr>";
                     }
                     _body += "</table>";

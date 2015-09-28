@@ -27,7 +27,7 @@ namespace SpawmetDatabase.Model
             _remarks = o.Remarks;
             _startDate = o.StartDate.Value.ToShortDateString();
             _sendDate = o.SendDate.Value.ToShortDateString();
-            _price = o.Price.ToString();
+            _price = o.InPrice.ToString();
             _serialNumber = o.SerialNumber;
 
             if (o.Client != null)

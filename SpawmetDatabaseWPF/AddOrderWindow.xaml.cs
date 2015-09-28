@@ -94,7 +94,7 @@ namespace SpawmetDatabaseWPF
                 StartDate = startDate,
                 SendDate = sendDate,
                 Status = status,
-                Price = machine.Price,
+                InPrice = machine.Price,
                 Remarks = remarks
             };
             _dbContext.Orders.Add(order);

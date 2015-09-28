@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
+using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.ViewModel;
 
@@ -101,19 +104,67 @@ namespace SpawmetDatabaseWPF
             }
         }
 
+        private ObservableCollection<MachineModule> _modules;
+        public ObservableCollection<MachineModule> Modules
+        {
+            get { return _modules; }
+            set
+            {
+                if (_modules != value)
+                {
+                    _modules = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private decimal _defaultPrice;
+        public decimal DefaultPrice
+        {
+            get { return _defaultPrice; }
+            set
+            {
+                if (_defaultPrice != value)
+                {
+                    _defaultPrice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private decimal _defaultInDifference;
+        public decimal DefaultInDifference
+        {
+            get { return _defaultInDifference; }
+            set
+            {
+                if (_defaultInDifference != value)
+                {
+                    _defaultInDifference = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand CancelCommand { get; set; }
+
+        public ICommand SaveCommand { get; set; }
+
         public IDbContextMediator DbContextMediator { get; set; }
         public DbContextChangedHandler ContextChangedHandler { get; set; }
         private readonly Type[] _contextChangeInfluencedTypes = { typeof(OrdersWindowViewModel), typeof(PeriodsWindowViewModel) };
 
         private SpawmetDBContext _dbContext;
 
-        private int _orderId;
+        private readonly int _orderId;
 
-        private WindowsEnablementController _winEnablementController;
+        private readonly WindowsEnablementController _winEnablementController;
 
         public OrderPriceCalculatorWindow(int orderId)
         {
             InitializeComponent();
+
+            InitializeCommands();
 
             _orderId = orderId;
 
@@ -138,6 +189,30 @@ namespace SpawmetDatabaseWPF
             };
         }
 
+        private void InitializeCommands()
+        {
+            CancelCommand = new Command(() =>
+            {
+                Close();
+            });
+
+            SaveCommand = new Command(async () =>
+            {
+                await Task.Run(() =>
+                {
+                    Order.InPrice = InPrice;
+                    Order.Discount = Discount;
+                    Order.DiscountPercentage = DiscountPercentage;
+                    Order.OutPrice = OutPrice;
+
+                    _dbContext.SaveChanges();
+                });
+
+                DbContextMediator.NotifyContextChanged(this, _contextChangeInfluencedTypes);
+                Close();
+            });
+        }
+
         public async Task LoadAsync()
         {
             await Task.Run(() =>
@@ -148,38 +223,86 @@ namespace SpawmetDatabaseWPF
                 }
                 _dbContext = new SpawmetDBContext();
 
-                Order = _dbContext.Orders.Single(o => o.Id == _orderId);
+                Order = _dbContext.Orders
+                    .Include(o => o.Client)
+                    .Include(o => o.Machine)
+                    .Single(o => o.Id == _orderId);
 
-                InPrice = Order.Price;
+                var modules = Order.MachineModules.ToList();
+                Modules = new ObservableCollection<MachineModule>(modules);
+
+                DefaultPrice = Order.Machine.Price;
+                DefaultPrice += Modules.Sum(m => m.Price);
+
+                InPrice = Order.InPrice;
                 Discount = Order.Discount;
-                
-                OutPrice = InPrice - Discount;
+                DiscountPercentage = Order.DiscountPercentage;
+                OutPrice = Order.OutPrice;
             });
         }
 
         private void InPriceChanged()
         {
-            DiscountPercentage = InPrice != 0 ? Discount / InPrice : 0;
-            OutPrice = InPrice - Discount;
+            //perc = perc < 0 ? -perc : perc;
+            _discountPercentage = _inPrice != 0 ? _discount / _inPrice * 100 : 0;
+            _outPrice = _inPrice - _discount;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var binding = DiscountPercentageTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+
+                binding = OutPriceTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+            });
+
+            DefaultInDifference = InPrice - DefaultPrice;
         }
 
         private void OutPriceChanged()
         {
-            InPrice = OutPrice + Discount;
-            //Discount = OutPrice - InPrice;
-            DiscountPercentage = InPrice != 0 ? Discount / InPrice : 0;
+            //_inPrice = OutPrice + Discount;
+            _discount = _inPrice - _outPrice;
+            _discountPercentage = _inPrice != 0 ? _discount / _inPrice * 100 : 0;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var binding = DiscountPriceTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+
+                binding = DiscountPercentageTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+            });
         }
 
         private void DiscountChanged()
         {
-            DiscountPercentage = InPrice != 0 ? Discount / InPrice : 0;
-            OutPrice = InPrice - Discount;
+            _discountPercentage = _inPrice != 0 ? _discount / _inPrice * 100 : 0;
+            _outPrice = _inPrice - _discount;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var binding = DiscountPercentageTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+
+                binding = OutPriceTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+            });
         }
 
         private void DiscountPercentageChanged()
         {
-            Discount = DiscountPercentage * InPrice;
-            OutPrice = InPrice - Discount;
+            _discount = _discountPercentage * _inPrice / 100;
+            _outPrice = _inPrice - _discount;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var binding = DiscountPriceTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+
+                binding = OutPriceTextBox.GetBindingExpression(TextBox.TextProperty);
+                binding.UpdateTarget();
+            });
         }
 
         private void OnPropertyChanged([CallerMemberName] string propName = "")
@@ -188,6 +311,42 @@ namespace SpawmetDatabaseWPF
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
             }
+        }
+
+        private void InPrice_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            InPriceChanged();
+        }
+
+        private void OutPrice_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            OutPriceChanged();
+        }
+
+        private void Discount_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            DiscountChanged();
+        }
+
+        private void DiscountPercentageTextBox_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            DiscountPercentageChanged();
+        }
+
+        private void ResetInPriceButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            InPrice = DefaultPrice;
+            OutPrice = InPrice - Discount;
+        }
+
+        private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            CancelCommand.Execute(null);
+        }
+
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            SaveCommand.Execute(null);
         }
     }
 }
