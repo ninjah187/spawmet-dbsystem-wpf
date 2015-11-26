@@ -480,7 +480,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                     return;
                 }
 
-                var win = new CraftPartWindow(DbContext, SelectedPartSetElement.Part);
+                var win = new CraftPartWindow(SelectedPartSetElement.Part);
                 win.WorkStarted += delegate
                 {
                     IsSaving = true;
@@ -488,15 +488,6 @@ namespace SpawmetDatabaseWPF.ViewModel
                 win.WorkCompleted += delegate
                 {
                     IsSaving = false;
-                };
-                win.PartCrafted += (sender, e) =>
-                {
-                    LoadAdditionalPartSet();
-
-                    DbContextMediator.NotifyContextChanged(this);
-
-                    string txt = "Wypalono: " + e.Part.Name + "\nIlość: " + e.Amount;
-                    MessageWindow.Show(txt, "Wypalono część", _window);
                 };
                 win.Owner = _window;
                 win.ShowDialog();

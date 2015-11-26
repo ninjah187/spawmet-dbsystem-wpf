@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -93,8 +94,7 @@ namespace SpawmetDatabaseWPF.Windows
             {
                 var fromAddress = new MailAddress("ninjah187@gmail.com");
                 var toAddress = new MailAddress("karolhnz@gmail.com");
-                throw new Exception("ukryj hasło");
-                var fromPassword = "";
+                var fromPassword = ConfigurationManager.AppSettings["ConfirmationMailPassword"];
 
                 var smtp = new SmtpClient()
                 {

@@ -178,7 +178,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 {
                     return;
                 }
-
+                
                 var confirmWin = new ConfirmWindow("Czy na pewno chcesz usunąć zaznaczone zamówienia?");
                 confirmWin.Confirmed += async delegate
                 {

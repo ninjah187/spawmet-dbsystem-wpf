@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,27 +17,38 @@ using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Events;
+using SpawmetDatabaseWPF.Utilities;
+using SpawmetDatabaseWPF.ViewModel;
+using Application = System.Windows.Application;
 
 namespace SpawmetDatabaseWPF
 {
     /// <summary>
     /// Interaction logic for CraftPartWindow.xaml
     /// </summary>
-    public partial class CraftPartWindow : Window
+    public partial class CraftPartWindow : Window, IDbContextChangesNotifier
     {
         public event EventHandler WorkStarted;
         public event EventHandler WorkCompleted;
 
-        public event PartCraftedEventHandler PartCrafted;
+        public IDbContextMediator DbContextMediator { get; set; }
+        public DbContextChangedHandler ContextChangedHandler { get; set; }
+        private Type[] _contextChangeInfluencedTypes =
+        {
+            typeof(MachinesWindowViewModel), typeof(PartsWindowViewModel),
+            typeof(OrdersWindowViewModel), typeof(MachineModuleDetailsWindow)
+        };
 
         private SpawmetDBContext _dbContext;
         private Part _part;
 
-        public CraftPartWindow(SpawmetDBContext context, Part part)
+        private WindowsEnablementController _winEnablementController;
+
+        public CraftPartWindow(Part part)
         {
             InitializeComponent();
 
-            _dbContext = context;
+            _dbContext = new SpawmetDBContext();
             _part = part;
 
             PartTextBlock.Text = _part.Name;
@@ -50,6 +62,20 @@ namespace SpawmetDatabaseWPF
             };
 
             AmountTextBox.Focus();
+
+            _winEnablementController = new WindowsEnablementController(this);
+            _winEnablementController.DisableWindows();
+
+            DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
+            DbContextMediator.Subscribers.Add(this);
+            Closed += delegate
+            {
+                _dbContext.Dispose();
+
+                DbContextMediator.Subscribers.Remove(this);
+
+                _winEnablementController.EnableWindows();
+            };
         }
 
         private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -73,30 +99,24 @@ namespace SpawmetDatabaseWPF
                 return;
             }
 
+            OnWorkStarted();
+            await AddPartAsync(amount);
+            OnWorkCompleted();
+            
+            DbContextMediator.NotifyContextChanged(this, _contextChangeInfluencedTypes);
+
             Close();
 
-            OnWorkStarted();
-
-            try
-            {
-                await AddPartAsync(amount);
-            }
-            catch (InvalidOperationException)
-            {
-                MessageWindow.Show("", "Błąd", null);
-                OnWorkCompleted();
-                return;
-            }
-
-            OnWorkCompleted();
-            OnPartCrafted(_part, amount);
+            MessageWindow.Show("Wypalono: " + _part.Name + "\nIlość: " + amount, "Wypalono część");
         }
 
-        private Task AddPartAsync(int amount)
+        private async Task AddPartAsync(int amount)
         {
-            return Task.Run(() =>
+            await Task.Run(() =>
             {
-                _part.Amount += amount;
+                var part = _dbContext.Parts.Single(p => p.Id == _part.Id);
+
+                part.Amount += amount;
                 _dbContext.SaveChanges();
             });
         }
@@ -114,15 +134,6 @@ namespace SpawmetDatabaseWPF
             if (WorkCompleted != null)
             {
                 WorkCompleted(this, EventArgs.Empty);
-            }
-        }
-
-        private void OnPartCrafted(Part part, int amount)
-        {
-            if (PartCrafted != null)
-            {
-                var args = new PartCraftedEventArgs(part, amount);
-                PartCrafted(this, args);
             }
         }
     }

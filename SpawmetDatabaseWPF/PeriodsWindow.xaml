@@ -4,6 +4,14 @@
         xmlns:converters="clr-namespace:SpawmetDatabaseWPF.Converters"
         Title="Kalendarz" Height="480" Width="800"
         Icon="icon2.ico">
+    <Window.InputBindings>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+1" Command="{Binding NewMachinesWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+2" Command="{Binding NewPartsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+3" Command="{Binding NewOrdersWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+4" Command="{Binding NewClientsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+5" Command="{Binding NewArchiveWindowCommand}"></KeyBinding>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,6 +35,8 @@
                               InputGestureText="Ctrl+4"></MenuItem>
                             <MenuItem x:Name="DeliveriesMenuItem" Header="Archiwum" Command="{Binding NewArchiveWindowCommand}"
                               InputGestureText="Ctrl+5"></MenuItem>
+                            <MenuItem Header="Kalendarz" Command="{Binding NewPeriodsWindowCommand}"
+                              InputGestureText="Ctrl+6" IsEnabled="False"></MenuItem>
                         </MenuItem>
                         <MenuItem Header="Narzędzia">
                             <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
@@ -169,7 +179,10 @@
                     <DataGridTextColumn Header="Przyjęcie" Binding="{Binding StartDate, Converter={StaticResource NullableDateTimeToStringConverter}}" />
                     <DataGridTextColumn Header="Wysyłka" Binding="{Binding SendDate, Converter={StaticResource NullableDateTimeToStringConverter}}"></DataGridTextColumn>
                     <DataGridTextColumn Header="Status" Binding="{Binding Status, Converter={StaticResource NullableOrderStatusToStringConverter}}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Cena" Binding="{Binding Price}" />
+                    <DataGridTextColumn Header="Cena podst." Binding="{Binding InPrice}" />
+                    <DataGridTextColumn Header="Rabat" Binding="{Binding Discount}" />
+                    <DataGridTextColumn Header="Rabat [%]" Binding="{Binding DiscountPercentage}" />
+                    <DataGridTextColumn Header="Cena wyj." Binding="{Binding OutPrice}" />
                     <DataGridTextColumn Header="Uwagi" Binding="{Binding Remarks}" />
                 </DataGrid.Columns>
                 

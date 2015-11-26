@@ -27,7 +27,10 @@ namespace SpawmetDatabase.Model
             _remarks = o.Remarks;
             _startDate = o.StartDate.Value.ToShortDateString();
             _sendDate = o.SendDate.Value.ToShortDateString();
-            _price = o.InPrice.ToString();
+            _inPrice = o.InPrice.ToString();
+            _discount = o.Discount.ToString();
+            _discountPercentage = o.DiscountPercentage.ToString();
+            _outPrice = o.OutPrice.ToString();
             _serialNumber = o.SerialNumber;
 
             if (o.Client != null)
@@ -117,14 +120,53 @@ namespace SpawmetDatabase.Model
             }
         }
 
-        public string Price
+        public string InPrice
         {
-            get { return _price; }
+            get { return _inPrice; }
             set
             {
-                if (_price != value)
+                if (_inPrice != value)
                 {
-                    _price = value;
+                    _inPrice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string Discount
+        {
+            get { return _discount; }
+            set
+            {
+                if (_discount != value)
+                {
+                    _discount = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string DiscountPercentage
+        {
+            get { return _discountPercentage; }
+            set
+            {
+                if (_discountPercentage != value)
+                {
+                    _discountPercentage = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public string OutPrice
+        {
+            get { return _outPrice; }
+            set
+            {
+                if (_outPrice != value)
+                {
+                    _outPrice = value;
                     OnPropertyChanged();
                 }
             }
@@ -199,7 +241,10 @@ namespace SpawmetDatabase.Model
         private string _remarks;
         private string _startDate;
         private string _sendDate;
-        private string _price;
+        private string _inPrice;
+        private string _discount;
+        private string _discountPercentage;
+        private string _outPrice;
         private string _serialNumber;
 
         private ArchivedClient _client;

@@ -3,6 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Archiwum" Height="480" Width="800"
         Icon="icon2.ico">
+    <Window.InputBindings>
+        <KeyBinding Gesture="CTRL+F" Command="{Binding NewSearchWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+1" Command="{Binding NewMachinesWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+2" Command="{Binding NewPartsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+3" Command="{Binding NewOrdersWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+4" Command="{Binding NewClientsWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+6" Command="{Binding NewPeriodsWindowCommand}"></KeyBinding>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,6 +31,8 @@
                             <MenuItem x:Name="ClientsMenuItem" Header="Klienci" Command="{Binding NewClientsWindowCommand}"
                               InputGestureText="Ctrl+4"></MenuItem>
                             <MenuItem Header="Archiwum" InputGestureText="Ctrl+5" IsEnabled="False"></MenuItem>
+                            <MenuItem Header="Kalendarz" Command="{Binding NewPeriodsWindowCommand}"
+                              InputGestureText="Ctrl+6"></MenuItem>
                         </MenuItem>
                         <MenuItem Header="Opcje">
                             <MenuItem x:Name="ConnectMenuItem" Header="Połącz"></MenuItem>

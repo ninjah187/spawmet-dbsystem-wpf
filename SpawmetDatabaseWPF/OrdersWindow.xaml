@@ -15,6 +15,7 @@
         <KeyBinding Gesture="CTRL+2" Command="{Binding NewPartsWindowCommand}"></KeyBinding>
         <KeyBinding Gesture="CTRL+4" Command="{Binding NewClientsWindowCommand}"></KeyBinding>
         <KeyBinding Gesture="CTRL+5" Command="{Binding NewArchiveWindowCommand}"></KeyBinding>
+        <KeyBinding Gesture="CTRL+6" Command="{Binding NewPeriodsWindowCommand}"></KeyBinding>
     </Window.InputBindings>
     
     <Grid>
@@ -43,6 +44,8 @@
                                   InputGestureText="Ctrl+4"></MenuItem>
                         <MenuItem Header="Archiwum" Command="{Binding NewArchiveWindowCommand}"
                                   InputGestureText="Ctrl+5"></MenuItem>
+                        <MenuItem Header="Kalendarz" Command="{Binding NewPeriodsWindowCommand}"
+                              InputGestureText="Ctrl+6"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Narzędzia">
                         <MenuItem Header="Szukaj" Command="{Binding NewSearchWindowCommand}"
