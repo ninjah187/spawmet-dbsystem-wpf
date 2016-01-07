@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -35,6 +36,7 @@ namespace SpawmetDatabaseWPF
                 catch (EntityException exc)
                 {
                     Disconnected();
+                    throw exc;
                 }
             });
             thread.Start();

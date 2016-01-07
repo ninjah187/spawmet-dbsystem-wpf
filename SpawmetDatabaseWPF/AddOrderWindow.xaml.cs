@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -105,6 +106,7 @@ namespace SpawmetDatabaseWPF
             catch (EntityException exc)
             {
                 Disconnected();
+                throw exc;
             }
 
             OnOrderAdded(order);
