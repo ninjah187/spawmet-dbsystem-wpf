@@ -224,6 +224,8 @@
     <Compile Include="SaveFileWindow.xaml.cs">
       <DependentUpon>SaveFileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\ICraftPartService.cs" />
+    <Compile Include="Services\ICraftPartServiceConsumer.cs" />
     <Compile Include="SpawmetAppObserver.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
@@ -475,7 +477,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ConnectionStrings.config" />
+    <None Include="ConnectionStrings.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Passwords.config" />
     <None Include="Properties\Settings.settings">
@@ -519,7 +523,7 @@
     <Resource Include="icon2.ico" />
   </ItemGroup>
   <ItemGroup>
-    <SplashScreen Include="splashscreen2.png" />
+    <None Include="splashscreen2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="save icon.png" />

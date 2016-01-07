@@ -26,7 +26,8 @@ namespace SpawmetDatabase
 
         static void Main(string[] args)
         {
-            CreateDb();
+            Console.WriteLine(@"To start program, please run SpawmetDatabaseWPF.exe.");
+            //CreateDb();
 
             //Console.Write("Podaj ścieżkę dostępu: ");
             //string path = Console.ReadLine();

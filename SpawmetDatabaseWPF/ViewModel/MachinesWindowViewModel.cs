@@ -190,6 +190,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand CraftPartAmountCommand { get; private set; }
 
+        public ICommand CraftModuleCommand { get; private set; }
+
+        public ICommand CraftModuleAmountCommand { get; private set; }
+
         public ICommand DeletePartFromMachineCommand { get; private set; }
 
         public ICommand AddMachinesFromDirectoryCommand { get; private set; }
@@ -395,6 +399,43 @@ namespace SpawmetDatabaseWPF.ViewModel
                 };
                 win.Owner = _window;
                 win.ShowDialog();
+            });
+            #endregion
+
+            #region CraftModule
+            CraftModuleCommand = new Command(async () =>
+            {
+                var module = SelectedModule;
+
+                var waitWin = new WaitWindow("Wypalanie modułu");
+                waitWin.Show();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    lock (DbContextLock)
+                    {
+                        foreach (var partSetElement in module.MachineModulePartSet)
+                        {
+                            partSetElement.Part.Amount += partSetElement.Amount;
+                        }
+                        DbContext.SaveChanges();
+                    }
+                });
+                IsSaving = false;
+
+                waitWin.Close();
+
+                DbContextMediator.NotifyContextChanged(this);
+
+                MessageWindow.Show("Wypalono moduł: " + module.Name, "Wypalono moduł");
+            });
+            #endregion
+
+            #region CraftModuleAmount
+            CraftModuleAmountCommand = new Command(async () =>
+            {
+                throw new NotImplementedException(); // TODO: implement
             });
             #endregion
 
@@ -914,6 +955,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             catch (Exception exc)
             {
                 IsConnected = false;
+                throw exc;
             }
         }
 

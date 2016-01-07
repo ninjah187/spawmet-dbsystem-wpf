@@ -107,7 +107,11 @@ namespace SpawmetDatabaseWPF
             _moduleId = moduleId;
 
             DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
-            
+            DbContextMediator.Subscribers.Add(this);
+            ContextChangedHandler = async delegate
+            {
+                await LoadAsync();
+            };
             
             Loaded += async delegate
             {
@@ -120,6 +124,8 @@ namespace SpawmetDatabaseWPF
                 {
                     _dbContext.Dispose();
                 }
+
+                DbContextMediator.Subscribers.Remove(this);
             };
 
             InitializeCommands();
@@ -193,6 +199,8 @@ namespace SpawmetDatabaseWPF
                 waitWin.Close();
                 //IsEnabled = true;
             });
+
+
         }
 
         ////public void Dispose()

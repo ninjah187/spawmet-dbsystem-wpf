@@ -37,6 +37,19 @@
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Part.Name}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Magazyn" Binding="{Binding Part.Amount}"></DataGridTextColumn>
+                <!--<DataGridTemplateColumn Header="Wypalanie">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                AncestorType={x:Type Window}}, Path=DataContext.CraftPartCommand}">Wypal</Button>
+                                <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                AncestorType={x:Type Window}}, Path=DataContext.CraftPartAmountCommand}"
+                                                Margin="5,0,0,0">Wypal ilość</Button>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

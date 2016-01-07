@@ -228,6 +228,16 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Nazwa" Binding="{Binding Name}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Cena" Binding="{Binding Price}"></DataGridTextColumn>
+                        <DataGridTemplateColumn Header="Wypalanie">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel>
+                                        <Button Command="{Binding RelativeSource={RelativeSource FindAncestor,
+                                                AncestorType={x:Type Window}}, Path=DataContext.CraftModuleCommand}">Wypal</Button>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </StackPanel>
