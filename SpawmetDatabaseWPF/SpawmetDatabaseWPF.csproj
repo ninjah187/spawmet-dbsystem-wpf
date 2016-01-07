@@ -527,7 +527,7 @@
     <Resource Include="icon2.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="splashscreen2.png" />
+    <SplashScreen Include="splashscreen2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="save icon.png" />
