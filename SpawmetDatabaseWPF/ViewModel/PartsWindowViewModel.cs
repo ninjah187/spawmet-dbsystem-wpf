@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -602,7 +603,26 @@ namespace SpawmetDatabaseWPF.ViewModel
         {
             try
             {
-                var parts = DbContext.Parts.ToList();
+                List<Part> parts = null;
+
+                if (SearchExpression != "")
+                {
+                    parts = new List<Part>();
+                    foreach (var part in DbContext.Parts)
+                    {
+                        if (Regex.IsMatch(part.Name, SearchExpression, RegexOptions.IgnoreCase))
+                        {
+                            parts.Add(part);
+                        }
+                    }
+                    //parts = DbContext.Parts
+                    //    .Where(p => p.Name == SearchExpression)
+                    //    .ToList();
+                } 
+                else
+                {
+                    parts = DbContext.Parts.ToList();
+                }
 
                 Parts = new ObservableCollection<Part>(parts);
             }

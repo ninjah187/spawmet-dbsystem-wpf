@@ -269,7 +269,7 @@ namespace SpawmetDatabaseWPF.ViewModel
             _partsBackgroundWorker = new BackgroundWorker();
             _partsBackgroundWorker.DoWork += (sender, e) =>
             {
-                var machineId = (int)e.Argument;
+                var machineId = (int) e.Argument;
                 List<StandardPartSetElement> result;
                 lock (DbContextLock)
                 {
