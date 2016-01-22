@@ -107,7 +107,8 @@ namespace SpawmetDatabaseWPF
 
             Close();
 
-            MessageWindow.Show("Wypalono: " + _part.Name + "\nIlość: " + amount, "Wypalono część");
+            //string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+            //MessageWindow.Show(txt, "Wypalono część", _window);
         }
 
         private async Task AddPartAsync(int amount)

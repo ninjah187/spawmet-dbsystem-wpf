@@ -375,8 +375,8 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 DbContextMediator.NotifyContextChanged(this);
 
-                string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
-                MessageWindow.Show(txt, "Wypalono część", _window);
+                //string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+                //MessageWindow.Show(txt, "Wypalono część", _window);
             });
             #endregion
 
@@ -428,7 +428,7 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 DbContextMediator.NotifyContextChanged(this);
 
-                MessageWindow.Show("Wypalono moduł: " + module.Name, "Wypalono moduł");
+                //MessageWindow.Show("Wypalono moduł: " + module.Name, "Wypalono moduł");
             });
             #endregion
 

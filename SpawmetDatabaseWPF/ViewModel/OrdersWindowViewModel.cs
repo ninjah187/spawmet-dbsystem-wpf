@@ -469,8 +469,8 @@ namespace SpawmetDatabaseWPF.ViewModel
 
                 DbContextMediator.NotifyContextChanged(this);
 
-                string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
-                MessageWindow.Show(txt, "Wypalono część", _window);
+                //string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+                //MessageWindow.Show(txt, "Wypalono część", _window);
             });
 
             CraftPartAmountCommand = new Command(() =>
