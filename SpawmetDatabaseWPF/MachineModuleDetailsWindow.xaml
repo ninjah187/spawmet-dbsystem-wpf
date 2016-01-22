@@ -37,7 +37,7 @@
                 <DataGridTextColumn Header="Nazwa" Binding="{Binding Part.Name}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Ilość" Binding="{Binding Amount}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Magazyn" Binding="{Binding Part.Amount}"></DataGridTextColumn>
-                <!--<DataGridTemplateColumn Header="Wypalanie">
+                <DataGridTemplateColumn Header="Wypalanie">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <DockPanel>
@@ -49,7 +49,7 @@
                             </DockPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using SpawmetDatabase;
 using SpawmetDatabase.Model;
 using SpawmetDatabaseWPF.Commands;
+using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Utilities;
 using SpawmetDatabaseWPF.Windows;
@@ -90,6 +91,8 @@ namespace SpawmetDatabaseWPF
         public ICommand AddPartCommand { get; set; }
         public ICommand DeletePartCommand { get; set; }
         public ICommand GoToPartCommand { get; set; }
+        public ICommand CraftPartCommand { get; set; }
+        public ICommand CraftPartAmountCommand { get; set; }
 
         public IDbContextMediator DbContextMediator { get; set; }
         public DbContextChangedHandler ContextChangedHandler { get; set; }
@@ -200,7 +203,47 @@ namespace SpawmetDatabaseWPF
                 //IsEnabled = true;
             });
 
+            #region CraftPart
+            CraftPartCommand = new Command(async () =>
+            {
+                var element = SelectedPartSetElement;
+                if (element == null)
+                {
+                    return;
+                }
 
+                var part = _dbContext.Parts.Single(p => p.Id == element.Part.Id);
+
+                await Task.Run(() =>
+                {
+                    lock (_dbContextLock)
+                    {
+                        part.Amount += element.Amount;
+                        _dbContext.SaveChanges();
+                    }
+                });
+
+                DbContextMediator.NotifyContextChanged(this);
+
+                string txt = "Wypalono: " + element.Part.Name + "\nIlość: " + element.Amount;
+                MessageWindow.Show(txt, "Wypalono część");
+            });
+            #endregion
+
+            #region CraftPartAmount
+            CraftPartAmountCommand = new Command(async () =>
+            {
+                var element = SelectedPartSetElement;
+                if (element == null)
+                {
+                    return;
+                }
+
+                var win = new CraftPartWindow(SelectedPartSetElement.Part);
+                win.Owner = this;
+                win.ShowDialog();
+            });
+            #endregion
         }
 
         ////public void Dispose()
