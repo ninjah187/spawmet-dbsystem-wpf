@@ -22,7 +22,7 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" Width="100">Wyślij raport</Button>
+            <Button Grid.Column="0" Width="100" Click="SendRaportButton_OnClick">Wyślij raport</Button>
             
             <Button Grid.Column="1" Width="60" Click="OkButton_OnClick">OK</Button>
         </Grid>
