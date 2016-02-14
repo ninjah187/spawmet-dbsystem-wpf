@@ -23,14 +23,5 @@ namespace SpawmetDatabaseWPF.Services
         {
             Copy<T>(elements.Select(e => e.Id));
         }
-
-        public bool CanPaste<T>()
-        {
-            if (Tray == null || StoredType != typeof (T))
-            {
-                return false;
-            }
-            return true;
-        }
     }
 }

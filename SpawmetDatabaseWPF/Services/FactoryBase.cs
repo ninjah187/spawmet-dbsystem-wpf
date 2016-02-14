@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabaseWPF.Services
 {
-    public class PasteServiceSingleton : SingletonBase<PasteService>
+    public abstract class FactoryBase<T> : IFactory<T> where T : new()
     {
-        static PasteServiceSingleton()
+        public virtual T GetItem()
         {
+            return new T();
         }
     }
 }

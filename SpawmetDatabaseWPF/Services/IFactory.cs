@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabaseWPF.Services
 {
-    public interface IFactory<T>
+    public interface IFactory<T> where T : new()
     {
-
+        T GetItem();
     }
 }

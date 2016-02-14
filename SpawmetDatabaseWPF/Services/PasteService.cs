@@ -23,9 +23,6 @@ namespace SpawmetDatabaseWPF.Services
 
         public PasteService()
         {
-            // CopyService = copyService;
-            // CopyService = CopyServiceSingleton.Instance;
-
             DbContextMediator = (DbContextMediator) Application.Current.Properties["DbContextMediator"];
             DbContextMediator.Subscribers.Add(this);
 

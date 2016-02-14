@@ -6,14 +6,7 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabaseWPF.Services
 {
-    public class PasteServiceFactory
+    public class PasteServiceFactory : FactoryBase<PasteService>
     {
-        public static PasteService GetSingletonPasteService()
-        {
-            var service = new PasteService();
-            service.CopyService = CopyServiceSingleton.Instance;
-
-            return service;
-        }
     }
 }

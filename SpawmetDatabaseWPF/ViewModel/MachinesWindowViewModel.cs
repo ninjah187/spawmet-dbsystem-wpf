@@ -949,6 +949,7 @@ namespace SpawmetDatabaseWPF.ViewModel
                 await Task.Run(() =>
                 {
                     PasteServiceSingleton.Instance.Paste<MachineModule>(machine.Id);
+                    //PasteServiceSingleton.Instance.PasteModules(machine.Id);
                 });
                 IsSaving = false;
 
