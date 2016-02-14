@@ -18,5 +18,19 @@ namespace SpawmetDatabaseWPF.Services
             Tray = elementsIds;
             StoredType = typeof (T);
         }
+
+        public void Copy<T>(IEnumerable<IModelElement> elements)
+        {
+            Copy<T>(elements.Select(e => e.Id));
+        }
+
+        public bool CanPaste<T>()
+        {
+            if (Tray == null || StoredType != typeof (T))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

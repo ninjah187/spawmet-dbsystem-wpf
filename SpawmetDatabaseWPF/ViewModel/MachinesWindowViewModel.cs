@@ -19,6 +19,7 @@ using SpawmetDatabaseWPF.Commands;
 using SpawmetDatabaseWPF.CommonWindows;
 using SpawmetDatabaseWPF.Config;
 using SpawmetDatabaseWPF.Events;
+using SpawmetDatabaseWPF.Services;
 using SpawmetDatabaseWPF.Windows;
 using SpawmetDatabaseWPF.Windows.Searching;
 
@@ -922,7 +923,36 @@ namespace SpawmetDatabaseWPF.ViewModel
             #region CopyModules
             CopyModulesCommand = new Command(() =>
             {
-                
+                var selected = GetSelectedModules();
+                if (selected == null)
+                {
+                    return;
+                }
+
+                CopyServiceSingleton.Instance.Copy<MachineModule>(selected);
+            });
+            #endregion
+
+            #region PasteModules
+            PasteModulesCommand = new Command(async () =>
+            {
+                var machine = SelectedMachine;
+                if (machine == null)
+                {
+                    return;
+                }
+
+                var waitWin = new WaitWindow("Kopiowanie modułów");
+                waitWin.Show();
+
+                IsSaving = true;
+                await Task.Run(() =>
+                {
+                    PasteServiceSingleton.Instance.Paste<MachineModule>(machine.Id);
+                });
+                IsSaving = false;
+
+                waitWin.Close();
             });
             #endregion
         }
@@ -1113,6 +1143,22 @@ namespace SpawmetDatabaseWPF.ViewModel
                 yield return (Machine)item;
             }
         }
+
+        private List<MachineModule> GetSelectedModules()
+        {
+            if (_window.ModulesDataGrid.SelectedItems.Count == 0)
+            {
+                return null;
+            }
+
+            var selected = new List<MachineModule>();
+            foreach (var item in _window.ModulesDataGrid.SelectedItems)
+            {
+                selected.Add((MachineModule) item);
+            }
+
+            return selected;
+        } 
 
         protected override WindowConfig GetWindowConfig()
         {

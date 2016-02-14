@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SpawmetDatabaseWPF.Services
 {
-    public class CopyServiceSingleton : SingletonBase<CopyService>
+    public interface IFactory<T>
     {
+
     }
 }

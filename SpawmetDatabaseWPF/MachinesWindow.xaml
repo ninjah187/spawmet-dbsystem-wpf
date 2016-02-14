@@ -223,6 +223,8 @@
                             <MenuItem Header="Dodaj" Command="{Binding AddMachineModuleCommand}"></MenuItem>
                             <MenuItem Header="Usuń" Command="{Binding DeleteMachineModuleCommand}"></MenuItem>
                             <MenuItem Header="Szczegóły" Command="{Binding MachineModuleDetailsCommand}"></MenuItem>
+                            <MenuItem Header="Kopiuj" Command="{Binding CopyModulesCommand}"></MenuItem>
+                            <MenuItem Header="Wklej" Command="{Binding PasteModulesCommand}"></MenuItem>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>

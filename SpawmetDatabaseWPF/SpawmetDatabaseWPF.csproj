@@ -225,8 +225,18 @@
     <Compile Include="SaveFileWindow.xaml.cs">
       <DependentUpon>SaveFileWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\CopyService.cs" />
+    <Compile Include="Services\CopyServiceSingleton.cs" />
+    <Compile Include="Services\ICopyService.cs" />
     <Compile Include="Services\ICraftPartService.cs" />
     <Compile Include="Services\ICraftPartServiceConsumer.cs" />
+    <Compile Include="Services\IFactory.cs" />
+    <Compile Include="Services\IPasteService.cs" />
+    <Compile Include="Services\ISingleton.cs" />
+    <Compile Include="Services\PasteService.cs" />
+    <Compile Include="Services\PasteServiceFactory.cs" />
+    <Compile Include="Services\PasteServiceSingleton.cs" />
+    <Compile Include="Services\SingletonBase.cs" />
     <Compile Include="SpawmetAppObserver.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>

@@ -13,5 +13,6 @@ namespace SpawmetDatabaseWPF.Services
         Type StoredType { get; }
 
         void Copy<T>(IEnumerable<int> elementsIds);
+        void Copy<T>(IEnumerable<IModelElement> elements);
     }
 }
