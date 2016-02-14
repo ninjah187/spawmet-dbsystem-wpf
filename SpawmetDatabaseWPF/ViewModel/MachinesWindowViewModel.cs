@@ -210,6 +210,10 @@ namespace SpawmetDatabaseWPF.ViewModel
 
         public ICommand GoToOrderCommand { get; protected set; }
 
+        public ICommand CopyModulesCommand { get; protected set; }
+
+        public ICommand PasteModulesCommand { get; protected set; }
+
         //private SpawmetAppObserver _observer;
 
         public MachinesWindowViewModel(MachinesWindow window)
@@ -912,6 +916,13 @@ namespace SpawmetDatabaseWPF.ViewModel
                     var window = new OrdersWindow(config);
                     window.Show();
                 }
+            });
+            #endregion
+
+            #region CopyModules
+            CopyModulesCommand = new Command(() =>
+            {
+                
             });
             #endregion
         }
